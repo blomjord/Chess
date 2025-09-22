@@ -105,14 +105,23 @@ int check_move_legal(char *current_pos, char *target) {
 }
 
 void print_board(char **chessboard) {
+    printf("    ");
+        for (int i = 97; i < 105; ++i) {
+        printf("%c ", i);
+    }
+    printf("\n");
     for (int i = 0; i < 8; ++i) {
-        printf("[ ");
+        printf("%d [ ", 8-i);
         for (int j = 0; j < 8; ++j) {
             printf("%c ", chessboard[j][i]);
         }
-        printf("]\n");
+        printf("] %d\n", 8-i);
     }
-    
+    printf("    ");
+        for (int i = 97; i < 105; ++i) {
+        printf("%c ", i);
+    }
+    printf("\n");
 }
 
 void dealloc_board(char **chessboard) {
