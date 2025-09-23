@@ -11,7 +11,7 @@ typedef struct {
     char symbol;
 } ChessPiece;
 
-
+// TEST
 void initialize_chesspieces(ChessPiece *pieces) {
 
     ChessPiece tmp[] = {
@@ -154,9 +154,17 @@ void move(char **chessboard, ChessPiece *pieces) {
 
 }
 
-int check_move_legal() {
-    return 1;
-}
+void move_p() {}
+
+void move_r() {}
+
+void move_k() {}
+
+void move_b() {}
+
+void move_q() {}
+
+void move_k() {}
 
 // Continously prints the board after each move.
 void print_board(char **chessboard) {
