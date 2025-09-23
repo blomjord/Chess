@@ -5,9 +5,25 @@
 
 // 0: White
 // 1: Black
+
+#define EMPTY 0
+
+#define W_PAWN 1
+#define W_ROOK 2
+#define W_KNIGHT 3
+#define W_BISHOP 4
+#define W_QUEEN 5
+#define W_KING 6
+
+#define B_PAWN -1
+#define B_ROOK -2
+#define B_KNIGHT -3
+#define B_BISHOP -4
+#define B_QUEEN -5
+#define B_KING -6
+
 typedef struct {
-    int team_color, id, x, y;
-    char *type;
+    int type, x, y;
     char symbol;
 } ChessPiece;
 
@@ -17,40 +33,40 @@ void initialize_chesspieces(ChessPiece *pieces)
     ChessPiece tmp[] = {
         
         // Black
-        { 1, 16, 0, 7, "rook", 'r' },
-        { 1, 17, 7, 7, "rook", 'r' },
-        { 1, 18, 1, 7, "knight", 'k' },
-        { 1, 19, 6, 7, "knight", 'k' },
-        { 1, 20, 2, 7, "bishop", 'b' },
-        { 1, 21, 5, 7, "bishop", 'b' },
-        { 1, 22, 3, 7, "queen", 'q' },
-        { 1, 23, 4, 7, "king", 'k' },
-        { 1, 24, 0, 6, "pawn", 'p' },
-        { 1, 25, 1, 6, "pawn", 'p' },
-        { 1, 26, 2, 6, "pawn", 'p' },
-        { 1, 27, 3, 6, "pawn", 'p' },
-        { 1, 28, 4, 6, "pawn", 'p' },
-        { 1, 29, 5, 6, "pawn", 'p' },
-        { 1, 30, 6, 6, "pawn", 'p' },
-        { 1, 31, 7, 6, "pawn", 'p' },
+        { B_ROOK,   0, 7, 'r' },
+        { B_ROOK,   7, 7, 'r' },
+        { B_KNIGHT, 1, 7, 'k' },
+        { B_KNIGHT, 6, 7, 'k' },
+        { B_BISHOP, 2, 7, 'b' },
+        { B_BISHOP, 5, 7, 'b' },
+        { B_QUEEN,  3, 7, 'q' },
+        { B_KING,   4, 7, 'k' },
+        { B_PAWN,   0, 6, 'p' },
+        { B_PAWN,   1, 6, 'p' },
+        { B_PAWN,   2, 6, 'p' },
+        { B_PAWN,   3, 6, 'p' },
+        { B_PAWN,   4, 6, 'p' },
+        { B_PAWN,   5, 6, 'p' },
+        { B_PAWN,   6, 6, 'p' },
+        { B_PAWN,   7, 6, 'p' },
         
         // White
-        { 0, 0,  0, 0, "rook", 'R' },
-        { 0, 1,  7, 0, "rook", 'R' },
-        { 0, 2,  1, 0, "knight", 'K' },
-        { 0, 3,  6, 0, "knight", 'K' },
-        { 0, 4,  2, 0, "bishop", 'B' },
-        { 0, 5,  5, 0, "bishop", 'B' },
-        { 0, 6,  3, 0, "queen", 'Q' },
-        { 0, 7,  4, 0, "king", 'K' },
-        { 0, 8,  0, 1, "pawn", 'P' },
-        { 0, 9,  1, 1, "pawn", 'P' },
-        { 0, 10, 2, 1, "pawn", 'P' },
-        { 0, 11, 3, 1, "pawn", 'P' },
-        { 0, 12, 4, 1, "pawn", 'P' },
-        { 0, 13, 5, 1, "pawn", 'P' },
-        { 0, 14, 6, 1, "pawn", 'P' },
-        { 0, 15, 7, 1, "pawn", 'P' }
+        { W_ROOK,   0, 0, 'R' },
+        { W_ROOK,   7, 0, 'R' },
+        { W_KNIGHT, 1, 0, 'K' },
+        { W_KNIGHT, 6, 0, 'K' },
+        { W_BISHOP, 2, 0, 'B' },
+        { W_BISHOP, 5, 0, 'B' },
+        { W_QUEEN,  3, 0, 'Q' },
+        { W_KING,   4, 0, 'K' },
+        { W_PAWN,   0, 1, 'P' },
+        { W_PAWN,   1, 1, 'P' },
+        { W_PAWN,   2, 1, 'P' },
+        { W_PAWN,   3, 1, 'P' },
+        { W_PAWN,   4, 1, 'P' },
+        { W_PAWN,   5, 1, 'P' },
+        { W_PAWN,   6, 1, 'P' },
+        { W_PAWN,   7, 1, 'P' }
     };
     // Assignt the chess pieces
     for (int i = 0; i < 32; ++i) {
@@ -63,16 +79,17 @@ void initialize_chesspieces(ChessPiece *pieces)
 // Integer -1 represents an empty cell.
 // INPUT: Empty chessboard
 // RETURNS: Initialized chessboard
-void initialize_chessboard(char **chessboard, ChessPiece *pieces)
+void initialize_chessboard(int **chessboard, ChessPiece *pieces)
 {
     for (int i = 0; i < 8; ++i) {
-        chessboard[i] = (char *) malloc(8 * sizeof(char));
+        chessboard[i] = (int *) malloc(8 * sizeof(int));
     }
     for (int i = 0; i < 8; ++i) {
         for (int j = 0; j < 8; ++j) {
             for (int k = 0; k < 32; ++k) {
                 if (pieces[k].x == i && pieces[k].y == j) {
-                    chessboard[i][j] = pieces[k].symbol;
+                    chessboard[i][j] = pieces[k].type;
+                    printf("Placing %d at %d,%d.\n", pieces[k].type, i, j);
                 }
             }
         } 
@@ -80,7 +97,7 @@ void initialize_chessboard(char **chessboard, ChessPiece *pieces)
     for (int i = 0; i < 8; ++i) {
         for (int j = 0; j < 8; ++j) {
             if (j > 1 && j < 6) {
-                chessboard[i][j] = ' ';
+                chessboard[i][j] = EMPTY;
             }
         }
     }
@@ -127,7 +144,7 @@ char *get_sized_line(char *buf)
     return NULL;
 }
 // Performs move if legal.
-void move(char **chessboard, ChessPiece *pieces)
+void move(int **chessboard, ChessPiece *pieces)
 {
     
     int posX, posY, tarX, tarY;
@@ -147,15 +164,15 @@ void move(char **chessboard, ChessPiece *pieces)
         tarY = tar[1] - 49;
         
         ChessPiece *piece_to_move = get_piece_by_coords(pieces, posX, posY);
-        if ( chessboard[posX][posY] != NULL && piece_to_move != NULL ) {
+
+        if ( chessboard[posX][posY] != EMPTY && piece_to_move != NULL ) {
             piece_to_move->x = tarX;
             piece_to_move->y = tarY;
-            chessboard[tarX][tarY] = piece_to_move->symbol;
-            chessboard[posX][posY] = ' ';
+            chessboard[tarX][tarY] = piece_to_move->type;
+            chessboard[posX][posY] = EMPTY;
             break;
         } else {
-            printf("Empty cell\n");
-            printf("posX: %d posY: %d tarX: %d tarY: %d\n", posX, posY, tarX, tarY);
+            printf("Empty cell. Please try again.\n");
             continue;
         }
 
@@ -165,9 +182,9 @@ void move(char **chessboard, ChessPiece *pieces)
 }
 
 // The following functions generate the possible and legal moves for each piece.
-void moves_pawn(char **chessboard, ChessPiece *pieces, char *pos, int team)
+void moves_pawn(int **chessboard, ChessPiece *pieces, char *pos)
 {
-    
+        
 }
 
 void move_rook()
@@ -191,7 +208,7 @@ void move_king()
 }
 
 // Continously prints the board after each move.
-void print_board(char **chessboard)
+void print_board(int **chessboard)
 {
     printf("    ");
         for (int i = 97; i < 105; ++i) {
@@ -203,10 +220,51 @@ void print_board(char **chessboard)
      * For final build, change loop index i to:
      * for (int i = 7; i > -1; --i)
      * */
-    for (int i = 0; i < 8; ++i) {
+    for (int i = 7; i > -1; --i) {
         printf("%d [ ", i + 1);
         for (int j = 0; j < 8; ++j) {
-            printf("%c ", chessboard[j][i]);
+            if (chessboard[j][i] == EMPTY)
+                printf("  ");
+            else {
+                switch (chessboard[j][i]) {
+                    case W_PAWN:
+                        printf("P ");
+                        break;
+                    case W_ROOK:
+                        printf("R ");
+                        break;
+                    case W_KNIGHT:
+                        printf("K ");
+                        break;
+                    case W_BISHOP:
+                        printf("B ");
+                        break;
+                    case W_QUEEN:
+                        printf("Q ");
+                        break;
+                    case W_KING:
+                        printf("K ");
+                        break;
+                    case B_PAWN:
+                        printf("p ");
+                        break;
+                    case B_ROOK:
+                        printf("r ");
+                        break;
+                    case B_KNIGHT:
+                        printf("k ");
+                        break;
+                    case B_BISHOP:
+                        printf("b ");
+                        break;
+                    case B_QUEEN:
+                        printf("q ");
+                        break;
+                    case B_KING:
+                        printf("k ");
+                        break;
+                    }
+            }
         }
         printf("] %d\n", i + 1);
     }
@@ -217,7 +275,7 @@ void print_board(char **chessboard)
     printf("\n");
 }
 
-void dealloc_board(char **chessboard)
+void dealloc_board(int **chessboard)
 {
     for (int i = 0; i < 8; ++i) {
         free(chessboard[i]);
@@ -227,7 +285,7 @@ int main()
 {
      
     ChessPiece *pieces = calloc(32, sizeof(ChessPiece));
-    char **chessboard = (char **) malloc(8 * sizeof(char *));
+    int **chessboard = (int **) malloc(8 * sizeof(int *));
     
     initialize_chesspieces(pieces);
     initialize_chessboard(chessboard, pieces);
