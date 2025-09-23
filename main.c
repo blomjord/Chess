@@ -33,7 +33,6 @@ typedef struct {
 
 void initialize_chesspieces(ChessPiece *pieces) 
 {
-
     ChessPiece tmp[] = {
         
         // Black
@@ -128,7 +127,6 @@ void get_user_input(char *buf)
 // Maybe don't use this (remove?)
 char *get_sized_line(char *buf)
 {
-    
     while (fgets(buf, 3, stdin)) {
         size_t len = strlen(buf);
         if (len > 2 && buf[--len] == '\n')
@@ -150,7 +148,6 @@ char *get_sized_line(char *buf)
 // Performs move if legal.
 void move(int **chessboard, ChessPiece *pieces)
 {
-    
     int posX, posY, tarX, tarY;
     char pos[3];
     char tar[3];
@@ -179,10 +176,7 @@ void move(int **chessboard, ChessPiece *pieces)
             printf("Empty cell. Please try again.\n");
             continue;
         }
-
     }
-
-
 }
 
 // The following functions generate the possible and legal moves for each piece.
@@ -299,9 +293,9 @@ void dealloc_board(int **chessboard)
         free(chessboard[i]);
     }
 }
+
 int main()
 {
-     
     ChessPiece *pieces = calloc(32, sizeof(ChessPiece));
     int **chessboard = (int **) malloc(8 * sizeof(int *));
     
@@ -312,14 +306,11 @@ int main()
     while(1) {
         move(chessboard, pieces);
         print_board(chessboard);
-
     }
-    
     
     dealloc_board(chessboard);
     free(chessboard);
     free(pieces);
 
     return 0;
-
 }
