@@ -11,7 +11,6 @@ typedef struct {
     char symbol;
 } ChessPiece;
 
-// TEST
 void initialize_chesspieces(ChessPiece *pieces) {
 
     ChessPiece tmp[] = {
