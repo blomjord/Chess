@@ -27,6 +27,10 @@ typedef struct {
     char symbol;
 } ChessPiece;
 
+typedef struct {
+    int x, y;
+} Point;
+
 void initialize_chesspieces(ChessPiece *pieces) 
 {
 
@@ -182,29 +186,43 @@ void move(int **chessboard, ChessPiece *pieces)
 }
 
 // The following functions generate the possible and legal moves for each piece.
-void moves_pawn(int **chessboard, ChessPiece *pieces, char *pos)
+void available_moves(ChessPiece *pieces, char *pos, int type)
 {
-        
+    switch (type) {
+        case B_PAWN || W_PAWN:
+            moves_pawn(type);
+            break;
+        case B_ROOK || W_ROOK:
+            moves_rook(type);
+            break;
+        case B_KNIGHT || W_KNIGHT:
+            moves_knight(type);
+            break;
+        case B_BISHOP || W_BISHOP:
+            moves_bishop(type);
+            break;
+        case B_QUEEN || W_QUEEN:
+            moves_queen(type);
+            break;
+        case B_KING || W_KING:
+            moves_king(type);
+            break;
+    }
 }
 
-void move_rook()
+// TODO
+void moves_pawn(int type, int x, int y)
 {
-}
+    Point *moves = calloc(8, sizeof(Point);
+    if (type < 0) {
+        for (int i = 0; i < 8; ++i) {
+            moves[i] = Point {x, i};
+        }
+    } else {
+        for (int i = 0; i < 8; ++i) {
 
-void move_knight()
-{
-}
-
-void move_bishop()
-{
-}
-
-void move_queen()
-{
-}
-
-void move_king()
-{
+        }
+    }
 }
 
 // Continously prints the board after each move.
