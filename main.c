@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <assert.h>
 
 // 0: White
 // 1: Black
@@ -92,21 +94,64 @@ ChessPiece *get_piece_by_coords(ChessPiece *pieces, int x, int y) {
     return NULL;
 }
 
-// Performs move if legal.
-void move(char **chessboard, ChessPiece *pieces, char *current_pos, char *target) {
+void get_user_input(char *buf) {
+    fgets(buf, 3, stdin);
+    int c;
+    while ( (c = getchar()) != '\n' && c != EOF); // Flushes stdin
+}
+
+// Maybe don't use this (remove?)
+char *get_sized_line(char *buf) {
     
-    int posX = current_pos[0] - 97;
-    int posY = current_pos[1] - 49;
-    int tarX = target[0] - 97;
-    int tarY = target[1] - 49;
-    ChessPiece *piece_to_move = get_piece_by_coords(pieces, posX, posY);
+    while (fgets(buf, 3, stdin)) {
+        size_t len = strlen(buf);
+        if (len > 2 && buf[--len] == '\n') {
+            return buf;
+        }
+        int ch = fgetc(stdin);
+        if (ch == '\n' || feof(stdin)) {
+            return buf;
+        }
+        while (ch != '\n' && ch != EOF) {
+            ch = fgetc(stdin);
+        }
+        if (ch = EOF) {
+            return NULL;
+        }
+    }
+    return NULL;
+}
+// Performs move if legal.
+void move(char **chessboard, ChessPiece *pieces) {
+    
+    int posX, posY, tarX, tarY;
+    char pos[3];
+    char tar[3];
+    
+    while (1) {
 
-    piece_to_move->x = tarX;
-    piece_to_move->y = tarY;
+        printf("Choose pos: \n");
+        get_user_input(pos);
+        printf("Choose target: \n");
+        get_user_input(tar); 
+        
+        posX = pos[0] - 97;
+        posY = pos[1] - 49;
+        tarX = tar[0] - 97;
+        tarY = tar[1] - 49;
+        
+        ChessPiece *piece_to_move = get_piece_by_coords(pieces, posX, posY);
+        if ( chessboard[posX][posY] != NULL ) {
+            piece_to_move->x = tarX;
+            piece_to_move->y = tarY;
+            chessboard[tarX][tarY] = piece_to_move->symbol;
+            chessboard[posX][posY] = ' ';
+            break;
+        }
 
-    printf("Attemting move: %c%c > %c%c\n", posX, posY, tarX, tarY);
-    chessboard[tarX][tarY] = piece_to_move->symbol;
-    chessboard[posX][posY] = ' ';
+    }
+
+
 }
 
 int check_move_legal() {
@@ -149,13 +194,7 @@ int main() {
     
     print_board(chessboard);
     while(1) {
-        char pos[3];
-        char tar[3];
-        printf("Choose pos: \n");
-        scanf("%2s", pos);
-        printf("Move to: \n");
-        scanf("%2s", tar);
-        move(chessboard, pieces, pos, tar);
+        move(chessboard, pieces);
         print_board(chessboard);
 
     }
