@@ -11,7 +11,8 @@ typedef struct {
     char symbol;
 } ChessPiece;
 
-void initialize_chesspieces(ChessPiece *pieces) {
+void initialize_chesspieces(ChessPiece *pieces) 
+{
 
     ChessPiece tmp[] = {
         
@@ -62,7 +63,8 @@ void initialize_chesspieces(ChessPiece *pieces) {
 // Integer -1 represents an empty cell.
 // INPUT: Empty chessboard
 // RETURNS: Initialized chessboard
-void initialize_chessboard(char **chessboard, ChessPiece *pieces) {
+void initialize_chessboard(char **chessboard, ChessPiece *pieces)
+{
     for (int i = 0; i < 8; ++i) {
         chessboard[i] = (char *) malloc(8 * sizeof(char));
     }
@@ -84,44 +86,49 @@ void initialize_chessboard(char **chessboard, ChessPiece *pieces) {
     }
 }
 
+/*
+ *  Returns a pointer to chosen chess piece
+ * */
 ChessPiece *get_piece_by_coords(ChessPiece *pieces, int x, int y) {
     for (int i = 0; i < 32; ++i) {
-        if (pieces[i].x == x && pieces[i].y == y) {
+        if (pieces[i].x == x && pieces[i].y == y)
             return &pieces[i];
-        }
     }
     return NULL;
 }
 
-void get_user_input(char *buf) {
+void get_user_input(char *buf)
+{
     fgets(buf, 3, stdin);
     int c;
     while ( (c = getchar()) != '\n' && c != EOF); // Flushes stdin
 }
 
 // Maybe don't use this (remove?)
-char *get_sized_line(char *buf) {
+char *get_sized_line(char *buf)
+{
     
     while (fgets(buf, 3, stdin)) {
         size_t len = strlen(buf);
-        if (len > 2 && buf[--len] == '\n') {
+        if (len > 2 && buf[--len] == '\n')
             return buf;
-        }
+        
         int ch = fgetc(stdin);
-        if (ch == '\n' || feof(stdin)) {
+        
+        if (ch == '\n' || feof(stdin))
             return buf;
-        }
+        
         while (ch != '\n' && ch != EOF) {
             ch = fgetc(stdin);
         }
-        if (ch = EOF) {
+        if (ch == EOF)
             return NULL;
-        }
     }
     return NULL;
 }
 // Performs move if legal.
-void move(char **chessboard, ChessPiece *pieces) {
+void move(char **chessboard, ChessPiece *pieces)
+{
     
     int posX, posY, tarX, tarY;
     char pos[3];
@@ -132,20 +139,24 @@ void move(char **chessboard, ChessPiece *pieces) {
         printf("Choose pos: \n");
         get_user_input(pos);
         printf("Choose target: \n");
-        get_user_input(tar); 
-        
+        get_user_input(tar);
+
         posX = pos[0] - 97;
         posY = pos[1] - 49;
         tarX = tar[0] - 97;
         tarY = tar[1] - 49;
         
         ChessPiece *piece_to_move = get_piece_by_coords(pieces, posX, posY);
-        if ( chessboard[posX][posY] != NULL ) {
+        if ( chessboard[posX][posY] != NULL && piece_to_move != NULL ) {
             piece_to_move->x = tarX;
             piece_to_move->y = tarY;
             chessboard[tarX][tarY] = piece_to_move->symbol;
             chessboard[posX][posY] = ' ';
             break;
+        } else {
+            printf("Empty cell\n");
+            printf("posX: %d posY: %d tarX: %d tarY: %d\n", posX, posY, tarX, tarY);
+            continue;
         }
 
     }
@@ -153,26 +164,46 @@ void move(char **chessboard, ChessPiece *pieces) {
 
 }
 
-void move_p() {}
+// The following functions generate the possible and legal moves for each piece.
+void moves_pawn(char **chessboard, ChessPiece *pieces, char *pos, int team)
+{
+    
+}
 
-void move_r() {}
+void move_rook()
+{
+}
 
-void move_k() {}
+void move_knight()
+{
+}
 
-void move_b() {}
+void move_bishop()
+{
+}
 
-void move_q() {}
+void move_queen()
+{
+}
 
-void move_k() {}
+void move_king()
+{
+}
 
 // Continously prints the board after each move.
-void print_board(char **chessboard) {
+void print_board(char **chessboard)
+{
     printf("    ");
         for (int i = 97; i < 105; ++i) {
         printf("%c ", i);
     }
     printf("\n");
-    for (int i = 7; i > -1; --i) {
+    /*
+     * For development purposes, this is reverse.
+     * For final build, change loop index i to:
+     * for (int i = 7; i > -1; --i)
+     * */
+    for (int i = 0; i < 8; ++i) {
         printf("%d [ ", i + 1);
         for (int j = 0; j < 8; ++j) {
             printf("%c ", chessboard[j][i]);
@@ -186,14 +217,16 @@ void print_board(char **chessboard) {
     printf("\n");
 }
 
-void dealloc_board(char **chessboard) {
+void dealloc_board(char **chessboard)
+{
     for (int i = 0; i < 8; ++i) {
         free(chessboard[i]);
     }
 }
-int main() {
+int main()
+{
      
-    ChessPiece pieces[32];
+    ChessPiece *pieces = calloc(32, sizeof(ChessPiece));
     char **chessboard = (char **) malloc(8 * sizeof(char *));
     
     initialize_chesspieces(pieces);
@@ -209,6 +242,8 @@ int main() {
     
     dealloc_board(chessboard);
     free(chessboard);
+    free(pieces);
+
     return 0;
 
 }
