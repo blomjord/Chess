@@ -73,7 +73,7 @@ void initialize_chesspieces(ChessPiece *pieces)
                 { W_PAWN,   5, 1, 'P' },
                 { W_PAWN,   6, 1, 'P' },
                 { W_PAWN,   7, 1, 'P' }
-            };
+        };
     // Assignt the chess pieces
         for (int i = 0; i < 32; ++i) {
                 pieces[i] = tmp[i];
