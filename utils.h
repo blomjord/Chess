@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
-#include "moves.h"
 
 #define EMPTY 0
 
@@ -22,5 +21,9 @@
 #define B_BISHOP -4
 #define B_QUEEN -5
 #define B_KING -6
+
+typedef struct {
+        int x, y;
+} Point;
 
 #endif

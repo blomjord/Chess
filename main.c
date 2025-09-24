@@ -1,4 +1,5 @@
 #include "utils.h"
+#include "moves.h"
 
 #ifdef USE_GRAPHICS
 #include "gui.h"
@@ -12,9 +13,6 @@ typedef struct {
         char symbol;
 } ChessPiece;
 
-typedef struct {
-        int x, y;
-} Point;
 
 void initialize_chesspieces(ChessPiece *pieces) 
 {
@@ -77,7 +75,6 @@ void initialize_chessboard(int **chessboard, ChessPiece *pieces)
                         for (int k = 0; k < 32; ++k) {
                                 if (pieces[k].x == i && pieces[k].y == j) {
                                         chessboard[i][j] = pieces[k].type;
-                                            printf("Placing %d at %d,%d.\n", pieces[k].type, i, j);
                                 }
                         }
                 } 
@@ -168,7 +165,7 @@ void move(int **chessboard, ChessPiece *pieces)
 // The following functions generate the possible and legal moves for each piece.
 void available_moves(ChessPiece *pieces, char *pos, int type)
 {
-        int *placeholder = malloc(2 * sizeof(int));
+        Point *placeholder = malloc(2 * sizeof(int));
         switch (type) {
                 case B_PAWN:
                 case W_PAWN:
@@ -176,23 +173,23 @@ void available_moves(ChessPiece *pieces, char *pos, int type)
                         break;
                 case B_ROOK:
                 case W_ROOK:
-                        moves_rook(type);
+                        moves_rook(type, 1, 1, placeholder);
                         break;
                 case B_KNIGHT:
                 case W_KNIGHT:
-                        moves_knight(type);
+                        moves_knight(type, 1, 1, placeholder);
                         break;
                 case B_BISHOP:
                 case W_BISHOP:
-                        moves_bishop(type);
+                        moves_bishop(type, 1, 1, placeholder);
                         break;
                 case B_QUEEN:
                 case W_QUEEN:
-                        moves_queen(type);
+                        moves_queen(type, 1, 1, placeholder);
                         break;
                 case B_KING:
                 case W_KING:
-                        moves_king(type);
+                        moves_king(type, 1, 1, placeholder);
                         break;
         }
 }

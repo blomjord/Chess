@@ -1,44 +1,77 @@
 #include "utils.h"
 #include "moves.h"
 
-void moves_pawn(int type, int x, int y, int *available_moves)
+void moves_pawn(int type, int x, int y, Point *available_moves)
 {
-        if (type == W_PAWN) {
-                if (y == 1) { // Starting row white pawns
-                        available_moves[0] = 2;
-                        available_moves[1] = 3;
-                } else
-                        available_moves[0] = ++y;
+
+}
+
+void moves_rook(int type, int x, int y, Point *available_moves)
+{
+        int offset = 0;
+        int up    = 8 - x;
+        int down  = x - 1;
+        int left  = x - 1;
+        int right = 8 - x;
+        int total_moves = up + down + left + right;
+        available_moves = (Point *) realloc(available_moves, total_moves * sizeof(Point));
+        if (type == W_ROOK) {
+                for (int i = 0; i < up; ++i) {
+                        available_moves[i + offset].x = x;
+                        available_moves[i + offset].y = i + y;
+                }
+
+                offset += up;
+                
+                for (int i = 0; i < down; ++i) {
+                        available_moves[i + offset].x = x;
+                        available_moves[i + offset].y = i - y;
+                }
+
+                offset += down;
+
+                for (int i = 0; i < left; ++i) {
+                        available_moves[i + offset].x = x - i;
+                        available_moves[i + offset].y = y;
+                }
+
+                offset += down;
+
+                for (int i = 0; i < right; ++i) {
+                        available_moves[i + offset].x = x + i;
+                        available_moves[i + offset].y = y;
+                }
+                
+                offset += left;
+
         } else {
-                if (y == 7) { // Starting row black pawns
-                        available_moves[0] = 6;
-                        available_moves[1] = 5;
-                } else
-                        available_moves[0] = --y;
+                // else type == B_ROOK
         }
 }
 
-void moves_rook(int type)
+void moves_knight(int type, int x, int y, Point *available_moves)
 {
 
 }
 
-void moves_knight(int type)
+void moves_bishop(int type, int x, int y, Point *available_moves)
 {
 
 }
 
-void moves_bishop(int type)
+void moves_queen(int type, int x, int y, Point *available_moves)
 {
 
 }
 
-void moves_queen(int type)
+void moves_king(int type, int x, int y, Point *available_moves)
 {
 
 }
 
-void moves_king(int type)
+// This function removes all occupied cells from
+// the available_moves array.
+void f()
 {
 
 }
