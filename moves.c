@@ -47,6 +47,7 @@ void moves_rook(int type, int x, int y, Point *available_moves)
         } else {
                 // else type == B_ROOK
         }
+        f(total_moves, Point *available_moves);
 }
 
 void moves_knight(int type, int x, int y, Point *available_moves)
@@ -71,7 +72,7 @@ void moves_king(int type, int x, int y, Point *available_moves)
 
 // This function removes all occupied cells from
 // the available_moves array.
-void f()
+void f(int num_moves, Point *available_moves)
 {
 
 }
