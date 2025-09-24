@@ -143,6 +143,9 @@ void move(int **chessboard, ChessPiece *pieces)
 
                 posX = pos[0] - 97;
                 posY = pos[1] - 49;
+
+                if (chessboard[posX][posY] == EMPTY)
+                        continue;
                 
                 ChessPiece *piece_to_move = get_piece_by_coords(pieces, posX, posY);
                 show_available_moves(piece_to_move, posX, posY, available_moves);
@@ -282,8 +285,10 @@ int main()
     
         print_board(chessboard);
         while(1) {
+                printf("open\n");
                 move(chessboard, pieces);
                 print_board(chessboard);
+                printf("close\n");
         }
     
         dealloc_board(chessboard);
