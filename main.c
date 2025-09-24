@@ -147,7 +147,7 @@ void move(int **chessboard, ChessPiece *pieces, Point *available_moves)
                         continue;
                 
                 ChessPiece *piece_to_move = get_piece_by_coords(pieces, posX, posY);
-                show_available_moves(piece_to_move, posX, posY, available_moves);
+                show_available_moves(chessboard, piece_to_move->type, posX, posY, available_moves);
                 printf("Choose target: \n");
                 get_user_input(tar);
                 tarX = tar[0] - 97;
@@ -167,34 +167,32 @@ void move(int **chessboard, ChessPiece *pieces, Point *available_moves)
 }
 
 // The following functions generate the possible and legal moves for each piece.
-void show_available_moves(ChessPiece *piece, int x, int y, Point *available_moves)
+void show_available_moves(int **chessboard, int type, int x, int y, Point *available_moves)
 {
-        Point *placeholder = malloc(sizeof(int));
-        int type = piece->type;
         switch (type) {
                 case B_PAWN:
                 case W_PAWN:
-                        moves_pawn(type, 1, 1, available_moves);
+                        moves_pawn(chessboard, type, x, y, available_moves);
                         break;
                 case B_ROOK:
                 case W_ROOK:
-                        moves_rook(type, x, y, placeholder);
+                        moves_rook(chessboard, type, x, y, available_moves);
                         break;
                 case B_KNIGHT:
                 case W_KNIGHT:
-                        moves_knight(type, 1, 1, placeholder);
+                        moves_knight(type, x, y, available_moves);
                         break;
                 case B_BISHOP:
                 case W_BISHOP:
-                        moves_bishop(type, 1, 1, placeholder);
+                        moves_bishop(type, x, y, available_moves);
                         break;
                 case B_QUEEN:
                 case W_QUEEN:
-                        moves_queen(type, 1, 1, placeholder);
+                        moves_queen(type, x, y, available_moves);
                         break;
                 case B_KING:
                 case W_KING:
-                        moves_king(type, 1, 1, placeholder);
+                        moves_king(type, x, y, available_moves);
                         break;
         }
 }
