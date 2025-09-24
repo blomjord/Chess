@@ -6,9 +6,9 @@ SRCS = $(wildcard *.c)
 OBJS = $(SRCS:.c=.o)
 
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $(OJBS)
+	$(CC) $(CFLAGS) -o $@ $(OBJS)
 
-%.o %.c
+%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 .PHONY: all clean debug
@@ -20,3 +20,4 @@ debug: clean $(TARGET)
 
 clean:
 	rm -f $(OBJS) $(TARGET)
+
