@@ -3,8 +3,11 @@
 #include <string.h>
 #include <assert.h>
 
-// 0: White
-// 1: Black
+#ifdef USE_GRAPHICS
+#include "gui.h"
+#else
+#include "tui.h"
+#endif
 
 #define EMPTY 0
 
