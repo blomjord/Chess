@@ -129,12 +129,11 @@ char *get_sized_line(char *buf)
     return NULL;
 }
 // Performs move if legal.
-void move(int **chessboard, ChessPiece *pieces)
+void move(int **chessboard, ChessPiece *pieces, Point *available_moves)
 {
         int posX, posY, tarX, tarY;
         char pos[3];
         char tar[3];
-        Point *available_moves = malloc(2 * sizeof(int));
         
         while (1) {
 
@@ -279,14 +278,15 @@ int main()
 {
         ChessPiece *pieces = calloc(32, sizeof(ChessPiece));
         int **chessboard = (int **) malloc(8 * sizeof(int *));
-    
+        Point *available_moves = malloc(2 * sizeof(int));
+
         initialize_chesspieces(pieces);
         initialize_chessboard(chessboard, pieces);
     
         print_board(chessboard);
         while(1) {
                 printf("open\n");
-                move(chessboard, pieces);
+                move(chessboard, pieces, available_moves);
                 print_board(chessboard);
                 printf("close\n");
         }
