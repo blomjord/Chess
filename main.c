@@ -134,21 +134,23 @@ void move(int **chessboard, ChessPiece *pieces)
         int posX, posY, tarX, tarY;
         char pos[3];
         char tar[3];
-    
+        Point *available_moves = malloc(2 * sizeof(int));
+        
         while (1) {
 
                 printf("Choose pos: \n");
                 get_user_input(pos);
-                printf("Choose target: \n");
-                get_user_input(tar);
 
                 posX = pos[0] - 97;
                 posY = pos[1] - 49;
+                
+                ChessPiece *piece_to_move = get_piece_by_coords(pieces, posX, posY);
+                show_available_moves(piece_to_move, posX, posY, available_moves);
+                printf("Choose target: \n");
+                get_user_input(tar);
                 tarX = tar[0] - 97;
                 tarY = tar[1] - 49;
                 
-                ChessPiece *piece_to_move = get_piece_by_coords(pieces, posX, posY);
-
                 if ( chessboard[posX][posY] != EMPTY && piece_to_move != NULL ) {
                             piece_to_move->x = tarX;
                             piece_to_move->y = tarY;
@@ -163,17 +165,18 @@ void move(int **chessboard, ChessPiece *pieces)
 }
 
 // The following functions generate the possible and legal moves for each piece.
-void available_moves(ChessPiece *pieces, char *pos, int type)
+void show_available_moves(ChessPiece *piece, int x, int y, Point *available_moves)
 {
-        Point *placeholder = malloc(2 * sizeof(int));
+        Point *placeholder = malloc(sizeof(int));
+        int type = piece->type;
         switch (type) {
                 case B_PAWN:
                 case W_PAWN:
-                        moves_pawn(type, 1, 1, placeholder);
+                        moves_pawn(type, 1, 1, available_moves);
                         break;
                 case B_ROOK:
                 case W_ROOK:
-                        moves_rook(type, 1, 1, placeholder);
+                        moves_rook(type, x, y, placeholder);
                         break;
                 case B_KNIGHT:
                 case W_KNIGHT:

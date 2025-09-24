@@ -8,14 +8,18 @@ void moves_pawn(int type, int x, int y, Point *available_moves)
 
 void moves_rook(int type, int x, int y, Point *available_moves)
 {
+        printf("X: %d Y: %d\n", x, y);
         int offset = 0;
-        int up    = 8 - x;
-        int down  = x - 1;
+        int up    = 7 - y;
+        int down  = y;
         int left  = x - 1;
         int right = 8 - x;
+        printf("up: %d\ndown: %d\nleft: %d\nright: %d\n", up, down, left, right);
         int total_moves = up + down + left + right;
         available_moves = (Point *) realloc(available_moves, total_moves * sizeof(Point));
         if (type == W_ROOK) {
+
+                // Direction: UP
                 for (int i = 0; i < up; ++i) {
                         available_moves[i + offset].x = x;
                         available_moves[i + offset].y = i + y;
@@ -23,6 +27,7 @@ void moves_rook(int type, int x, int y, Point *available_moves)
 
                 offset += up;
                 
+                // Direction: DOWN
                 for (int i = 0; i < down; ++i) {
                         available_moves[i + offset].x = x;
                         available_moves[i + offset].y = i - y;
@@ -30,6 +35,7 @@ void moves_rook(int type, int x, int y, Point *available_moves)
 
                 offset += down;
 
+                // Direction LEFT
                 for (int i = 0; i < left; ++i) {
                         available_moves[i + offset].x = x - i;
                         available_moves[i + offset].y = y;
@@ -37,6 +43,7 @@ void moves_rook(int type, int x, int y, Point *available_moves)
 
                 offset += down;
 
+                // Direction RIGHT
                 for (int i = 0; i < right; ++i) {
                         available_moves[i + offset].x = x + i;
                         available_moves[i + offset].y = y;
@@ -47,7 +54,10 @@ void moves_rook(int type, int x, int y, Point *available_moves)
         } else {
                 // else type == B_ROOK
         }
-        f(total_moves, Point *available_moves);
+        for (int i = 0; i < total_moves; ++i)
+                printf("(%d,%d)\n", available_moves[i].x, available_moves[i].y);
+
+        f(total_moves, available_moves);
 }
 
 void moves_knight(int type, int x, int y, Point *available_moves)
