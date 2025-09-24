@@ -285,10 +285,8 @@ int main()
     
         print_board(chessboard);
         while(1) {
-                printf("open\n");
                 move(chessboard, pieces, available_moves);
                 print_board(chessboard);
-                printf("close\n");
         }
     
         dealloc_board(chessboard);

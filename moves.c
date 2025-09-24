@@ -8,13 +8,11 @@ void moves_pawn(int type, int x, int y, Point *available_moves)
 
 void moves_rook(int type, int x, int y, Point *available_moves)
 {
-        printf("X: %d Y: %d\n", x, y);
         int offset = 0;
         int up    = 7 - y;
         int down  = y;
         int left  = x;
         int right = 7 - x;
-        printf("up: %d\ndown: %d\nleft: %d\nright: %d\n", up, down, left, right);
         int total_moves = up + down + left + right;
         available_moves = (Point *) realloc(available_moves, total_moves * sizeof(Point));
 
