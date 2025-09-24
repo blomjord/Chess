@@ -74,8 +74,6 @@ void filter_illegal_moves(int **chessboard, int type, int num_moves, Point *avai
         int num_legals = 0;
         if (type > 0) {
                 for (int i = 0; i < num_moves; ++i) {
-                        if (chessboard[available_moves[i].x][] > 0)
-                                num_legals++;
                 }
         } else {
                 for (int i = 0; i < num_moves; ++i) {
