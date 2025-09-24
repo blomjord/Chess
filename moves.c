@@ -35,7 +35,7 @@ void moves_rook(int **chessboard, int type, int x, int y, Point *available_moves
                 available_moves[i + offset].x = x - i -1;
                 available_moves[i + offset].y = y;
         }
-        offset += down;
+        offset += left;
 
         // Direction RIGHT
         for (int i = 0; i < right; ++i) {
