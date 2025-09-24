@@ -17,47 +17,33 @@ void moves_rook(int type, int x, int y, Point *available_moves)
         printf("up: %d\ndown: %d\nleft: %d\nright: %d\n", up, down, left, right);
         int total_moves = up + down + left + right;
         available_moves = (Point *) realloc(available_moves, total_moves * sizeof(Point));
-        if (type == W_ROOK) {
 
-                // Direction: UP
-                for (int i = 0; i < up; ++i) {
-                        available_moves[i + offset].x = x;
-                        available_moves[i + offset].y = i + y;
-                }
-
-                offset += up;
-                
-                // Direction: DOWN
-                for (int i = 0; i < down; ++i) {
-                        available_moves[i + offset].x = x;
-                        available_moves[i + offset].y = i - y;
-                }
-
-                offset += down;
-
-                // Direction LEFT
-                for (int i = 0; i < left; ++i) {
-                        available_moves[i + offset].x = x - i;
-                        available_moves[i + offset].y = y;
-                }
-
-                offset += down;
-
-                // Direction RIGHT
-                for (int i = 0; i < right; ++i) {
-                        available_moves[i + offset].x = x + i;
-                        available_moves[i + offset].y = y;
-                }
-                
-                offset += left;
-
-        } else {
-                // else type == B_ROOK
+        // Direction: UP
+        for (int i = 0; i < up; ++i) {
+                available_moves[i + offset].x = x;
+                available_moves[i + offset].y = i + y + 1;
         }
-        for (int i = 0; i < total_moves; ++i)
-                printf("(%d,%d)\n", available_moves[i].x, available_moves[i].y);
+        offset += up;
+        
+        // Direction: DOWN
+        for (int i = 0; i < down; ++i) {
+                available_moves[i + offset].x = x;
+                available_moves[i + offset].y = y - i - 1;
+        }
+        offset += down;
 
-        f(total_moves, available_moves);
+        // Direction LEFT
+        for (int i = 0; i < left; ++i) {
+                available_moves[i + offset].x = x - i -1;
+                available_moves[i + offset].y = y;
+        }
+        offset += down;
+
+        // Direction RIGHT
+        for (int i = 0; i < right; ++i) {
+                available_moves[i + offset].x = x + i + 1;
+                available_moves[i + offset].y = y;
+        }
 }
 
 void moves_knight(int type, int x, int y, Point *available_moves)
