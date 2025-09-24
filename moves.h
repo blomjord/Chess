@@ -1,7 +1,7 @@
 #ifndef MOVES_H
-#define MOVES_S
+#define MOVES_H
 
-void moves_pawn(int type);
+void moves_pawn(int type, int x, int y, int *available_moves);
 void moves_rook(int type);
 void moves_knight(int type);
 void moves_bishop(int type);

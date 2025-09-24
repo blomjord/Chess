@@ -1,7 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
+#include "utils.h"
 
 #ifdef USE_GRAPHICS
 #include "gui.h"
@@ -9,21 +6,6 @@
 #include "tui.h"
 #endif
 
-#define EMPTY 0
-
-#define W_PAWN 1
-#define W_ROOK 2
-#define W_KNIGHT 3
-#define W_BISHOP 4
-#define W_QUEEN 5
-#define W_KING 6
-
-#define B_PAWN -1
-#define B_ROOK -2
-#define B_KNIGHT -3
-#define B_BISHOP -4
-#define B_QUEEN -5
-#define B_KING -6
 
 typedef struct {
         int type, x, y;
@@ -186,40 +168,32 @@ void move(int **chessboard, ChessPiece *pieces)
 // The following functions generate the possible and legal moves for each piece.
 void available_moves(ChessPiece *pieces, char *pos, int type)
 {
+        int *placeholder = malloc(2 * sizeof(int));
         switch (type) {
-                case B_PAWN || W_PAWN:
-                        moves_pawn(type);
+                case B_PAWN:
+                case W_PAWN:
+                        moves_pawn(type, 1, 1, placeholder);
                         break;
-                case B_ROOK || W_ROOK:
+                case B_ROOK:
+                case W_ROOK:
                         moves_rook(type);
                         break;
-                case B_KNIGHT || W_KNIGHT:
+                case B_KNIGHT:
+                case W_KNIGHT:
                         moves_knight(type);
                         break;
-                case B_BISHOP || W_BISHOP:
+                case B_BISHOP:
+                case W_BISHOP:
                         moves_bishop(type);
                         break;
-                case B_QUEEN || W_QUEEN:
+                case B_QUEEN:
+                case W_QUEEN:
                         moves_queen(type);
                         break;
-                case B_KING || W_KING:
+                case B_KING:
+                case W_KING:
                         moves_king(type);
                         break;
-        }
-}
-
-// TODO
-void moves_pawn(int type, int x, int y)
-{
-        Point *moves = calloc(8, sizeof(Point);
-        if (type < 0) {
-                for (int i = 0; i < 8; ++i) {
-                        moves[i] = Point {x, i};
-                }
-        } else {
-                for (int i = 0; i < 8; ++i) {
-
-                }
         }
 }
 

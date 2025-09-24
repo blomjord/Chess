@@ -1,7 +1,22 @@
-CC=gcc
+CC = gcc
+CFLAGS = -Wall -Wextra -std=c11
+TARGET = chess
 
-chess: main.c
-	$(CC) -o Chess main.c -Wall
+SRCS = $(wildcard *.c)
+OBJS = $(SRCS:.c=.o)
+
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $(OJBS)
+
+%.o %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+.PHONY: all clean debug
+
+all: $(TARGET)
+
+debug: CFLAGS += -g
+debug: clean $(TARGET)
 
 clean:
-	rm Chess
+	rm -f $(OBJS) $(TARGET)
