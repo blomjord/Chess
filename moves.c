@@ -1,12 +1,12 @@
 #include "utils.h"
 #include "moves.h"
 
-void moves_pawn(int **chessboard, int type, int x, int y, Point *available_moves)
+void moves_pawn(ChessPiece *board[8][8], int type, int x, int y, Point *available_moves)
 {
 
 }
 
-void moves_rook(int **chessboard, int type, int x, int y, Point *available_moves)
+void moves_rook(ChessPiece *board[8][8], int type, int x, int y, Point *available_moves)
 {
         int offset = 0;
         int up    = 7 - y;
@@ -43,7 +43,7 @@ void moves_rook(int **chessboard, int type, int x, int y, Point *available_moves
                 available_moves[i + offset].y = y;
         }
 
-        filter_illegal_moves(chessboard, type, total_moves, available_moves);
+        filter_illegal_moves(board, type, total_moves, available_moves);
 }
 
 void moves_knight(int type, int x, int y, Point *available_moves)
@@ -69,7 +69,7 @@ void moves_king(int type, int x, int y, Point *available_moves)
 // This function removes all occupied cells from
 // the available_moves array.
 // ( UNFINISHED )
-void filter_illegal_moves(int **chessboard, int type, int num_moves, Point *available_moves)
+void filter_illegal_moves(ChessPiece *board[8][8], int type, int num_moves, Point *available_moves)
 {
         int num_legals = 0;
         if (type > 0) {

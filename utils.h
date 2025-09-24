@@ -23,6 +23,11 @@
 #define B_KING -6
 
 typedef struct {
+        int type, x, y, special_move; // Special move: castle, en passant
+        char symbol;
+} ChessPiece;
+
+typedef struct {
         int x, y;
 } Point;
 
