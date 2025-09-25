@@ -1,6 +1,8 @@
 #include "utils.h"
 #include "moves.h"
 
+int num_moves_within_board(int count, int pos_X, int pos_Y, int moves_X[], int moves_Y[]);
+
 Point *moves_pawn(ChessPiece *board[8][8], ChessPiece *piece, int *num_moves)
 {
         int pos_X = piece->x;
@@ -69,18 +71,45 @@ Point *moves_knight(ChessPiece *board[8][8], ChessPiece *piece, int *num_moves)
         int pos_Y = piece->y;
         int moves_X[8] = { 2, 1, -1, -2, -2, -1, 1, 2 };
         int moves_Y[8] = { 1, 2, 2, 1, -1, -2, -2, -1 };
-        int count = 0;
+        int count = num_moves_within_board(8, pos_X, pos_Y, moves_X, moves_Y);
+        
+        *num_moves = count;
+        Point *moves = malloc(count * sizeof(Point));
 
+        int moves_idx = 0;
         for (int i = 0; i < 8; ++i) {
                 int tar_X = pos_X + moves_X[i];
                 int tar_Y = pos_Y + moves_Y[i];
-
-                if (tar_X >= 0 && tar_Y >= 0 && tar_X <= 7 && tar_Y <= 7)
-                        count++;
+                if (tar_X >= 0 && tar_Y >= 0 && tar_X <= 7 && tar_Y <= 7) {
+                        printf("tar_X: %d tar_Y: %d\n", tar_X, tar_Y);
+                        if ( (piece->type) * ( board[tar_X][tar_Y]->type ) < 0
+                                        || board[tar_X][tar_Y] == NULL) {
+                                moves[i].x = tar_X;
+                                moves[i].y = tar_Y;
+                                moves_idx++;
+                        }
+                }
         }
-        printf("Knight nMoves: %d\n", count);
-        Point *moves = malloc(count * sizeof(Point));
-        *num_moves = count;
+#if 0
+        int new_count = 0;
+        if (piece->type == W_KNIGHT) {
+                // Moves for white
+                for (int i = 0; i < moves_idx; ++i) {
+                        printf("board[%d][%d]\n", moves[i].x, moves[i].y);
+                        if (&board[moves[i].x][moves[i].y]->type > 0) {
+                                printf("Same color. Illegal move!\n");
+                        } else {
+                                new_count++;      
+                        }
+                }
+                printf("New num moves: %d\n", new_count);
+        } else {
+                // Moves for black
+        }
+#endif
+        for (int i = 0; i < moves_idx; ++i) {
+                printf("(%d,%d)\n", moves[i].x, moves[i].y);
+        }
         return moves;
 }
 
@@ -98,20 +127,20 @@ void moves_queen(int type, int x, int y, Point moves)
 void moves_king(int type, int x, int y, Point moves)
 {
 
-}
-
-// This function removes all occupied cells from
-// the available_moves array.
-// ( UNFINISHED )
-void filter_illegal_moves(ChessPiece *board[8][8], int type, int num_moves, Point *moves)
-{
-        int num_legals = 0;
-        if (type > 0) {
-                for (int i = 0; i < num_moves; ++i) {
-                }
-        } else {
-                for (int i = 0; i < num_moves; ++i) {
-                
-                }
-        }
 }*/
+
+/*
+ * Purpose: Returns the number of possible moves that
+ * are within the borders of the chess board.
+ * */
+int num_moves_within_board(int count, int pos_X, int pos_Y, int moves_X[], int moves_Y[])
+{
+        int num_moves = 0;
+        for (int i = 0; i < count; ++i) {
+                int tar_X = pos_X + moves_X[i];
+                int tar_Y = pos_Y + moves_Y[i];
+                if (tar_X >= 0 && tar_Y >= 0 && tar_X <= 7 && tar_Y <= 7)
+                        num_moves++;
+        }
+        return num_moves;
+}

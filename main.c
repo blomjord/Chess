@@ -119,6 +119,7 @@ void show_available_moves(ChessPiece *board[8][8], ChessPiece *piece)
                 case B_KNIGHT:
                 case W_KNIGHT: {
                         moves = moves_knight(board, piece, &num_moves);
+                        //show_legal_moves(board, piece, moves);
                         free(moves);
                         break;
                                }
@@ -201,10 +202,9 @@ void print_board(ChessPiece *board[8][8], ChessPiece pieces[32])
         for (int i = 7; i > -1; --i) {
                 printf("%d [ ", i + 1);
                 for (int j = 0; j < 8; ++j) {
-                        // TODO: Fix Segfaulting
                         piece = get_piece_by_coords(pieces, j, i);
                         if (piece != NULL)
-                                printf("%c ", board[j][i]->symbol);// ? : "  ");
+                                printf("%c ", board[j][i]->symbol);
                         else
                                 printf("  ");
         }
@@ -217,6 +217,46 @@ void print_board(ChessPiece *board[8][8], ChessPiece pieces[32])
         printf("\n");
 }
 
+#if 0
+int is_legal_move(ChessPiece *board[0][0], ChessPiece *piece)
+{
+        return 0;
+}
+void show_legal_moves(ChessPiece *board[8][8], ChessPiece *piece, Point *moves)
+{
+        printf("    ");
+                for (int i = 97; i < 105; ++i) {
+                printf("%c ", i);
+                }
+        printf("\n");
+        /*
+        * For development purposes, this is reverse.
+        * For final build, change loop index i to:
+        * for (int i = 7; i > -1; --i)
+        * */
+        ChessPiece *piece;
+        for (int i = 7; i > -1; --i) {
+                printf("%d [ ", i + 1);
+                for (int j = 0; j < 8; ++j) {
+                        piece = get_piece_by_coords(pieces, j, i);
+                        if (piece != NULL) {
+                                if (is_legal_move(board, piece))
+                                        printf(". ");
+                                else
+                                        printf("%c ", board[j][i]->symbol);
+                         } else {
+                                printf("  ");
+                         }
+        }
+        printf("] %d\n", i + 1);
+}
+        printf("    ");
+        for (int i = 97; i < 105; ++i) {
+                printf("%c ", i);
+        }
+        printf("\n");
+}
+#endif
 int main()
 {
         ChessPiece pieces[32];
