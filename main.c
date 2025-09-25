@@ -77,12 +77,12 @@ void initialize_board(ChessPiece *board[8][8], ChessPiece pieces[32])
                         piece = get_piece_by_coords(pieces, i, j);
                         if (i == piece->x && j == piece->y)
                                 board[i][j] = piece;
-                }
-                
+                } 
                 for (int j = 2; j < 6; ++j)
                         board[i][j] = NULL;
 
                 for (int j = 6; j < 8; ++j) {
+                        piece = get_piece_by_coords(pieces, i, j);
                         if (i == piece->x && j == piece->y)
                                 board[i][j] = piece;
                 } 
@@ -185,14 +185,16 @@ void print_board(ChessPiece *board[8][8], ChessPiece pieces[32])
         * For final build, change loop index i to:
         * for (int i = 7; i > -1; --i)
         * */
+        ChessPiece *piece;
         for (int i = 7; i > -1; --i) {
                 printf("%d [ ", i + 1);
                 for (int j = 0; j < 8; ++j) {
-                        // TODO:
-                        // FIX SEGAULT ISSUE, NULL POINTER?
-                        printf("i: %d j: %d\n", i, j);
-                        printf("%s ", (board[j][i]->symbol) ? : "  ");
-//                        ChessPiece *piece = get_piece_by_coords(pieces, i, j);
+                        // TODO: Fix Segfaulting
+                        piece = get_piece_by_coords(pieces, j, i);
+                        if (piece != NULL)
+                                printf("%c ", board[j][i]->symbol);// ? : "  ");
+                        else
+                                printf("  ");
 //                        printf("%s ", piece->symbol);
 /*                        switch (piece->type) {
                                 case W_PAWN:
