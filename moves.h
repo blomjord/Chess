@@ -3,11 +3,12 @@
 
 #include "utils.h"
 
-void moves_pawn  (ChessPiece *board[8][8], int type, int x, int y, Point *available_moves);
-void moves_rook  (ChessPiece *board[8][8], int type, int x, int y, Point *available_moves);
-void moves_knight(int type, int x, int y, Point *available_moves);
-void moves_bishop(int type, int x, int y, Point *available_moves);
-void moves_queen (int type, int x, int y, Point *available_moves);
-void moves_king  (int type, int x, int y, Point *available_moves);
-void filter_illegal_moves(ChessPiece *board[8][8], int type, int num_moves, Point *available_moves);
+Point *moves_pawn  (ChessPiece *board[8][8], ChessPiece *piece, int *num_moves);
+//void moves_rook  (ChessPiece *board[8][8], ChessPiece *piece, Point moves[14]);
+Point *moves_knight(ChessPiece *board[8][8], ChessPiece *piece, int *num_moves);
+
+/*void moves_bishop(ChessPiece *board[8][8], ChessPiece *piece, Point *moves);
+void moves_queen (ChessPiece *board[8][8], ChessPiece *piece, Point *moves);
+void moves_king  (ChessPiece *board[8][8], ChessPiece *piece, Point *moves);
+void filter_illegal_moves(ChessPiece *board[8][8], int type, int num_moves, Point *available_moves);*/
 #endif

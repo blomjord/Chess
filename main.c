@@ -97,42 +97,54 @@ void get_user_input(char *buf)
 }
 
 // The following functions generate the possible and legal moves for each piece.
-void show_available_moves(ChessPiece *board[8][8], ChessPiece *piece, Point *available_moves)
+void show_available_moves(ChessPiece *board[8][8], ChessPiece *piece)
 {
         int type = piece->type;
-        int x = piece->x;
-        int y = piece->y;
+        int num_moves = 0;
+        Point *moves;
 
         switch (type) {
                 case B_PAWN:
-                case W_PAWN:
-                        moves_pawn(board, type, x, y, available_moves);
+                case W_PAWN: {
+                        moves = moves_pawn(board, piece, &num_moves);
+                        free(moves);
                         break;
-                case B_ROOK:
-                case W_ROOK:
-                        moves_rook(board, type, x, y, available_moves);
+                             }
+/*                case B_ROOK:
+                case W_ROOK: {
+                        Point moves[14];
+                        moves_rook(board, piece, moves);
                         break;
+                             }*/
                 case B_KNIGHT:
-                case W_KNIGHT:
-                        moves_knight(type, x, y, available_moves);
+                case W_KNIGHT: {
+                        moves = moves_knight(board, piece, &num_moves);
+                        free(moves);
                         break;
-                case B_BISHOP:
-                case W_BISHOP:
-                        moves_bishop(type, x, y, available_moves);
+                               }
+/*                case B_BISHOP:
+                case W_BISHOP: {
+                        Point moves[13];
+                        moves_bishop(type, x, y, moves);
                         break;
+                               }
                 case B_QUEEN:
-                case W_QUEEN:
-                        moves_queen(type, x, y, available_moves);
+                case W_QUEEN: {
+                        Point moves[27];
+                        moves_queen(type, x, y, moves);
                         break;
+                              }
                 case B_KING:
-                case W_KING:
-                        moves_king(type, x, y, available_moves);
+                case W_KING: {
+                        Point moves[8];
+                        moves_king(type, x, y, moves);
                         break;
+                             }*/
         }
 }
 
 // Performs move if legal.
-void move(ChessPiece *board[8][8], ChessPiece pieces[32], Point *available_moves)
+void move(ChessPiece *board[8][8], ChessPiece pieces[32])
 {
         int posX, posY, tarX, tarY;
         char pos[3];
@@ -151,7 +163,7 @@ void move(ChessPiece *board[8][8], ChessPiece pieces[32], Point *available_moves
                         continue;
                 
                 ChessPiece *piece_to_move = get_piece_by_coords(pieces, posX, posY);
-                show_available_moves(board, piece_to_move, available_moves);
+                show_available_moves(board, piece_to_move);
                 printf("Choose target: \n");
                 get_user_input(tar);
                 // ASCII chars
@@ -195,53 +207,12 @@ void print_board(ChessPiece *board[8][8], ChessPiece pieces[32])
                                 printf("%c ", board[j][i]->symbol);// ? : "  ");
                         else
                                 printf("  ");
-//                        printf("%s ", piece->symbol);
-/*                        switch (piece->type) {
-                                case W_PAWN:
-                                        printf("P ");
-                                break;
-                        case W_ROOK:
-                                printf("R ");
-                                break;
-                        case W_KNIGHT:
-                                printf("K ");
-                                break;
-                        case W_BISHOP:
-                                printf("B ");
-                                break;
-                        case W_QUEEN:
-                                printf("Q ");
-                                break;
-                        case W_KING:
-                                printf("K ");
-                                break;
-                        case B_PAWN:
-                                printf("p ");
-                                break;
-                        case B_ROOK:
-                                printf("r ");
-                                break;
-                        case B_KNIGHT:
-                                printf("k ");
-                                break;
-                        case B_BISHOP:
-                                printf("b ");
-                                break;
-                        case B_QUEEN:
-                                printf("q ");
-                                break;
-                        case B_KING:
-                                printf("k ");
-                                break;
-                        default:
-                                printf("  ");
-                }*/
         }
         printf("] %d\n", i + 1);
 }
-printf("    ");
-for (int i = 97; i < 105; ++i) {
-        printf("%c ", i);
+        printf("    ");
+        for (int i = 97; i < 105; ++i) {
+                printf("%c ", i);
         }
         printf("\n");
 }
@@ -250,18 +221,15 @@ int main()
 {
         ChessPiece pieces[32];
         ChessPiece *board[8][8];
-        Point *available_moves = malloc(2 * sizeof(int));
 
         initialize_pieces(pieces);
         initialize_board(board, pieces);
         print_board(board, pieces);
         
         while(1) {
-                move(board, pieces, available_moves);
+                move(board, pieces);
                 print_board(board, pieces);
         }
-    
         free(pieces);
-
         return 0;
 }
