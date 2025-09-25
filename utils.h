@@ -6,7 +6,7 @@
 #include <string.h>
 #include <assert.h>
 
-#define EMPTY 0
+#define EMPTY NULL
 
 #define W_PAWN 1
 #define W_ROOK 2
@@ -21,6 +21,11 @@
 #define B_BISHOP -4
 #define B_QUEEN -5
 #define B_KING -6
+
+typedef struct {
+        int type, x, y, special_move; // Special move: castle, en passant
+        char symbol;
+} ChessPiece;
 
 typedef struct {
         int x, y;
