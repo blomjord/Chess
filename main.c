@@ -151,7 +151,7 @@ void move(ChessPiece *board[8][8], ChessPiece pieces[32])
                 posX = pos[0] - 97;
                 posY = pos[1] - 49;
 
-                if (board[posX][posY] == EMPTY)
+                if (board[posX][posY] == NULL)
                         continue;
                 
                 ChessPiece *piece_to_move = get_piece_by_coords(pieces, posX, posY);
@@ -162,11 +162,11 @@ void move(ChessPiece *board[8][8], ChessPiece pieces[32])
                 tarX = tar[0] - 97;
                 tarY = tar[1] - 49;
                 
-                if ( board[posX][posY] != EMPTY && piece_to_move != NULL ) {
+                if ( board[posX][posY] != NULL && piece_to_move != NULL ) {
                             piece_to_move->x = tarX;
                             piece_to_move->y = tarY;
                             board[tarX][tarY] = piece_to_move;
-                            board[posX][posY] = EMPTY;
+                            board[posX][posY] = NULL;
                             break;
                 } else {
                             printf("Empty cell. Please try again.\n");
@@ -269,11 +269,11 @@ int main(void)
         }
 #endif
         InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Chess");
-        SetTargetFPS(60);
+        SetTargetFPS(1);
         SetExitKey(KEY_Q);
         
         Color LIGHTBEIGE = {230, 215, 215, 255};
-        Image Icons[12];
+        ChessIcon Icons[12];
         LoadIcons(Icons);
         
         while (!WindowShouldClose()) {
@@ -286,7 +286,7 @@ int main(void)
                 // Graphics drawing
                 BeginDrawing();
                 DrawChessboard(SQUARE_WIDTH, SQUARE_HEIGHT, LIGHTBEIGE);
-                DrawChesspieces(board, SQUARE_WIDTH, SQUARE_HEIGHT);
+                DrawChesspieces(board, Icons, SQUARE_WIDTH, SQUARE_HEIGHT);
 
                 EndDrawing();
         }

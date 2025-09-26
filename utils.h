@@ -6,8 +6,6 @@
 #include <string.h>
 #include <assert.h>
 
-#define EMPTY NULL
-
 #define W_PAWN 1
 #define W_ROOK 2
 #define W_KNIGHT 3
