@@ -81,7 +81,6 @@ Point *moves_knight(ChessPiece *board[8][8], ChessPiece *piece, int *num_moves)
                 int tar_X = pos_X + moves_X[i];
                 int tar_Y = pos_Y + moves_Y[i];
                 if (tar_X >= 0 && tar_Y >= 0 && tar_X <= 7 && tar_Y <= 7) {
-                        printf("tar_X: %d tar_Y: %d\n", tar_X, tar_Y);
                         if ( (piece->type) * ( board[tar_X][tar_Y]->type ) < 0
                                         || board[tar_X][tar_Y] == NULL) {
                                 moves[i].x = tar_X;
