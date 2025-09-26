@@ -6,6 +6,8 @@
 #include <string.h>
 #include <assert.h>
 
+#include "gui.h"
+
 #define EMPTY NULL
 
 #define W_PAWN 1

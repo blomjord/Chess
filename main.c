@@ -1,15 +1,6 @@
 #include "utils.h"
 #include "moves.h"
 
-#ifdef USE_GRAPHICS
-#include "gui.h"
-#else
-#include "tui.h"
-#endif
-
-
-
-
 void initialize_pieces(ChessPiece pieces[32]) 
 {
         ChessPiece tmp[32] = {
@@ -257,7 +248,7 @@ void show_legal_moves(ChessPiece *board[8][8], ChessPiece *piece, Point *moves)
         printf("\n");
 }
 #endif
-int main()
+int main(void)
 {
         ChessPiece pieces[32];
         ChessPiece *board[8][8];
@@ -265,11 +256,36 @@ int main()
         initialize_pieces(pieces);
         initialize_board(board, pieces);
         print_board(board, pieces);
-        
+
+        int SCREEN_WIDTH = 800;
+        int SCREEN_HEIGHT = 800;
+        int SQUARE_WIDTH = SCREEN_WIDTH / 8;
+        int SQUARE_HEIGHT = SCREEN_HEIGHT / 8;
+#if 0        
         while(1) {
                 move(board, pieces);
                 print_board(board, pieces);
         }
-        free(pieces);
+#endif
+        InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Chess");
+        SetTargetFPS(60);
+        SetExitKey(KEY_Q);
+        Color LIGHTBEIGE = {230, 215, 215, 255};
+        
+        while (!WindowShouldClose()) {
+
+                // Events
+                
+                // Game state update
+
+
+                // Graphics drawing
+                BeginDrawing();
+                DrawChessboard(SQUARE_WIDTH, SQUARE_HEIGHT, LIGHTBEIGE);
+                DrawChesspieces(board);
+
+                EndDrawing();
+        }
+        CloseWindow();
         return 0;
 }
