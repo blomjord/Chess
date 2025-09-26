@@ -269,16 +269,23 @@ int main(void)
         }
 #endif
         InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Chess");
-        SetTargetFPS(1);
+        SetTargetFPS(60);
         SetExitKey(KEY_Q);
         
         Color LIGHTBEIGE = {230, 215, 215, 255};
+
         ChessIcon Icons[12];
+        ChessIconTexture IconTextures[12];
+
         LoadIcons(Icons);
+        LoadIconsAsTextures(Icons, IconTextures);
+        UnloadIcons(Icons);
         
         while (!WindowShouldClose()) {
 
                 // Events
+                int mouseX = GetMouseX();
+                int mouseY = GetMouseY();
                 
                 // Game state update
 
@@ -286,10 +293,11 @@ int main(void)
                 // Graphics drawing
                 BeginDrawing();
                 DrawChessboard(SQUARE_WIDTH, SQUARE_HEIGHT, LIGHTBEIGE);
-                DrawChesspieces(board, Icons, SQUARE_WIDTH, SQUARE_HEIGHT);
+                DrawChesspieces(board, IconTextures, SQUARE_WIDTH, SQUARE_HEIGHT);
 
                 EndDrawing();
         }
+        
         CloseWindow();
         return 0;
 }

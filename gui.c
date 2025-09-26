@@ -31,20 +31,24 @@ void DrawChessboard(int square_width, int square_height, Color color)
  * Purpose:
  * Notes:
  * */
-void DrawChesspieces(ChessPiece *board[8][8], ChessIcon Icons[12],
+void DrawChesspieces(ChessPiece *board[8][8], ChessIconTexture IconTextures[12],
                 int square_width, int square_height)
 {
         Texture2D Icon;
-
         for (int row = 0; row < 8; ++row) {
                 for (int col = 0; col < 8; ++col) {
                         if (board[row][col] != NULL) {
                                 int x = ( (row+1) * square_width) - (0.7 * square_width);
                                 int y = ( (col+1) * square_height) - (0.7 * square_height);
-                                //TODO: Change name of variable: tmp_name
-                                Image tmp_name = InjectIcon(board, Icons, row, col); 
-                                Texture2D Icon = LoadTextureFromImage(tmp_name);
+                                // TODO: Textures are NOT valid. Examine this!
+                                Icon = InjectIcon(board, IconTextures, row, col); 
                                 DrawTexture(Icon, x, y, WHITE);
+                                if (IsTextureValid(Icon)){
+                                        printf("Texture is valid");     
+                                        while(1){}
+                                }
+                                else 
+                                        printf("Texutre NOT valid!\n");
                         }
                 }
         }
@@ -54,17 +58,18 @@ void DrawChesspieces(ChessPiece *board[8][8], ChessIcon Icons[12],
  * Purpose: Selects correct chess icon to display
  * Notes:
  * */
-Image InjectIcon(ChessPiece *board[8][8], ChessIcon Icons[12], int row, int col)
+Texture2D InjectIcon(ChessPiece *board[8][8],
+                ChessIconTexture IconTextures[12], int row, int col)
 {
+        Texture2D IconToDisplay;
         // TODO: Continue from here
         // Add array of Icons to func parameters
         // and inject them and return to function DrawChessPieces
-        Image IconToDisplay;
         if (board[row][col] != NULL) {
                 int type = board[row][col]->type;
                 for (int i = 0; i < 12; ++i) {
-                        if (type == Icons[i].type)
-                                IconToDisplay = Icons[i].Icon;
+                        if (type == IconTextures[i].type)
+                                IconToDisplay = IconTextures[i].texture;
                 }
         } 
         return IconToDisplay;
@@ -76,26 +81,35 @@ Image InjectIcon(ChessPiece *board[8][8], ChessIcon Icons[12], int row, int col)
  * */
 void LoadIcons(ChessIcon Icons[12])
 {
-        ChessIcon tmp[12] = {
-                { B_KING,   LoadImage("Images/B_King.png") },
-                { B_QUEEN,  LoadImage("Images/B_Queen.png") },
-                { B_ROOK,   LoadImage("Images/B_Rook.png") },
+        ChessIcon Images[12] = {
+                { B_KING,   LoadImage("Images/B_King.png")   },
+                { B_QUEEN,  LoadImage("Images/B_Queen.png")  },
+                { B_ROOK,   LoadImage("Images/B_Rook.png")   },
                 { B_BISHOP, LoadImage("Images/B_Bishop.png") },
                 { B_KNIGHT, LoadImage("Images/B_Knight.png") },
-                { B_PAWN,   LoadImage("Images/B_Pawn.png") },
-                { W_KING,   LoadImage("Images/W_King.png") },
-                { W_QUEEN,  LoadImage("Images/W_Queen.png") },
-                { W_ROOK,   LoadImage("Images/W_Rook.png") },
+                { B_PAWN,   LoadImage("Images/B_Pawn.png")   },
+                { W_KING,   LoadImage("Images/W_King.png")   },
+                { W_QUEEN,  LoadImage("Images/W_Queen.png")  },
+                { W_ROOK,   LoadImage("Images/W_Rook.png")   },
                 { W_BISHOP, LoadImage("Images/W_Bishop.png") },
                 { W_KNIGHT, LoadImage("Images/W_Knight.png") },
-                { W_PAWN,   LoadImage("Images/W_Pawn.png") }
+                { W_PAWN,   LoadImage("Images/W_Pawn.png")   }
         };
-        for (int i = 0; i < 12; ++i)
-                Icons[i] = tmp[i];
+        for (int i = 0; i < 12; ++i) {
+                Icons[i] = Images[i];
+        }
+}
+
+void LoadIconsAsTextures(ChessIcon Icons[12], ChessIconTexture IconTextures[12])
+{
+        for (int i = 0; i < 12; ++i) {
+                IconTextures[i].type = Icons[12].type;
+                IconTextures[i].texture = LoadTextureFromImage(Icons[i].icon);
+        }
 }
 
 void UnloadIcons(ChessIcon Icons[12])
 {
         for (int i = 0; i < 12; ++i)
-                UnloadImage(Icons[i].Icon);
+                UnloadImage(Icons[i].icon);
 }
