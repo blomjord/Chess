@@ -1,5 +1,6 @@
 #include "utils.h"
 #include "moves.h"
+#include "gui.h"
 
 void initialize_pieces(ChessPiece pieces[32]) 
 {
@@ -42,9 +43,8 @@ void initialize_pieces(ChessPiece pieces[32])
                 { W_PAWN,   7, 1, 0, 'P' }
         };
     // Assignt the chess pieces
-        for (int i = 0; i < 32; ++i) {
+        for (int i = 0; i < 32; ++i)
                 pieces[i] = tmp[i];
-        }
 }
 
 
@@ -255,12 +255,13 @@ int main(void)
 
         initialize_pieces(pieces);
         initialize_board(board, pieces);
-        print_board(board, pieces);
 
-        int SCREEN_WIDTH = 800;
-        int SCREEN_HEIGHT = 800;
-        int SQUARE_WIDTH = SCREEN_WIDTH / 8;
-        int SQUARE_HEIGHT = SCREEN_HEIGHT / 8;
+//        print_board(board, pieces);
+
+        const int SCREEN_WIDTH = 800;
+        const int SCREEN_HEIGHT = 800;
+        const int SQUARE_WIDTH = SCREEN_WIDTH / 8;
+        const int SQUARE_HEIGHT = SCREEN_HEIGHT / 8;
 #if 0        
         while(1) {
                 move(board, pieces);
@@ -270,7 +271,10 @@ int main(void)
         InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Chess");
         SetTargetFPS(60);
         SetExitKey(KEY_Q);
+        
         Color LIGHTBEIGE = {230, 215, 215, 255};
+        Image Icons[12];
+        LoadIcons(Icons);
         
         while (!WindowShouldClose()) {
 
@@ -282,7 +286,7 @@ int main(void)
                 // Graphics drawing
                 BeginDrawing();
                 DrawChessboard(SQUARE_WIDTH, SQUARE_HEIGHT, LIGHTBEIGE);
-                DrawChesspieces(board);
+                DrawChesspieces(board, SQUARE_WIDTH, SQUARE_HEIGHT);
 
                 EndDrawing();
         }

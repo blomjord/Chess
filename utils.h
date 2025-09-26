@@ -6,8 +6,6 @@
 #include <string.h>
 #include <assert.h>
 
-#include "gui.h"
-
 #define EMPTY NULL
 
 #define W_PAWN 1
@@ -24,11 +22,25 @@
 #define B_QUEEN -5
 #define B_KING -6
 
+/*
+ * Purpose: Main data structure for chess pieces.
+ *
+ * Variables:
+ * type: Type of chess piece
+ * x, y: Coordinates
+ * special_move: Flag if king has castled or pawn has used en passant
+ *
+ * Notes:
+ * */
 typedef struct {
-        int type, x, y, special_move; // Special move: castle, en passant
+        int type, x, y, special_move;
         char symbol;
 } ChessPiece;
 
+/*
+ * Purpose:
+ * Notes:
+ * */
 typedef struct {
         int x, y;
 } Point;
