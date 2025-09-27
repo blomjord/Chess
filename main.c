@@ -5,8 +5,8 @@
 void initialize_pieces(ChessPiece pieces[32]) 
 {
         ChessPiece tmp[32] = {
-        
-                // Black
+
+                // Black pieces
                 { B_ROOK,   0, 0, 0, 'r' },
                 { B_ROOK,   7, 0, 0, 'r' },
                 { B_KNIGHT, 1, 0, 0, 'k' },
@@ -23,8 +23,8 @@ void initialize_pieces(ChessPiece pieces[32])
                 { B_PAWN,   5, 1, 0, 'p' },
                 { B_PAWN,   6, 1, 0, 'p' },
                 { B_PAWN,   7, 1, 0, 'p' },
-                
-                // White
+
+                // White pieces
                 { W_ROOK,   0, 7, 0, 'R' },
                 { W_ROOK,   7, 7, 0, 'R' },
                 { W_KNIGHT, 1, 7, 0, 'K' },
@@ -42,7 +42,7 @@ void initialize_pieces(ChessPiece pieces[32])
                 { W_PAWN,   6, 6, 0, 'P' },
                 { W_PAWN,   7, 6, 0, 'P' }
         };
-    // Assignt the chess pieces
+    // Assign the chess pieces
         for (int i = 0; i < 32; ++i)
                 pieces[i] = tmp[i];
 }
@@ -95,43 +95,43 @@ void show_available_moves(ChessPiece *board[8][8], ChessPiece *piece)
         Point *moves;
 
         switch (type) {
-                case B_PAWN:
-                case W_PAWN: {
-                        moves = moves_pawn(board, piece, &num_moves);
-                        free(moves);
-                        break;
-                             }
+        case B_PAWN:
+        case W_PAWN: {
+                moves = moves_pawn(board, piece, &num_moves);
+                free(moves);
+                break;
+                     }
 /*                case B_ROOK:
-                case W_ROOK: {
-                        Point moves[14];
-                        moves_rook(board, piece, moves);
-                        break;
-                             }*/
-                case B_KNIGHT:
-                case W_KNIGHT: {
-                        moves = moves_knight(board, piece, &num_moves);
-                        //show_legal_moves(board, piece, moves);
-                        free(moves);
-                        break;
-                               }
+        case W_ROOK: {
+                Point moves[14];
+                moves_rook(board, piece, moves);
+                break;
+                     }*/
+        case B_KNIGHT:
+        case W_KNIGHT: {
+                moves = moves_knight(board, piece, &num_moves);
+                //show_legal_moves(board, piece, moves);
+                free(moves);
+                break;
+                       }
 /*                case B_BISHOP:
-                case W_BISHOP: {
-                        Point moves[13];
-                        moves_bishop(type, x, y, moves);
-                        break;
-                               }
-                case B_QUEEN:
-                case W_QUEEN: {
-                        Point moves[27];
-                        moves_queen(type, x, y, moves);
-                        break;
-                              }
-                case B_KING:
-                case W_KING: {
-                        Point moves[8];
-                        moves_king(type, x, y, moves);
-                        break;
-                             }*/
+        case W_BISHOP: {
+                Point moves[13];
+                moves_bishop(type, x, y, moves);
+                break;
+                       }
+        case B_QUEEN:
+        case W_QUEEN: {
+                Point moves[27];
+                moves_queen(type, x, y, moves);
+                break;
+                      }
+        case B_KING:
+        case W_KING: {
+                Point moves[8];
+                moves_king(type, x, y, moves);
+                break;
+                     }*/
         }
 }
 
@@ -173,39 +173,6 @@ void move(ChessPiece *board[8][8], ChessPiece pieces[32])
                             continue;
                 }
         }
-}
-
-
-// Continously prints the board after each move.
-void print_board(ChessPiece *board[8][8], ChessPiece pieces[32])
-{
-        printf("    ");
-                for (int i = 97; i < 105; ++i) {
-                printf("%c ", i);
-                }
-        printf("\n");
-        /*
-        * For development purposes, this is reverse.
-        * For final build, change loop index i to:
-        * for (int i = 7; i > -1; --i)
-        * */
-        ChessPiece *piece;
-        for (int i = 7; i > -1; --i) {
-                printf("%d [ ", i + 1);
-                for (int j = 0; j < 8; ++j) {
-                        piece = get_piece_by_coords(pieces, j, i);
-                        if (piece != NULL)
-                                printf("%c ", board[j][i]->symbol);
-                        else
-                                printf("  ");
-        }
-        printf("] %d\n", i + 1);
-}
-        printf("    ");
-        for (int i = 97; i < 105; ++i) {
-                printf("%c ", i);
-        }
-        printf("\n");
 }
 
 #if 0
@@ -256,8 +223,7 @@ int main(void)
         initialize_pieces(pieces);
         initialize_board(board, pieces);
 
-//        print_board(board, pieces);
-
+        int mouseX, mouseY;
         const int SCREEN_WIDTH = 800;
         const int SCREEN_HEIGHT = 800;
         const int SQUARE_WIDTH = SCREEN_WIDTH / 8;
@@ -284,11 +250,10 @@ int main(void)
         while (!WindowShouldClose()) {
 
                 // Events
-                int mouseX = GetMouseX();
-                int mouseY = GetMouseY();
+                mouseX = GetMouseX();
+                mouseY = GetMouseY();
                 
                 // Game state update
-
 
                 // Graphics drawing
                 BeginDrawing();
@@ -297,7 +262,6 @@ int main(void)
 
                 EndDrawing();
         }
-        
         CloseWindow();
         return 0;
 }

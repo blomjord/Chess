@@ -61,7 +61,6 @@ Texture2D InjectIcon(ChessPiece *board[8][8],
                 for (int i = 0; i < 12; ++i) {
                         if (type == IconTextures[i].type)
                                 IconToDisplay = IconTextures[i].texture;
-
                 }
         }
         return IconToDisplay;

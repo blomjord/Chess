@@ -27,7 +27,8 @@ Point *moves_pawn(ChessPiece *board[8][8], ChessPiece *piece, int *num_moves)
         printf("Pawn nMoves: %d\n", count);
         return moves;
 }
-/*
+
+#if 0
 void moves_rook(ChessPiece *board[8][8], int type, int x, int y, Point moves[14])
 {
         int offset = 0;
@@ -64,7 +65,7 @@ void moves_rook(ChessPiece *board[8][8], int type, int x, int y, Point moves[14]
                 moves[i + offset].y = y;
         }
 }
-*/
+#endif
 Point *moves_knight(ChessPiece *board[8][8], ChessPiece *piece, int *num_moves)
 {
         int pos_X = piece->x;
