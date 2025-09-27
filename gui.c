@@ -4,25 +4,49 @@
  * Purpose:
  * Notes:
  * */
-void DrawChessboard(int square_width, int square_height, Color color)
+void DrawChessboard(Rectangle ChessBoard[8][8], Color color1, Color color2)
 {
-        Color brown = { 196, 133, 94, 255 };
-        ClearBackground(brown);
         for (int row = 0; row < 8; ++row) {
                 for (int col = 0; col < 8; ++col) {
-                        if ( (row % 2) == 0 && (col % 2) == 0 ) {
-                                DrawRectangle(row * square_width,
-                                                col * square_height,
-                                                square_width,
-                                                square_height,
-                                                color);
-                        } else if ( (row % 2) != 0 && (col % 2) != 0 ) {
-                                DrawRectangle(row * square_width,
-                                                col * square_height,
-                                                square_width,
-                                                square_height,
-                                                color);
-                        }
+                        if ( ((row % 2) == 0 && (col % 2) == 0)
+                                || ((row % 2) != 0 && (col % 2) != 0) )
+                                DrawRectangleRec(ChessBoard[row][col], color1);
+
+                        else if ( ((row % 2) == 0 && (col % 2) != 0)
+                                        || ((row % 2) != 0 && (col % 2) == 0 ) )
+                                DrawRectangleRec(ChessBoard[row][col], color2);
+                }
+        } 
+}
+
+/*
+ * Purpose:
+ * Notes:
+ * */
+void InitChessboard(Rectangle ChessBoard[8][8], int square_width, int square_height)
+{
+        for (int row = 0; row < 8; ++row) {
+                for (int col = 0; col < 8; ++col) {
+                        ChessBoard[row][col].x = row * square_width;;
+                        ChessBoard[row][col].y = col * square_height;
+                        ChessBoard[row][col].width  = square_width;
+                        ChessBoard[row][col].height = square_height;
+                }
+        }
+}
+
+/*
+ * Purpose:
+ * Notes:
+ * */
+void DrawMouseHoverAction(Rectangle ChessBoard[8][8], int ColorState[8][8])
+{
+        for (int row = 0; row < 8; ++row) {
+                for (int col = 0; col < 8; ++col) {
+                        if (ColorState[row][col] == 1)
+                                DrawRectangleLinesEx(ChessBoard[row][col], 4.0f, BLUE);
+                        else if (ColorState[row][col] == 2)
+                                DrawRectangleRec(ChessBoard[row][col],  BLUE);
                 }
         }
 }
@@ -38,8 +62,8 @@ void DrawChesspieces(ChessPiece *board[8][8], ChessIconTexture IconTextures[12],
         for (int row = 0; row < 8; ++row) {
                 for (int col = 0; col < 8; ++col) {
                         if (board[row][col] != NULL) {
-                                int x = ( (row+1) * square_width) - (0.7 * square_width);
-                                int y = ( (col+1) * square_height) - (0.7 * square_height);
+                                int x = (row * square_width) + (55 / 2);
+                                int y = (col * square_height) + (55 / 2);
                                 // TODO: Textures are NOT valid. Examine this!
                                 Icon = InjectIcon(board, IconTextures, row, col);
                                 DrawTexture(Icon, x, y, WHITE);

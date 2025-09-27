@@ -223,25 +223,25 @@ int main(void)
         initialize_pieces(pieces);
         initialize_board(board, pieces);
 
-        int mouseX, mouseY;
         const int SCREEN_WIDTH = 800;
         const int SCREEN_HEIGHT = 800;
         const int SQUARE_WIDTH = SCREEN_WIDTH / 8;
         const int SQUARE_HEIGHT = SCREEN_HEIGHT / 8;
-#if 0        
-        while(1) {
-                move(board, pieces);
-                print_board(board, pieces);
-        }
-#endif
+
         InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Chess");
         SetTargetFPS(10);
         SetExitKey(KEY_Q);
         
-        Color LIGHTBEIGE = {230, 215, 215, 255};
+        Color LIGHTBEIGE = { 230, 215, 215, 255 };
+        Color LIGHTBROWN = { 196, 133, 94, 255 };
 
         ChessIcon Icons[12];
         ChessIconTexture IconTextures[12];
+        
+        Rectangle RenderChessboard[8][8];
+        InitChessboard(RenderChessboard, SQUARE_WIDTH, SQUARE_HEIGHT);
+        int ColorState[8][8];
+        Vector2 mousePoint = { 0.0f, 0.0f };
 
         LoadIcons(Icons);
         LoadIconsAsTextures(Icons, IconTextures);
@@ -250,16 +250,29 @@ int main(void)
         while (!WindowShouldClose()) {
 
                 // Events
-                mouseX = GetMouseX();
-                mouseY = GetMouseY();
-                
+                mousePoint = GetMousePosition();
+
+                for (int row = 0; row < 8; ++row) {
+                        for (int col = 0; col < 8; ++col) {
+                                if (CheckCollisionPointRec(mousePoint, RenderChessboard[row][col])
+                                                && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                                        ColorState[row][col] = 2;
+                                else if (CheckCollisionPointRec(mousePoint, RenderChessboard[row][col]))
+                                        ColorState[row][col] = 1;
+                                else
+                                        ColorState[row][col] = 0;
+                        }
+                }
+
                 // Game state update
 
                 // Graphics drawing
                 BeginDrawing();
-                DrawChessboard(SQUARE_WIDTH, SQUARE_HEIGHT, LIGHTBEIGE);
+                
+                DrawChessboard(RenderChessboard, LIGHTBEIGE, LIGHTBROWN);
+                DrawMouseHoverAction(RenderChessboard, ColorState);
                 DrawChesspieces(board, IconTextures, SQUARE_WIDTH, SQUARE_HEIGHT);
-
+                
                 EndDrawing();
         }
         CloseWindow();
