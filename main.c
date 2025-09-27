@@ -269,7 +269,7 @@ int main(void)
         }
 #endif
         InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Chess");
-        SetTargetFPS(60);
+        SetTargetFPS(10);
         SetExitKey(KEY_Q);
         
         Color LIGHTBEIGE = {230, 215, 215, 255};

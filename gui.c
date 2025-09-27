@@ -41,14 +41,9 @@ void DrawChesspieces(ChessPiece *board[8][8], ChessIconTexture IconTextures[12],
                                 int x = ( (row+1) * square_width) - (0.7 * square_width);
                                 int y = ( (col+1) * square_height) - (0.7 * square_height);
                                 // TODO: Textures are NOT valid. Examine this!
-                                Icon = InjectIcon(board, IconTextures, row, col); 
+                                Icon = InjectIcon(board, IconTextures, row, col);
+                                IsTextureValid(Icon) ? printf("Received invalid texture\n") : printf("Received OK texture\n");
                                 DrawTexture(Icon, x, y, WHITE);
-                                if (IsTextureValid(Icon)){
-                                        printf("Texture is valid");     
-                                        while(1){}
-                                }
-                                else 
-                                        printf("Texutre NOT valid!\n");
                         }
                 }
         }
@@ -62,16 +57,15 @@ Texture2D InjectIcon(ChessPiece *board[8][8],
                 ChessIconTexture IconTextures[12], int row, int col)
 {
         Texture2D IconToDisplay;
-        // TODO: Continue from here
-        // Add array of Icons to func parameters
-        // and inject them and return to function DrawChessPieces
         if (board[row][col] != NULL) {
                 int type = board[row][col]->type;
                 for (int i = 0; i < 12; ++i) {
                         if (type == IconTextures[i].type)
                                 IconToDisplay = IconTextures[i].texture;
+
                 }
-        } 
+        }
+        IsTextureValid(IconToDisplay) ? printf("Sent invald Texture\n") : printf("Sent OK texture\n");
         return IconToDisplay;
 }
 
@@ -100,6 +94,10 @@ void LoadIcons(ChessIcon Icons[12])
         }
 }
 
+/*
+ * Purpose: Loads the images into texture to be drawn
+ * Notes:
+ * */
 void LoadIconsAsTextures(ChessIcon Icons[12], ChessIconTexture IconTextures[12])
 {
         for (int i = 0; i < 12; ++i) {
@@ -108,6 +106,10 @@ void LoadIconsAsTextures(ChessIcon Icons[12], ChessIconTexture IconTextures[12])
         }
 }
 
+/*
+ * Purpose: Unload images from RAM
+ * Notes:
+ */
 void UnloadIcons(ChessIcon Icons[12])
 {
         for (int i = 0; i < 12; ++i)
