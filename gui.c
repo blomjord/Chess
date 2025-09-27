@@ -63,20 +63,18 @@ void DrawChesspieces(BoardCell board[8][8], Rectangle RenderChessboard[8][8],
         Texture2D Icon;
         for (int row = 0; row < 8; ++row) {
                 for (int col = 0; col < 8; ++col) {
-                        if (board[row][col].piece != NULL) {
-                                if (CheckCollisionPointRec(mousePoint,
-                                                        RenderChessboard[row][col])
-                                                && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-                                        x = mousePoint.x - (55 / 2);
-                                        y = mousePoint.y - (55 / 2);
-                                        Icon = InjectIcon(board, IconTextures, row, col);
-                                        DrawTexture(Icon, x, y, WHITE);
-                                } else {
-                                        x = (row * square_width) + (55 / 2);
-                                        y = (col * square_height) + (55 / 2);
-                                        Icon = InjectIcon(board, IconTextures, row, col);
-                                        DrawTexture(Icon, x, y, WHITE);
-                                }
+                        if (CheckCollisionPointRec(mousePoint,
+                                                RenderChessboard[row][col])
+                                        && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+                                x = mousePoint.x - (55 / 2);
+                                y = mousePoint.y - (55 / 2);
+                                Icon = InjectIcon(board, IconTextures, row, col);
+                                DrawTexture(Icon, x, y, WHITE);
+                        } else {
+                                x = (row * square_width) + (55 / 2);
+                                y = (col * square_height) + (55 / 2);
+                                Icon = InjectIcon(board, IconTextures, row, col);
+                                DrawTexture(Icon, x, y, WHITE);
                         }
                 }
         }
@@ -94,6 +92,12 @@ void DrawChesspiecePotentialMoves(BoardCell board[8][8])
                         }
                 }
         }
+}
+
+void DrawChesspieceHold(Vector2 mousePoint)
+{
+        int x = mousePoint.x - (55 / 2);
+        int y = mousePoint.y - (55 / 2);
 }
 
 /*
