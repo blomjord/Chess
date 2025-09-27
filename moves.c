@@ -128,6 +128,10 @@ void moves_king(int type, int x, int y, Point moves)
 {
 
 }*/
+void show_legal_moves(BoardCell board[8][8], int x, int y)
+{
+
+}
 
 /*
  * Purpose: Returns the number of possible moves that

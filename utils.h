@@ -36,6 +36,17 @@ typedef struct {
 } ChessPiece;
 
 /*
+ * Purpose: Stores chess pieces and extra flag to
+ * detemine if chosen chess piece is currently selected
+ *
+ * Notes:
+ * */
+typedef struct {
+        int is_selected;
+        ChessPiece *piece;
+} BoardCell;
+
+/*
  * Purpose:
  * Notes:
  * */

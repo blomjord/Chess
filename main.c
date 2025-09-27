@@ -5,8 +5,6 @@
 void initialize_pieces(ChessPiece pieces[32]) 
 {
         ChessPiece tmp[32] = {
-
-                // Black pieces
                 { B_ROOK,   0, 0, 0, 'r' },
                 { B_ROOK,   7, 0, 0, 'r' },
                 { B_KNIGHT, 1, 0, 0, 'k' },
@@ -24,7 +22,6 @@ void initialize_pieces(ChessPiece pieces[32])
                 { B_PAWN,   6, 1, 0, 'p' },
                 { B_PAWN,   7, 1, 0, 'p' },
 
-                // White pieces
                 { W_ROOK,   0, 7, 0, 'R' },
                 { W_ROOK,   7, 7, 0, 'R' },
                 { W_KNIGHT, 1, 7, 0, 'K' },
@@ -47,132 +44,50 @@ void initialize_pieces(ChessPiece pieces[32])
                 pieces[i] = tmp[i];
 }
 
-
 /*
  *  Returns a pointer to chosen chess piece, or NULL
  * */
 ChessPiece *get_piece_by_coords(ChessPiece pieces[32], int x, int y)
 {
-        for (int i = 0; i < 32; ++i) {
+        for (int i = 0; i < 32; ++i)
                 if (pieces[i].x == x && pieces[i].y == y)
                         return &pieces[i];
-        }
         return NULL;
 }
 
-void initialize_board(ChessPiece *board[8][8], ChessPiece pieces[32])
+void initialize_board(BoardCell board[8][8], ChessPiece pieces[32])
 {
         ChessPiece *piece;
         for (int i = 0; i < 8; ++i) {
                 for (int j = 0; j < 2; ++j) {
                         piece = get_piece_by_coords(pieces, i, j);
-                        if (i == piece->x && j == piece->y)
-                                board[i][j] = piece;
+                        if (i == piece->x && j == piece->y) {
+                                board[i][j].is_selected = 0;
+                                board[i][j].piece = piece;
+                        }
                 } 
-                for (int j = 2; j < 6; ++j)
-                        board[i][j] = NULL;
+                for (int j = 2; j < 6; ++j) {
+                        board[i][j].is_selected = 0;
+                        board[i][j].piece = NULL;
+                }
 
                 for (int j = 6; j < 8; ++j) {
                         piece = get_piece_by_coords(pieces, i, j);
-                        if (i == piece->x && j == piece->y)
-                                board[i][j] = piece;
+                        if (i == piece->x && j == piece->y) {
+                                board[i][j].is_selected = 0;
+                                board[i][j].piece = piece;
+                        }
                 } 
         }
 }
 
-void get_user_input(char *buf)
+/*
+ * Purpose:
+ * Notes:
+ * */
+void move(BoardCell board[8][8], ChessPiece pieces[32])
 {
-        fgets(buf, 3, stdin);
-        int c;
-        while ( (c = getchar()) != '\n' && c != EOF); // Flushes stdin
-}
-
-// The following functions generate the possible and legal moves for each piece.
-void show_available_moves(ChessPiece *board[8][8], ChessPiece *piece)
-{
-        int type = piece->type;
-        int num_moves = 0;
-        Point *moves;
-
-        switch (type) {
-        case B_PAWN:
-        case W_PAWN: {
-                moves = moves_pawn(board, piece, &num_moves);
-                free(moves);
-                break;
-                     }
-/*                case B_ROOK:
-        case W_ROOK: {
-                Point moves[14];
-                moves_rook(board, piece, moves);
-                break;
-                     }*/
-        case B_KNIGHT:
-        case W_KNIGHT: {
-                moves = moves_knight(board, piece, &num_moves);
-                //show_legal_moves(board, piece, moves);
-                free(moves);
-                break;
-                       }
-/*                case B_BISHOP:
-        case W_BISHOP: {
-                Point moves[13];
-                moves_bishop(type, x, y, moves);
-                break;
-                       }
-        case B_QUEEN:
-        case W_QUEEN: {
-                Point moves[27];
-                moves_queen(type, x, y, moves);
-                break;
-                      }
-        case B_KING:
-        case W_KING: {
-                Point moves[8];
-                moves_king(type, x, y, moves);
-                break;
-                     }*/
-        }
-}
-
-// Performs move if legal.
-void move(ChessPiece *board[8][8], ChessPiece pieces[32])
-{
-        int posX, posY, tarX, tarY;
-        char pos[3];
-        char tar[3];
-        
-        while (1) {
-
-                printf("Choose pos: \n");
-                get_user_input(pos);
-
-                // ASCII chars
-                posX = pos[0] - 97;
-                posY = pos[1] - 49;
-
-                if (board[posX][posY] == NULL)
-                        continue;
-                
-                ChessPiece *piece_to_move = get_piece_by_coords(pieces, posX, posY);
-                show_available_moves(board, piece_to_move);
-                printf("Choose target: \n");
-                get_user_input(tar);
-                // ASCII chars
-                tarX = tar[0] - 97;
-                tarY = tar[1] - 49;
-                
-                if ( board[posX][posY] != NULL && piece_to_move != NULL ) {
-                            piece_to_move->x = tarX;
-                            piece_to_move->y = tarY;
-                            board[tarX][tarY] = piece_to_move;
-                            board[posX][posY] = NULL;
-                            break;
-                } else {
-                            printf("Empty cell. Please try again.\n");
-                            continue;
-                }
-        }
+        return NULL; 
 }
 
 #if 0
@@ -218,29 +133,30 @@ void show_legal_moves(ChessPiece *board[8][8], ChessPiece *piece, Point *moves)
 int main(void)
 {
         ChessPiece pieces[32];
-        ChessPiece *board[8][8];
-
-        initialize_pieces(pieces);
-        initialize_board(board, pieces);
-
+        BoardCell LogicalChessboard[8][8];
+        
+        int ColorState[8][8];
+        int ChessIconCoordinateOffset = 55 / 2;
         const int SCREEN_WIDTH = 800;
         const int SCREEN_HEIGHT = 800;
         const int SQUARE_WIDTH = SCREEN_WIDTH / 8;
         const int SQUARE_HEIGHT = SCREEN_HEIGHT / 8;
-
-        InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Chess");
-        SetTargetFPS(10);
-        SetExitKey(KEY_Q);
         
         Color LIGHTBEIGE = { 230, 215, 215, 255 };
         Color LIGHTBROWN = { 196, 133, 94, 255 };
+
+        initialize_pieces(pieces);
+        initialize_board(LogicalChessboard, pieces);
+
+        InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Chess");
+        SetTargetFPS(60);
+        SetExitKey(KEY_Q);
 
         ChessIcon Icons[12];
         ChessIconTexture IconTextures[12];
         
         Rectangle RenderChessboard[8][8];
         InitChessboard(RenderChessboard, SQUARE_WIDTH, SQUARE_HEIGHT);
-        int ColorState[8][8];
         Vector2 mousePoint = { 0.0f, 0.0f };
 
         LoadIcons(Icons);
@@ -255,13 +171,19 @@ int main(void)
                 for (int row = 0; row < 8; ++row) {
                         for (int col = 0; col < 8; ++col) {
                                 if (CheckCollisionPointRec(mousePoint, RenderChessboard[row][col])
-                                                && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                                                && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
                                         ColorState[row][col] = 2;
-                                else if (CheckCollisionPointRec(mousePoint, RenderChessboard[row][col]))
+                                        
+                                } else if (CheckCollisionPointRec(mousePoint, RenderChessboard[row][col])) {
                                         ColorState[row][col] = 1;
-                                else
+                                } else {
                                         ColorState[row][col] = 0;
+                                }
                         }
+                }
+
+                for (int i = 0; i < 32; ++i) {
+                        
                 }
 
                 // Game state update
@@ -271,7 +193,10 @@ int main(void)
                 
                 DrawChessboard(RenderChessboard, LIGHTBEIGE, LIGHTBROWN);
                 DrawMouseHoverAction(RenderChessboard, ColorState);
-                DrawChesspieces(board, IconTextures, SQUARE_WIDTH, SQUARE_HEIGHT);
+                DrawChesspiecePotentialMoves(LogicalChessboard);
+                DrawChesspieces(LogicalChessboard, RenderChessboard,
+                                IconTextures, mousePoint,
+                                SQUARE_WIDTH, SQUARE_HEIGHT);
                 
                 EndDrawing();
         }

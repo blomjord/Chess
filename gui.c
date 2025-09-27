@@ -55,18 +55,42 @@ void DrawMouseHoverAction(Rectangle ChessBoard[8][8], int ColorState[8][8])
  * Purpose:
  * Notes:
  * */
-void DrawChesspieces(ChessPiece *board[8][8], ChessIconTexture IconTextures[12],
+void DrawChesspieces(BoardCell board[8][8], Rectangle RenderChessboard[8][8],
+                ChessIconTexture IconTextures[12], Vector2 mousePoint,
                 int square_width, int square_height)
 {
+        int x, y;
         Texture2D Icon;
         for (int row = 0; row < 8; ++row) {
                 for (int col = 0; col < 8; ++col) {
-                        if (board[row][col] != NULL) {
-                                int x = (row * square_width) + (55 / 2);
-                                int y = (col * square_height) + (55 / 2);
-                                // TODO: Textures are NOT valid. Examine this!
-                                Icon = InjectIcon(board, IconTextures, row, col);
-                                DrawTexture(Icon, x, y, WHITE);
+                        if (board[row][col].piece != NULL) {
+                                if (CheckCollisionPointRec(mousePoint,
+                                                        RenderChessboard[row][col])
+                                                && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+                                        x = mousePoint.x - (55 / 2);
+                                        y = mousePoint.y - (55 / 2);
+                                        Icon = InjectIcon(board, IconTextures, row, col);
+                                        DrawTexture(Icon, x, y, WHITE);
+                                } else {
+                                        x = (row * square_width) + (55 / 2);
+                                        y = (col * square_height) + (55 / 2);
+                                        Icon = InjectIcon(board, IconTextures, row, col);
+                                        DrawTexture(Icon, x, y, WHITE);
+                                }
+                        }
+                }
+        }
+}
+
+void DrawChesspiecePotentialMoves(BoardCell board[8][8])
+{
+        int x, y;
+        for (int row = 0; row < 8; ++row) {
+                for (int col = 0; col < 0; ++col) {
+                        if (row == 2 && col == 4) {
+                                x = (row * 100) + (55 / 2);
+                                y = (col * 100) + (55 / 2);
+                                DrawCircle(x, y, 50.0f, BLUE);
                         }
                 }
         }
@@ -76,14 +100,13 @@ void DrawChesspieces(ChessPiece *board[8][8], ChessIconTexture IconTextures[12],
  * Purpose: Selects correct chess icon to display
  * Notes:
  * */
-Texture2D InjectIcon(ChessPiece *board[8][8],
+Texture2D InjectIcon(BoardCell board[8][8],
                 ChessIconTexture IconTextures[12], int row, int col)
 {
         Texture2D IconToDisplay;
-        if (board[row][col] != NULL) {
-                int type = board[row][col]->type;
+        if (board[row][col].piece != NULL) {
                 for (int i = 0; i < 12; ++i) {
-                        if (type == IconTextures[i].type)
+                        if (board[row][col].piece->type == IconTextures[i].type)
                                 IconToDisplay = IconTextures[i].texture;
                 }
         }
