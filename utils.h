@@ -3,8 +3,21 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 #include <assert.h>
+
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 800
+#define SQUARE_WIDTH 100
+#define SQUARE_HEIGHT 100
+
+#define LIGHTBEIGE (Color) { 230, 215, 215, 255 }
+#define LIGHTBROWN (Color) { 196, 133, 94, 255 }
+
+#define PIXEL_OFFSET 55 / 2
+
+#define EMPTY 0
 
 #define W_PAWN 1
 #define W_ROOK 2
@@ -30,28 +43,6 @@
  *
  * Notes:
  * */
-typedef struct {
-        int type, x, y, special_move;
-        char symbol;
-} ChessPiece;
 
-/*
- * Purpose: Stores chess pieces and extra flag to
- * detemine if chosen chess piece is currently selected
- *
- * Notes:
- * */
-typedef struct {
-        int is_selected;
-        ChessPiece *piece;
-} BoardCell;
-
-/*
- * Purpose:
- * Notes:
- * */
-typedef struct {
-        int x, y;
-} Point;
 
 #endif

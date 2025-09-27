@@ -4,17 +4,17 @@
  * Purpose:
  * Notes:
  * */
-void DrawChessboard(Rectangle ChessBoard[8][8], Color color1, Color color2)
+void DrawChessboard(Rectangle board[8][8], Color color1, Color color2)
 {
         for (int row = 0; row < 8; ++row) {
                 for (int col = 0; col < 8; ++col) {
                         if ( ((row % 2) == 0 && (col % 2) == 0)
                                 || ((row % 2) != 0 && (col % 2) != 0) )
-                                DrawRectangleRec(ChessBoard[row][col], color1);
+                                DrawRectangleRec(board[row][col], color1);
 
                         else if ( ((row % 2) == 0 && (col % 2) != 0)
                                         || ((row % 2) != 0 && (col % 2) == 0 ) )
-                                DrawRectangleRec(ChessBoard[row][col], color2);
+                                DrawRectangleRec(board[row][col], color2);
                 }
         } 
 }
@@ -23,14 +23,14 @@ void DrawChessboard(Rectangle ChessBoard[8][8], Color color1, Color color2)
  * Purpose:
  * Notes:
  * */
-void InitChessboard(Rectangle ChessBoard[8][8], int square_width, int square_height)
+void InitChessboard(Rectangle ChessBoard[8][8])
 {
         for (int row = 0; row < 8; ++row) {
                 for (int col = 0; col < 8; ++col) {
-                        ChessBoard[row][col].x = row * square_width;;
-                        ChessBoard[row][col].y = col * square_height;
-                        ChessBoard[row][col].width  = square_width;
-                        ChessBoard[row][col].height = square_height;
+                        ChessBoard[row][col].x = row * SQUARE_WIDTH;
+                        ChessBoard[row][col].y = col * SQUARE_HEIGHT;
+                        ChessBoard[row][col].width   = SQUARE_WIDTH;
+                        ChessBoard[row][col].height  = SQUARE_HEIGHT;
                 }
         }
 }
@@ -55,24 +55,28 @@ void DrawMouseHoverAction(Rectangle ChessBoard[8][8], int ColorState[8][8])
  * Purpose:
  * Notes:
  * */
+#if 0
 void DrawChesspieces(BoardCell board[8][8], Rectangle RenderChessboard[8][8],
-                ChessIconTexture IconTextures[12], Vector2 mousePoint,
-                int square_width, int square_height)
+                Rectangle tmp_name_RECTANGLE,
+                ChessIconTexture IconTextures[12], Vector2 mousePoint)
 {
         int x, y;
+        int xOffset;
+        int yOffset;
         Texture2D Icon;
         for (int row = 0; row < 8; ++row) {
                 for (int col = 0; col < 8; ++col) {
                         if (CheckCollisionPointRec(mousePoint,
-                                                RenderChessboard[row][col])
+                                                tmp_name_RECTANGLE)
+                                                //RenderChessboard[row][col])
                                         && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-                                x = mousePoint.x - (55 / 2);
-                                y = mousePoint.y - (55 / 2);
+                                x = mousePoint.x - PIXEL_OFFSET;
+                                y = mousePoint.y - PIXEL_OFFSET;
                                 Icon = InjectIcon(board, IconTextures, row, col);
                                 DrawTexture(Icon, x, y, WHITE);
                         } else {
-                                x = (row * square_width) + (55 / 2);
-                                y = (col * square_height) + (55 / 2);
+                                x = (row * SQUARE_WIDTH)  + PIXEL_OFFSET;
+                                y = (col * SQUARE_HEIGHT) + PIXEL_OFFSET;
                                 Icon = InjectIcon(board, IconTextures, row, col);
                                 DrawTexture(Icon, x, y, WHITE);
                         }
@@ -99,11 +103,12 @@ void DrawChesspieceHold(Vector2 mousePoint)
         int x = mousePoint.x - (55 / 2);
         int y = mousePoint.y - (55 / 2);
 }
-
+#endif
 /*
  * Purpose: Selects correct chess icon to display
  * Notes:
  * */
+#if 0
 Texture2D InjectIcon(BoardCell board[8][8],
                 ChessIconTexture IconTextures[12], int row, int col)
 {
@@ -116,7 +121,7 @@ Texture2D InjectIcon(BoardCell board[8][8],
         }
         return IconToDisplay;
 }
-
+#endif
 /*
  * Purpose: Loads all icons into RAM
  * Notes:

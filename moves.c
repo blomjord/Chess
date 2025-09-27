@@ -1,5 +1,6 @@
 #include "utils.h"
 #include "moves.h"
+#include "gui.h"
 
 int num_moves_within_board(int count, int pos_X, int pos_Y, int moves_X[], int moves_Y[]);
 
@@ -66,11 +67,11 @@ void moves_rook(ChessPiece *board[8][8], int type, int x, int y, Point moves[14]
         }
 }
 #endif
-void moves_knight(BoardCell board[8][8], ChessPiece piece)
+void moves_knight(ChessPiece board[8][8], ChessPiece piece)
 {
         int targetX, targetY;
-        int posX = piece.x;
-        int posY = piece.y;
+        int posX = piece.file;
+        int posY = piece.rank;
         int rangeX[8] = { 2, 1, -1, -2, -2, -1, 1, 2 };
         int rangeY[8] = { 1, 2, 2, 1, -1, -2, -2, -1 };
         int count = 0;
@@ -100,11 +101,11 @@ void moves_king(int type, int x, int y, Point moves)
 
 }*/
 
-int is_move_legal(BoardCell board[8][8], int posX, int posY, int targetX, int targetY)
+int is_move_legal(ChessPiece board[8][8], int posX, int posY, int targetX, int targetY)
 {
         if (targetX >= 0 && targetY >= 0 && targetX <= 7 && targetY <= 7
-                        && (board[targetX][targetY].piece == NULL
-                                || board[targetX][targetY].piece->type * board[posX][posY].piece->type < 0))
+                        && (board[targetX][targetY].type == EMPTY
+                                || board[targetX][targetY].type * board[posX][posY].type < 0))
                 return 1;
         return 0;
 }
