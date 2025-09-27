@@ -42,7 +42,6 @@ void DrawChesspieces(ChessPiece *board[8][8], ChessIconTexture IconTextures[12],
                                 int y = ( (col+1) * square_height) - (0.7 * square_height);
                                 // TODO: Textures are NOT valid. Examine this!
                                 Icon = InjectIcon(board, IconTextures, row, col);
-                                IsTextureValid(Icon) ? printf("Received invalid texture\n") : printf("Received OK texture\n");
                                 DrawTexture(Icon, x, y, WHITE);
                         }
                 }
@@ -65,7 +64,6 @@ Texture2D InjectIcon(ChessPiece *board[8][8],
 
                 }
         }
-        IsTextureValid(IconToDisplay) ? printf("Sent invald Texture\n") : printf("Sent OK texture\n");
         return IconToDisplay;
 }
 
@@ -101,7 +99,7 @@ void LoadIcons(ChessIcon Icons[12])
 void LoadIconsAsTextures(ChessIcon Icons[12], ChessIconTexture IconTextures[12])
 {
         for (int i = 0; i < 12; ++i) {
-                IconTextures[i].type = Icons[12].type;
+                IconTextures[i].type = Icons[i].type;
                 IconTextures[i].texture = LoadTextureFromImage(Icons[i].icon);
         }
 }

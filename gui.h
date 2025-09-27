@@ -21,6 +21,7 @@ void DrawChesspieces(ChessPiece *board[8][8], ChessIconTexture IconTextures[12],
 Texture2D InjectIcon(ChessPiece *board[8][8],
                 ChessIconTexture IconTextures[12], int row, int col);
 void LoadIcons(ChessIcon Icons[12]);
-void LoadIconsAsTextures();
+void LoadIconsAsTextures(ChessIcon Icons[12],
+                ChessIconTexture IconTextures[12]);
 void UnloadIcons(ChessIcon Icons[12]);
 #endif
