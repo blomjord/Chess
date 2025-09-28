@@ -12,11 +12,11 @@ void DrawChessboard(Rectangle ChessBoard[8][8], Color color1, Color color2);
 //                ChessIconTexture IconTextures[12], Vector2 mousePoint);
 void DrawMouseHoverAction(Rectangle ChessBoard[8][8], int ColorState[8][8]);
 
-//Texture2D InjectIcon(BoardCell board[8][8],
-//                ChessIconTexture IconTextures[12], int row, int col);
-void LoadIcons(ChessIcon Icons[12]);
-void LoadIconsAsTextures(ChessIcon Icons[12],
-                ChessIconTexture IconTextures[12]);
-void UnloadIcons(ChessIcon Icons[12]);
+void DrawChesspieces(ChessPiece pieces[64], Vector2 mousePoint);
+void DrawChesspiecePotentialMoves(ChessPiece pieces[64]);
+void LoadIcons(ChessIcon Icons[13]);
+void LoadIconsAsTextures(ChessIcon Icons[13],
+                ChessIconTexture IconTextures[13]);
+void UnloadIcons(ChessIcon Icons[13]);
 void InitChessboard(Rectangle ChessBoard[8][8]);
 #endif

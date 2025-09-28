@@ -56,79 +56,61 @@ void DrawMouseHoverAction(Rectangle ChessBoard[8][8], int ColorState[8][8])
  * Notes:
  * */
 #if 0
-void DrawChesspieces(BoardCell board[8][8], Rectangle RenderChessboard[8][8],
-                Rectangle tmp_name_RECTANGLE,
-                ChessIconTexture IconTextures[12], Vector2 mousePoint)
+void DrawChesspieces(ChessBoard board[8][8], Vector2 mousePoint)
 {
-        int x, y;
-        int xOffset;
-        int yOffset;
-        Texture2D Icon;
-        for (int row = 0; row < 8; ++row) {
-                for (int col = 0; col < 8; ++col) {
-                        if (CheckCollisionPointRec(mousePoint,
-                                                tmp_name_RECTANGLE)
-                                                //RenderChessboard[row][col])
-                                        && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-                                x = mousePoint.x - PIXEL_OFFSET;
-                                y = mousePoint.y - PIXEL_OFFSET;
-                                Icon = InjectIcon(board, IconTextures, row, col);
-                                DrawTexture(Icon, x, y, WHITE);
-                        } else {
-                                x = (row * SQUARE_WIDTH)  + PIXEL_OFFSET;
-                                y = (col * SQUARE_HEIGHT) + PIXEL_OFFSET;
-                                Icon = InjectIcon(board, IconTextures, row, col);
-                                DrawTexture(Icon, x, y, WHITE);
+        int textureX, textureY;
+        for (int file = 0; file < 8; ++file) {
+                for (int rank = 0; rank < 8; ++rank) {
+                        
+                        if (board[file][rank].piece->type == EMPTY)
+                                continue;
+                        if (board[file][rank].piece->dragging) {
+                                textureX = mousePoint.x - PIXEL_OFFSET;
+                                textureY = mousePoint.y - PIXEL_OFFSET;
+                                DrawTexture(board[file][rank].piece->texture, textureX, textureY, WHITE);
+                        } else if (!board[file][rank].piece->dragging) {
+                                textureX = (file * SQUARE_WIDTH)  + PIXEL_OFFSET;
+                                textureY = (rank * SQUARE_HEIGHT) + PIXEL_OFFSET;
+                                DrawTexture(board[file][rank].piece->texture, textureX, textureY, WHITE);
                         }
                 }
         }
 }
+#endif
 
-void DrawChesspiecePotentialMoves(BoardCell board[8][8])
+void DrawChesspieces(ChessPiece pieces[64], Vector2 mousePoint)
 {
-        int x, y;
-        for (int row = 0; row < 8; ++row) {
-                for (int col = 0; col < 0; ++col) {
-                        if (row == 2 && col == 4) {
-                                x = (row * 100) + (55 / 2);
-                                y = (col * 100) + (55 / 2);
-                                DrawCircle(x, y, 50.0f, BLUE);
-                        }
+        int textureX, textureY;
+        for (int i = 0; i < 64; ++i) {
+                if (pieces[i].type == EMPTY)
+                        continue;
+                if (pieces[i].dragging) {
+                        textureX = mousePoint.x - PIXEL_OFFSET;
+                        textureY = mousePoint.y - PIXEL_OFFSET;
+                        DrawTexture(pieces[i].texture, textureX, textureY, WHITE);
+
+                } else {
+                        textureX = (pieces[i].file * SQUARE_WIDTH) + PIXEL_OFFSET;
+                        textureY = (pieces[i].rank * SQUARE_HEIGHT) + PIXEL_OFFSET;
+                        DrawTexture(pieces[i].texture, textureX, textureY, WHITE);
                 }
         }
 }
-
-void DrawChesspieceHold(Vector2 mousePoint)
+void DrawChesspiecePotentialMoves(ChessPiece pieces[64])
 {
-        int x = mousePoint.x - (55 / 2);
-        int y = mousePoint.y - (55 / 2);
-}
-#endif
-/*
- * Purpose: Selects correct chess icon to display
- * Notes:
- * */
-#if 0
-Texture2D InjectIcon(BoardCell board[8][8],
-                ChessIconTexture IconTextures[12], int row, int col)
-{
-        Texture2D IconToDisplay;
-        if (board[row][col].piece != NULL) {
-                for (int i = 0; i < 12; ++i) {
-                        if (board[row][col].piece->type == IconTextures[i].type)
-                                IconToDisplay = IconTextures[i].texture;
-                }
+        for (int i = 0; i < 64; ++i) {
+                if (pieces[i].type == EMPTY)
+                        continue;
         }
-        return IconToDisplay;
 }
-#endif
+
 /*
  * Purpose: Loads all icons into RAM
  * Notes:
  * */
-void LoadIcons(ChessIcon Icons[12])
+void LoadIcons(ChessIcon Icons[13])
 {
-        ChessIcon Images[12] = {
+        ChessIcon Images[13] = {
                 { B_KING,   LoadImage("Images/B_King.png")   },
                 { B_QUEEN,  LoadImage("Images/B_Queen.png")  },
                 { B_ROOK,   LoadImage("Images/B_Rook.png")   },
@@ -140,9 +122,10 @@ void LoadIcons(ChessIcon Icons[12])
                 { W_ROOK,   LoadImage("Images/W_Rook.png")   },
                 { W_BISHOP, LoadImage("Images/W_Bishop.png") },
                 { W_KNIGHT, LoadImage("Images/W_Knight.png") },
-                { W_PAWN,   LoadImage("Images/W_Pawn.png")   }
+                { W_PAWN,   LoadImage("Images/W_Pawn.png")   },
+                { EMPTY, LoadImage("Images/W_Pawn.png")     }
         };
-        for (int i = 0; i < 12; ++i) {
+        for (int i = 0; i < 13; ++i) {
                 Icons[i] = Images[i];
         }
 }
@@ -151,20 +134,22 @@ void LoadIcons(ChessIcon Icons[12])
  * Purpose: Loads the images into texture to be drawn
  * Notes:
  * */
-void LoadIconsAsTextures(ChessIcon Icons[12], ChessIconTexture IconTextures[12])
+void LoadIconsAsTextures(ChessIcon Icons[13], ChessIconTexture IconTextures[13])
 {
-        for (int i = 0; i < 12; ++i) {
+        for (int i = 0; i < 13; ++i) {
                 IconTextures[i].type = Icons[i].type;
                 IconTextures[i].texture = LoadTextureFromImage(Icons[i].icon);
         }
 }
 
 /*
- * Purpose: Unload images from RAM
- * Notes:
+ * Purpose: Unload icons from RAM, 
+ * 
+ * Notes: Useonly after they have
+ * been converted into type Texture2D.
  */
-void UnloadIcons(ChessIcon Icons[12])
+void UnloadIcons(ChessIcon Icons[13])
 {
-        for (int i = 0; i < 12; ++i)
+        for (int i = 0; i < 13; ++i)
                 UnloadImage(Icons[i].icon);
 }
