@@ -15,34 +15,34 @@ Vector2 square_coords(int file, int rank)
  * Purpose: God-awful init func..
  * Notes:
  * */
-void initialize_pieces(ChessPiece pieces[64], ChessIcon Icons[13]) 
+void initialize_pieces(ChessPiece pieces[64], Texture2D IconTextures[13]) 
 {
-        pieces[0]  = (ChessPiece) { B_ROOK,   0, 0, 0, 0, LoadTextureFromImage(Icons[2].icon), square_coords(0, 0) };
-        pieces[1]  = (ChessPiece) { B_ROOK,   7, 0, 0, 0, LoadTextureFromImage(Icons[2].icon), square_coords(7, 0) };
-        pieces[2]  = (ChessPiece) { B_KNIGHT, 1, 0, 0, 0, LoadTextureFromImage(Icons[4].icon), square_coords(1, 0) };
-        pieces[3]  = (ChessPiece) { B_KNIGHT, 6, 0, 0, 0, LoadTextureFromImage(Icons[4].icon), square_coords(6, 0) };
-        pieces[4]  = (ChessPiece) { B_BISHOP, 2, 0, 0, 0, LoadTextureFromImage(Icons[3].icon), square_coords(2, 0) };
-        pieces[5]  = (ChessPiece) { B_BISHOP, 5, 0, 0, 0, LoadTextureFromImage(Icons[3].icon), square_coords(5, 0) };
-        pieces[6]  = (ChessPiece) { B_QUEEN,  3, 0, 0, 0, LoadTextureFromImage(Icons[1].icon), square_coords(3, 0) };
-        pieces[7]  = (ChessPiece) { B_KING,   4, 0, 0, 0, LoadTextureFromImage(Icons[0].icon), square_coords(4, 0) };
-        pieces[8] = (ChessPiece) { W_ROOK,   0, 7, 0, 0, LoadTextureFromImage(Icons[8].icon), square_coords(0, 7) },
-        pieces[9] = (ChessPiece) { W_ROOK,   7, 7, 0, 0, LoadTextureFromImage(Icons[8].icon), square_coords(7, 7) },
-        pieces[10] = (ChessPiece) { W_KNIGHT, 1, 7, 0, 0, LoadTextureFromImage(Icons[10].icon), square_coords(1, 7) },
-        pieces[11] = (ChessPiece) { W_KNIGHT, 6, 7, 0, 0, LoadTextureFromImage(Icons[10].icon), square_coords(6, 7) },
-        pieces[12] = (ChessPiece) { W_BISHOP, 2, 7, 0, 0, LoadTextureFromImage(Icons[9].icon), square_coords(2, 7) },
-        pieces[13] = (ChessPiece) { W_BISHOP, 5, 7, 0, 0, LoadTextureFromImage(Icons[9].icon), square_coords(5, 7) },
-        pieces[14] = (ChessPiece) { W_QUEEN,  3, 7, 0, 0, LoadTextureFromImage(Icons[7].icon), square_coords(3, 7) },
-        pieces[15] = (ChessPiece) { W_KING,   4, 7, 0, 0, LoadTextureFromImage(Icons[6].icon), square_coords(4, 7) };
+        pieces[0]  = (ChessPiece) { B_ROOK,   0, 0, 0, 0, IconTextures[2],  square_coords(0, 0) };
+        pieces[1]  = (ChessPiece) { B_ROOK,   7, 0, 0, 0, IconTextures[2],  square_coords(7, 0) };
+        pieces[2]  = (ChessPiece) { B_KNIGHT, 1, 0, 0, 0, IconTextures[4],  square_coords(1, 0) };
+        pieces[3]  = (ChessPiece) { B_KNIGHT, 6, 0, 0, 0, IconTextures[4],  square_coords(6, 0) };
+        pieces[4]  = (ChessPiece) { B_BISHOP, 2, 0, 0, 0, IconTextures[3],  square_coords(2, 0) };
+        pieces[5]  = (ChessPiece) { B_BISHOP, 5, 0, 0, 0, IconTextures[3],  square_coords(5, 0) };
+        pieces[6]  = (ChessPiece) { B_QUEEN,  3, 0, 0, 0, IconTextures[1],  square_coords(3, 0) };
+        pieces[7]  = (ChessPiece) { B_KING,   4, 0, 0, 0, IconTextures[0],  square_coords(4, 0) };
+        pieces[8]  = (ChessPiece) { W_ROOK,   0, 7, 0, 0, IconTextures[8],  square_coords(0, 7) },
+        pieces[9]  = (ChessPiece) { W_ROOK,   7, 7, 0, 0, IconTextures[8],  square_coords(7, 7) },
+        pieces[10] = (ChessPiece) { W_KNIGHT, 1, 7, 0, 0, IconTextures[10], square_coords(1, 7) },
+        pieces[11] = (ChessPiece) { W_KNIGHT, 6, 7, 0, 0, IconTextures[10], square_coords(6, 7) },
+        pieces[12] = (ChessPiece) { W_BISHOP, 2, 7, 0, 0, IconTextures[9],  square_coords(2, 7) },
+        pieces[13] = (ChessPiece) { W_BISHOP, 5, 7, 0, 0, IconTextures[9],  square_coords(5, 7) },
+        pieces[14] = (ChessPiece) { W_QUEEN,  3, 7, 0, 0, IconTextures[7],  square_coords(3, 7) },
+        pieces[15] = (ChessPiece) { W_KING,   4, 7, 0, 0, IconTextures[6],  square_coords(4, 7) };
 
         // Init of pawns and empty cells
         int index = 16;
         for (int file = 0; file < 8; ++file)
-                pieces[index++] = (ChessPiece) { B_PAWN, file, 1, 0, 0, LoadTextureFromImage(Icons[5].icon), square_coords(file, 1) };
+                pieces[index++] = (ChessPiece) { B_PAWN, file, 1, 0, 0, IconTextures[5], square_coords(file, 1) };
         for (int file = 0; file < 8; ++file)
-                pieces[index++] = (ChessPiece) { W_PAWN, file, 6, 0, 0, LoadTextureFromImage(Icons[11].icon), square_coords(file, 6) };
+                pieces[index++] = (ChessPiece) { W_PAWN, file, 6, 0, 0, IconTextures[11], square_coords(file, 6) };
         for (int file = 0; file < 8; ++file) {
                 for (int rank = 2; rank < 6; ++rank)
-                        pieces[index++] = (ChessPiece) { EMPTY, file, rank, 0, 0, LoadTextureFromImage(Icons[12].icon), square_coords(file, rank) };
+                        pieces[index++] = (ChessPiece) { EMPTY, file, rank, 0, 0, IconTextures[12], square_coords(file, rank) };
         }
 }
 
@@ -87,11 +87,15 @@ int main(void)
         ChessBoard board[8][8];
         Rectangle Background[8][8];
         
-        ChessIcon Icons[13];
+        Image Icons[13];
+        Texture2D IconTextures[13];
         LoadIcons(Icons);
-        ChessIconTexture IconTextures[13];
-        initialize_pieces(pieces, Icons);
+        LoadIconsAsTextures(Icons, IconTextures);
+        UnloadIcons(Icons);
+
+        initialize_pieces(pieces, IconTextures);
         initialize_board(board, pieces);
+
         Vector2 mousePoint = { 0.0f, 0.0f };
         Vector2 touchPoint = { 0.0f, 0.0f };
         Rectangle touchArea = { 0.0f, 0.0f, 25.0f, 25.0f };
@@ -99,9 +103,6 @@ int main(void)
         
         int ColorState[8][8];
         InitChessboard(Background);
-
-        LoadIconsAsTextures(Icons, IconTextures);
-        UnloadIcons(Icons);
         
         while (!WindowShouldClose()) {
                 // Events
@@ -109,6 +110,7 @@ int main(void)
                 touchArea.x = mousePoint.x;
                 touchArea.y = mousePoint.y;
 
+                // void DetectActionMouseHover
                 for (int file = 0; file < 8; ++file) {
                         for (int rank = 0; rank < 8; ++rank) {
                                 if (CheckCollisionPointRec(mousePoint, Background[file][rank])
@@ -122,6 +124,7 @@ int main(void)
                                 }
                         }
                 }
+                // void DetectActionMouseDragAndHold()
                 for (int i = 0; i < 64; ++i) {
                         if (pieces[i].type == EMPTY)
                                 continue;
@@ -138,6 +141,9 @@ int main(void)
                                 pieces[i].pos.y = (pieces[i].rank * SQUARE_HEIGHT) + PIXEL_OFFSET;
                         }
                 }
+                // void detect_action_mouse_release();
+                // void DetectActionMouseRelease();
+
                 // Game state update
 
                 // Graphics drawing

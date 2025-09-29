@@ -10,19 +10,9 @@ typedef struct {
 } ChessPiece;
 
 typedef struct {
-        int type;
-        Image icon;
-} ChessIcon;
-
-typedef struct {
         int file, rank;
         ChessPiece *piece;
 } ChessBoard;
-
-typedef struct {
-        int type;
-        Texture2D texture;
-} ChessIconTexture;
 
 /*
  * Purpose:

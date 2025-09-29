@@ -108,37 +108,33 @@ void DrawChesspiecePotentialMoves(ChessPiece pieces[64])
  * Purpose: Loads all icons into RAM
  * Notes:
  * */
-void LoadIcons(ChessIcon Icons[13])
+void LoadIcons(Image Icons[13])
 {
-        ChessIcon Images[13] = {
-                { B_KING,   LoadImage("Images/B_King.png")   },
-                { B_QUEEN,  LoadImage("Images/B_Queen.png")  },
-                { B_ROOK,   LoadImage("Images/B_Rook.png")   },
-                { B_BISHOP, LoadImage("Images/B_Bishop.png") },
-                { B_KNIGHT, LoadImage("Images/B_Knight.png") },
-                { B_PAWN,   LoadImage("Images/B_Pawn.png")   },
-                { W_KING,   LoadImage("Images/W_King.png")   },
-                { W_QUEEN,  LoadImage("Images/W_Queen.png")  },
-                { W_ROOK,   LoadImage("Images/W_Rook.png")   },
-                { W_BISHOP, LoadImage("Images/W_Bishop.png") },
-                { W_KNIGHT, LoadImage("Images/W_Knight.png") },
-                { W_PAWN,   LoadImage("Images/W_Pawn.png")   },
-                { EMPTY, LoadImage("Images/W_Pawn.png")     }
-        };
-        for (int i = 0; i < 13; ++i) {
-                Icons[i] = Images[i];
-        }
+        Icons[0]  = LoadImage("Images/B_King.png")   ;
+        Icons[1]  = LoadImage("Images/B_Queen.png")  ;
+        Icons[2]  = LoadImage("Images/B_Rook.png")   ;
+        Icons[3]  = LoadImage("Images/B_Bishop.png") ;
+        Icons[4]  = LoadImage("Images/B_Knight.png") ;
+        Icons[5]  = LoadImage("Images/B_Pawn.png")   ;
+        Icons[6]  = LoadImage("Images/W_King.png")   ;
+        Icons[7]  = LoadImage("Images/W_Queen.png")  ;
+        Icons[8]  = LoadImage("Images/W_Rook.png")   ;
+        Icons[9]  = LoadImage("Images/W_Bishop.png") ;
+        Icons[10] = LoadImage("Images/W_Knight.png") ;
+        Icons[11] = LoadImage("Images/W_Pawn.png")   ;
+        Icons[12] = LoadImage("Images/W_Pawn.png")   ;
+
 }
 
 /*
  * Purpose: Loads the images into texture to be drawn
  * Notes:
  * */
-void LoadIconsAsTextures(ChessIcon Icons[13], ChessIconTexture IconTextures[13])
+void LoadIconsAsTextures(Image Icons[13], Texture2D IconTextures[13])
 {
         for (int i = 0; i < 13; ++i) {
-                IconTextures[i].type = Icons[i].type;
-                IconTextures[i].texture = LoadTextureFromImage(Icons[i].icon);
+                printf("Trying to load Icon %d\n", i);
+                IconTextures[i] = LoadTextureFromImage(Icons[i]); 
         }
 }
 
@@ -148,8 +144,8 @@ void LoadIconsAsTextures(ChessIcon Icons[13], ChessIconTexture IconTextures[13])
  * Notes: Useonly after they have
  * been converted into type Texture2D.
  */
-void UnloadIcons(ChessIcon Icons[13])
+void UnloadIcons(Image Icons[13])
 {
         for (int i = 0; i < 13; ++i)
-                UnloadImage(Icons[i].icon);
+                UnloadImage(Icons[i]);
 }

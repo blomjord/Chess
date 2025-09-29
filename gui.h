@@ -14,9 +14,8 @@ void DrawMouseHoverAction(Rectangle ChessBoard[8][8], int ColorState[8][8]);
 
 void DrawChesspieces(ChessPiece pieces[64], Vector2 mousePoint);
 void DrawChesspiecePotentialMoves(ChessPiece pieces[64]);
-void LoadIcons(ChessIcon Icons[13]);
-void LoadIconsAsTextures(ChessIcon Icons[13],
-                ChessIconTexture IconTextures[13]);
-void UnloadIcons(ChessIcon Icons[13]);
+void LoadIcons(Image Icons[13]);
+void LoadIconsAsTextures(Image Icons[13], Texture2D IconTextures[13]);
+void UnloadIcons(Image Icons[13]);
 void InitChessboard(Rectangle ChessBoard[8][8]);
 #endif
