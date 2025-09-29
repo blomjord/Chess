@@ -95,7 +95,8 @@ int main(void)
 
         initialize_pieces(pieces, IconTextures);
         initialize_board(board, pieces);
-
+        
+        int heldPieceIndex = -1;
         Vector2 mousePoint = { 0.0f, 0.0f };
         Vector2 touchPoint = { 0.0f, 0.0f };
         Rectangle touchArea = { 0.0f, 0.0f, 25.0f, 25.0f };
@@ -125,24 +126,40 @@ int main(void)
                         }
                 }
                 // void DetectActionMouseDragAndHold()
-                for (int i = 0; i < 64; ++i) {
-                        if (pieces[i].type == EMPTY)
-                                continue;
-
-                        pieceArea.x = pieces[i].pos.x;
-                        pieceArea.y = pieces[i].pos.y;
-                        if ( CheckCollisionRecs(touchArea, pieceArea) && IsMouseButtonDown(MOUSE_BUTTON_LEFT) ) {
-                                pieces[i].dragging = 1;
-                                pieces[i].pos.x = mousePoint.x;
-                                pieces[i].pos.y = mousePoint.y;
-                        } else {
-                                pieces[i].dragging = 0;
-                                pieces[i].pos.x = (pieces[i].file * SQUARE_WIDTH) + PIXEL_OFFSET;
-                                pieces[i].pos.y = (pieces[i].rank * SQUARE_HEIGHT) + PIXEL_OFFSET;
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)
+                                        && heldPieceIndex == -1) {
+                        mousePoint = GetMousePosition();
+                        for (int i = 0; i < 64; ++i) {
+                                pieceArea.x = pieces[i].pos.x;
+                                pieceArea.y = pieces[i].pos.y;
+                                touchArea.x = mousePoint.x;
+                                touchArea.y = mousePoint.y;
+                                
+                                if (pieces[i].type != EMPTY
+                                       && CheckCollisionRecs(touchArea, pieceArea)) {
+                                        heldPieceIndex = i;
+                                        pieces[i].dragging = 1;
+                                        break;
+                                }         
                         }
                 }
+                if (heldPieceIndex != -1) {
+                        mousePoint = GetMousePosition();
+                        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+                                pieces[heldPieceIndex].pos.x = mousePoint.x;
+                                pieces[heldPieceIndex].pos.y = mousePoint.y;
+                        }
+
+                        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+                                pieces[heldPieceIndex].pos.x = (pieces[heldPieceIndex].file * SQUARE_WIDTH) + PIXEL_OFFSET;
+                                pieces[heldPieceIndex].pos.y = (pieces[heldPieceIndex].rank * SQUARE_HEIGHT) + PIXEL_OFFSET;
+                                pieces[heldPieceIndex].dragging = 0;
+                                heldPieceIndex = -1;
+                        }
+                } 
                 // void detect_action_mouse_release();
                 // void DetectActionMouseRelease();
+                
 
                 // Game state update
 
