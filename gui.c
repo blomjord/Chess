@@ -55,36 +55,13 @@ void DrawMouseHoverAction(Rectangle ChessBoard[8][8], int ColorState[8][8])
  * Purpose:
  * Notes:
  * */
-#if 0
-void DrawChesspieces(ChessBoard board[8][8], Vector2 mousePoint)
-{
-        int textureX, textureY;
-        for (int file = 0; file < 8; ++file) {
-                for (int rank = 0; rank < 8; ++rank) {
-                        
-                        if (board[file][rank].piece->type == EMPTY)
-                                continue;
-                        if (board[file][rank].piece->dragging) {
-                                textureX = mousePoint.x - PIXEL_OFFSET;
-                                textureY = mousePoint.y - PIXEL_OFFSET;
-                                DrawTexture(board[file][rank].piece->texture, textureX, textureY, WHITE);
-                        } else if (!board[file][rank].piece->dragging) {
-                                textureX = (file * SQUARE_WIDTH)  + PIXEL_OFFSET;
-                                textureY = (rank * SQUARE_HEIGHT) + PIXEL_OFFSET;
-                                DrawTexture(board[file][rank].piece->texture, textureX, textureY, WHITE);
-                        }
-                }
-        }
-}
-#endif
-
 void DrawChesspieces(ChessPiece pieces[64], Vector2 mousePoint)
 {
         int textureX, textureY;
         for (int i = 0; i < 64; ++i) {
                 if (pieces[i].type == EMPTY)
                         continue;
-                if (pieces[i].dragging) {
+                if (pieces[i].holding) {
                         textureX = mousePoint.x - PIXEL_OFFSET;
                         textureY = mousePoint.y - PIXEL_OFFSET;
                         DrawTexture(pieces[i].texture, textureX, textureY, WHITE);
@@ -96,11 +73,37 @@ void DrawChesspieces(ChessPiece pieces[64], Vector2 mousePoint)
                 }
         }
 }
-void DrawChesspiecePotentialMoves(ChessPiece pieces[64])
+
+/*
+ * Purpose:
+ * Notes:
+ * */
+void DetectActionMouseHover(Vector2 mousePoint, Rectangle Background[8][8], int ColorState[8][8])
 {
-        for (int i = 0; i < 64; ++i) {
-                if (pieces[i].type == EMPTY)
-                        continue;
+        for (int file = 0; file < 8; ++file) {
+                for (int rank = 0; rank < 8; ++rank) {
+                        if (CheckCollisionPointRec(mousePoint, Background[file][rank])
+                        && IsMouseButtonDown(MOUSE_BUTTON_LEFT) ) {
+                                ColorState[file][rank] = 2;
+                        } else if (CheckCollisionPointRec(mousePoint, Background[file][rank])) {
+                                ColorState[file][rank] = 1;
+                        } else {
+                                ColorState[file][rank] = 0;
+                        }
+                }
+        }
+}
+
+void DrawChesspieceLegalMoves(int ColorState[8][8])
+{
+        for (int file = 0; file < 8; ++file) {
+                for (int rank = 0; rank < 8; ++rank) {
+                        if (ColorState[file][rank] == 3) {
+                                DrawCircle((file * SQUARE_WIDTH) + 50,
+                                            (rank * SQUARE_HEIGHT) + 50,
+                                            15.0f, BLUE);
+                        }
+                }
         }
 }
 

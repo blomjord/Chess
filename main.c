@@ -112,20 +112,7 @@ int main(void)
                 touchArea.y = mousePoint.y;
 
                 // void DetectActionMouseHover
-                for (int file = 0; file < 8; ++file) {
-                        for (int rank = 0; rank < 8; ++rank) {
-                                if (CheckCollisionPointRec(mousePoint, Background[file][rank])
-                                                && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-                                        ColorState[file][rank] = 2;
-                                        
-                                } else if (CheckCollisionPointRec(mousePoint, Background[file][rank])) {
-                                        ColorState[file][rank] = 1;
-                                } else {
-                                        ColorState[file][rank] = 0;
-                                }
-                        }
-                }
-                // void DetectActionMouseDragAndHold()
+                DetectActionMouseHover(mousePoint, Background, ColorState);
                 if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)
                                         && heldPieceIndex == -1) {
                         mousePoint = GetMousePosition();
@@ -138,7 +125,7 @@ int main(void)
                                 if (pieces[i].type != EMPTY
                                        && CheckCollisionRecs(touchArea, pieceArea)) {
                                         heldPieceIndex = i;
-                                        pieces[i].dragging = 1;
+                                        pieces[i].holding = 1;
                                         break;
                                 }         
                         }
@@ -148,26 +135,26 @@ int main(void)
                         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
                                 pieces[heldPieceIndex].pos.x = mousePoint.x;
                                 pieces[heldPieceIndex].pos.y = mousePoint.y;
+                                show_moves(Background, ColorState, pieces[heldPieceIndex]);
                         }
 
                         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                                 pieces[heldPieceIndex].pos.x = (pieces[heldPieceIndex].file * SQUARE_WIDTH) + PIXEL_OFFSET;
                                 pieces[heldPieceIndex].pos.y = (pieces[heldPieceIndex].rank * SQUARE_HEIGHT) + PIXEL_OFFSET;
-                                pieces[heldPieceIndex].dragging = 0;
+                                pieces[heldPieceIndex].holding = 0;
                                 heldPieceIndex = -1;
                         }
-                } 
-                // void detect_action_mouse_release();
-                // void DetectActionMouseRelease();
+                }
                 
-
+                
                 // Game state update
-
+                
+                // Hold pawn, change ColorState of moves to 2;
                 // Graphics drawing
                 BeginDrawing();
                 DrawChessboard(Background, LIGHTBEIGE, LIGHTBROWN);
                 DrawMouseHoverAction(Background, ColorState);
-                DrawChesspiecePotentialMoves(pieces);
+                DrawChesspieceLegalMoves(ColorState);
                 DrawChesspieces(pieces, mousePoint);
                 EndDrawing();
         }

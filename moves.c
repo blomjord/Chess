@@ -4,32 +4,70 @@
 
 int num_moves_within_board(int count, int pos_X, int pos_Y, int moves_X[], int moves_Y[]);
 
-#if 0
-Point *moves_pawn(ChessPiece *board[8][8], ChessPiece *piece, int *num_moves)
+void show_moves(ChessBoard board[8][8], int ColorState[8][8], ChessPiece piece)
 {
-        int pos_X = piece->x;
-        int pos_Y = piece->y;
-        int moves_X[4] = { 1, 0, 0, -1};
-        int moves_Y[4] = { 1, 2, 1, 1 };
-        int count = 0;
-        
-        if (piece->type < 0)
-                for (int i = 0; i < 4; ++i)
-                        moves_Y[i] *= -1;
-
-        for (int i = 0; i < 4; ++i) {
-                int tar_X = pos_X + moves_X[i];
-                int tar_Y = pos_Y + moves_Y[i];
-                if (tar_X >= 0 && tar_Y >= 0 && tar_X <= 7 && tar_Y <= 7)
-                        count++;
+        switch (piece.type) {
+        case  1:
+        case -1:
+               show_moves_pawn(board, ColorState, piece);
+               break;
+        case  2:
+        case -2:
+                printf("Case 2.\n");
+                break;
+        case  3:
+        case -3:
+                printf("Case 3.\n");
+                break;
+        case  4:
+        case -4:
+                printf("Case 4.\n");
+                break;
+        case  5:
+        case -5:
+                printf("Case 5.\n");
+                break;
+        case  6:
+        case -6:
+                printf("Case 6.\n");
+                break;
+        default:
+                // Empty
+                printf("Empty.\n");
+                break;
         }
 
-        Point *moves = malloc(count * sizeof(Point));
-        *num_moves = count;
-        printf("Pawn nMoves: %d\n", count);
-        return moves;
 }
 
+void show_moves_pawn(ChessBoard board[8][8], int ColorState[8][8], ChessPiece piece)
+{
+        int file = piece.file;
+        int rank = piece.rank;
+        int rangeX[4]   = { -1, 0, 0, 1   };
+        int B_rangeY[4] = { 1, 1, 2, 1    };
+        int W_rangeY[4] = { -1, -1, -2, -1 };
+
+        if (piece.type == B_PAWN) {
+                for (int i = 0; i < 4; ++i) {
+                        if ( file + rangeX[i] >= 0 && rank + B_rangeY[i] >= 0 
+                            && file + rangeX[i] <= 7 && rank + B_rangeY[i] <= 7 ) {
+                                ColorState[file + rangeX[i]][rank + B_rangeY[i]] = 3;
+                        }
+                }
+
+        } else if (piece.type == W_PAWN) {
+                for (int i = 0; i < 4; ++i) {
+                        if ( file + rangeX[i] >= 0 && rank + W_rangeY[i] >= 0 
+                            && file + rangeX[i] <= 7 && rank + W_rangeY[i] <= 7 ) {
+                                ColorState[file + rangeX[i]][rank + W_rangeY[i]] = 3;
+                        }
+                }
+
+        }                
+        
+}
+
+#if 0
 void moves_rook(ChessPiece *board[8][8], int type, int x, int y, Point moves[14])
 {
         int offset = 0;

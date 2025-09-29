@@ -3,7 +3,7 @@
 #ifndef TYPES_H
 #define TYPES_H
 typedef struct {
-        int type, file, rank, special_move, dragging;
+        int type, file, rank, special_move, holding;
         Texture2D texture;
         Vector2 pos;
 //        Rectangle grabArea;
