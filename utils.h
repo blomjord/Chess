@@ -9,8 +9,7 @@
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 800
-#define SQUARE_WIDTH 100
-#define SQUARE_HEIGHT 100
+#define SQUARE_SIZE 100
 
 #define LIGHTBEIGE (Color) { 230, 215, 215, 255 }
 #define LIGHTBROWN (Color) { 196, 133, 94, 255 }

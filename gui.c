@@ -27,10 +27,10 @@ void InitChessboard(Rectangle ChessBoard[8][8])
 {
         for (int row = 0; row < 8; ++row) {
                 for (int col = 0; col < 8; ++col) {
-                        ChessBoard[row][col].x = row * SQUARE_WIDTH;
-                        ChessBoard[row][col].y = col * SQUARE_HEIGHT;
-                        ChessBoard[row][col].width   = SQUARE_WIDTH;
-                        ChessBoard[row][col].height  = SQUARE_HEIGHT;
+                        ChessBoard[row][col].x = row * SQUARE_SIZE;
+                        ChessBoard[row][col].y = col * SQUARE_SIZE;
+                        ChessBoard[row][col].width   = SQUARE_SIZE;
+                        ChessBoard[row][col].height  = SQUARE_SIZE;
                 }
         }
 }
@@ -61,14 +61,14 @@ void DrawChesspieces(ChessPiece pieces[64], Vector2 mousePoint)
         for (int i = 0; i < 64; ++i) {
                 if (pieces[i].type == EMPTY)
                         continue;
-                if (pieces[i].holding) {
-                        textureX = mousePoint.x - PIXEL_OFFSET;
-                        textureY = mousePoint.y - PIXEL_OFFSET;
+                if (!pieces[i].holding) {
+                        textureX = (pieces[i].file * SQUARE_SIZE) + PIXEL_OFFSET;
+                        textureY = (pieces[i].rank * SQUARE_SIZE) + PIXEL_OFFSET;
                         DrawTexture(pieces[i].texture, textureX, textureY, WHITE);
 
                 } else {
-                        textureX = (pieces[i].file * SQUARE_WIDTH) + PIXEL_OFFSET;
-                        textureY = (pieces[i].rank * SQUARE_HEIGHT) + PIXEL_OFFSET;
+                        textureX = mousePoint.x - PIXEL_OFFSET;
+                        textureY = mousePoint.y - PIXEL_OFFSET;
                         DrawTexture(pieces[i].texture, textureX, textureY, WHITE);
                 }
         }
@@ -99,8 +99,8 @@ void DrawChesspieceLegalMoves(int ColorState[8][8])
         for (int file = 0; file < 8; ++file) {
                 for (int rank = 0; rank < 8; ++rank) {
                         if (ColorState[file][rank] == 3) {
-                                DrawCircle((file * SQUARE_WIDTH) + 50,
-                                            (rank * SQUARE_HEIGHT) + 50,
+                                DrawCircle((file * SQUARE_SIZE) + 50,
+                                           (rank * SQUARE_SIZE) + 50,
                                             15.0f, BLUE);
                         }
                 }

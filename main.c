@@ -3,11 +3,39 @@
 #include "gui.h"
 #include "types.h"
 
+void DrawFrame(void);
+
+ChessPiece pieces[64];
+ChessBoard board[8][8];
+Rectangle Background[8][8];
+Image Icons[13];
+Texture2D IconTextures[13];
+
+int heldPieceIndex  = -1;
+Vector2 mousePoint  = { 0.0f, 0.0f };
+Vector2 touchPoint  = { 0.0f, 0.0f };
+Rectangle touchArea = { 0.0f, 0.0f, 5.0f, 5.0f };
+Rectangle pieceArea = { 0.0f, 0.0f, 100.0f, 100.0f };
+
+int game_over = 0;
+        
+        int ColorState[8][8];
+
+Point get_index_by_coords(Vector2 mousePoint)
+{
+        Point point;
+        point.x = (int) mousePoint.x;
+        point.y = (int) mousePoint.y;
+        point.x /= 100;
+        point.y /= 100;
+        return point;
+}
+
 Vector2 square_coords(int file, int rank)
 {
         Vector2 pos;
-        pos.x = file * SQUARE_WIDTH + 50;
-        pos.y = rank * SQUARE_HEIGHT + 50;
+        pos.x = file * SQUARE_SIZE + 50;
+        pos.y = rank * SQUARE_SIZE + 50;
         return pos;
 }
 
@@ -77,18 +105,25 @@ void initialize_board(ChessBoard board[8][8], ChessPiece pieces[64])
         }
 }
 
+void RenderFrame(void)
+{
+        BeginDrawing();
+
+        if (!game_over) {
+                DrawChessboard(Background, LIGHTBEIGE, LIGHTBROWN);
+                DrawChesspieceLegalMoves(ColorState);
+                DrawMouseHoverAction(Background, ColorState);
+                DrawChesspieces(pieces, mousePoint);
+                EndDrawing();
+        }
+
+}
 int main(void)
 {
         InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Chess");
         SetTargetFPS(60);
         SetExitKey(KEY_Q);
         
-        ChessPiece pieces[64];
-        ChessBoard board[8][8];
-        Rectangle Background[8][8];
-        
-        Image Icons[13];
-        Texture2D IconTextures[13];
         LoadIcons(Icons);
         LoadIconsAsTextures(Icons, IconTextures);
         UnloadIcons(Icons);
@@ -96,13 +131,6 @@ int main(void)
         initialize_pieces(pieces, IconTextures);
         initialize_board(board, pieces);
         
-        int heldPieceIndex = -1;
-        Vector2 mousePoint = { 0.0f, 0.0f };
-        Vector2 touchPoint = { 0.0f, 0.0f };
-        Rectangle touchArea = { 0.0f, 0.0f, 25.0f, 25.0f };
-        Rectangle pieceArea = { 0.0f, 0.0f, 80.0f, 80.0f };
-        
-        int ColorState[8][8];
         InitChessboard(Background);
         
         while (!WindowShouldClose()) {
@@ -117,8 +145,8 @@ int main(void)
                                         && heldPieceIndex == -1) {
                         mousePoint = GetMousePosition();
                         for (int i = 0; i < 64; ++i) {
-                                pieceArea.x = pieces[i].pos.x;
-                                pieceArea.y = pieces[i].pos.y;
+                                pieceArea.x = pieces[i].pos.x - 50;
+                                pieceArea.y = pieces[i].pos.y - 50;
                                 touchArea.x = mousePoint.x;
                                 touchArea.y = mousePoint.y;
                                 
@@ -139,24 +167,26 @@ int main(void)
                         }
 
                         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-                                pieces[heldPieceIndex].pos.x = (pieces[heldPieceIndex].file * SQUARE_WIDTH) + PIXEL_OFFSET;
-                                pieces[heldPieceIndex].pos.y = (pieces[heldPieceIndex].rank * SQUARE_HEIGHT) + PIXEL_OFFSET;
-                                pieces[heldPieceIndex].holding = 0;
-                                heldPieceIndex = -1;
+                                mousePoint = GetMousePosition();
+                                Point target = get_index_by_coords(mousePoint);
+                                // Swap allowed: swapping!
+                                if (swap_allowed(board, pieces[heldPieceIndex], target.x, target.y)) {
+                                        // TODO: Segfault inside swap_pointers
+                                        swap_pointers(pieces[heldPieceIndex], board[target.x][target.y].piece);
+                                        // Take heldPieceIndex piece, swap with swap.x, swap.y.
+                                        printf("Should swap!\n");
+                                } else { 
+                                        pieces[heldPieceIndex].pos.x = (pieces[heldPieceIndex].file * SQUARE_SIZE) + PIXEL_OFFSET;
+                                        pieces[heldPieceIndex].pos.y = (pieces[heldPieceIndex].rank * SQUARE_SIZE) + PIXEL_OFFSET;
+                                        pieces[heldPieceIndex].holding = 0;
+                                        heldPieceIndex = -1;
+                                        printf("No swap!\n");
+                                }
                         }
                 }
                 
-                
-                // Game state update
-                
-                // Hold pawn, change ColorState of moves to 2;
-                // Graphics drawing
-                BeginDrawing();
-                DrawChessboard(Background, LIGHTBEIGE, LIGHTBROWN);
-                DrawMouseHoverAction(Background, ColorState);
-                DrawChesspieceLegalMoves(ColorState);
-                DrawChesspieces(pieces, mousePoint);
-                EndDrawing();
+//                UpdateFrame();
+                RenderFrame();
         }
         CloseWindow();
         return 0;
