@@ -37,9 +37,9 @@ void initialize_pieces(ChessPiece pieces[64], Texture2D IconTextures[13])
         // Init of pawns and empty cells
         int index = 16;
         for (int file = 0; file < 8; ++file)
-                pieces[index++] = (ChessPiece) { B_PAWN, file, 1, 0, 0, IconTextures[5], square_coords(file, 1) };
+                pieces[index++] = (ChessPiece) { EMPTY, file, 1, 0, 0, IconTextures[5], square_coords(file, 1) };
         for (int file = 0; file < 8; ++file)
-                pieces[index++] = (ChessPiece) { W_PAWN, file, 6, 0, 0, IconTextures[11], square_coords(file, 6) };
+                pieces[index++] = (ChessPiece) { EMPTY, file, 6, 0, 0, IconTextures[11], square_coords(file, 6) };
         for (int file = 0; file < 8; ++file) {
                 for (int rank = 2; rank < 6; ++rank)
                         pieces[index++] = (ChessPiece) { EMPTY, file, rank, 0, 0, IconTextures[12], square_coords(file, rank) };
@@ -135,7 +135,7 @@ int main(void)
                         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
                                 pieces[heldPieceIndex].pos.x = mousePoint.x;
                                 pieces[heldPieceIndex].pos.y = mousePoint.y;
-                                show_moves(Background, ColorState, pieces[heldPieceIndex]);
+                                show_moves(board, ColorState, pieces[heldPieceIndex]);
                         }
 
                         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
