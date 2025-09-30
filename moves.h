@@ -5,13 +5,9 @@
 #include "types.h"
 
 void show_moves_pawn(ChessBoard board[8][8], int ColorState[8][8], ChessPiece piece);
-//Point *moves_pawn  (ChessPiece *board[8][8], ChessPiece *piece, int *num_moves);
-//void moves_rook  (ChessPiece *board[8][8], ChessPiece *piece, Point moves[14]);
-//void moves_knight(BoardCell board[8][8], ChessPiece piece);
+void show_moves_rook(ChessBoard board[8][8], int ColorState[8][8], ChessPiece piece);
+void show_moves_knight(ChessBoard board[8][8], int ColorState[8][8], ChessPiece piece);
+void show_moves_bishop(ChessBoard board[8][8], int ColorState[8][8], ChessPiece piece);
+void show_moves_king(ChessBoard board[8][8], int ColorState[8][8], ChessPiece piece);
 
-//int is_move_legal(BoardCell board[8][8], int posX, int posY, int targetX, int targetY);
-/*void moves_bishop(ChessPiece *board[8][8], ChessPiece *piece, Point *moves);
-void moves_queen (ChessPiece *board[8][8], ChessPiece *piece, Point *moves);
-void moves_king  (ChessPiece *board[8][8], ChessPiece *piece, Point *moves);
-void filter_illegal_moves(ChessPiece *board[8][8], int type, int num_moves, Point *available_moves);*/
 #endif

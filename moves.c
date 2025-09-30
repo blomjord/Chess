@@ -13,23 +13,23 @@ void show_moves(ChessBoard board[8][8], int ColorState[8][8], ChessPiece piece)
                break;
         case  2:
         case -2:
-                printf("Case 2.\n");
+               show_moves_rook(board, ColorState, piece);
                 break;
         case  3:
         case -3:
-                printf("Case 3.\n");
+                show_moves_knight(board, ColorState, piece);
                 break;
         case  4:
         case -4:
-                printf("Case 4.\n");
+                show_moves_bishop(board, ColorState, piece);
                 break;
         case  5:
         case -5:
-                printf("Case 5.\n");
+                printf("Queen.\n");
                 break;
         case  6:
         case -6:
-                printf("Case 6.\n");
+                show_moves_king(board, ColorState, piece);
                 break;
         default:
                 // Empty
@@ -41,6 +41,7 @@ void show_moves(ChessBoard board[8][8], int ColorState[8][8], ChessPiece piece)
 
 void show_moves_pawn(ChessBoard board[8][8], int ColorState[8][8], ChessPiece piece)
 {
+        int tarX, tarY;
         int file = piece.file;
         int rank = piece.rank;
         int rangeX[4]   = { -1, 0, 0, 1   };
@@ -49,17 +50,21 @@ void show_moves_pawn(ChessBoard board[8][8], int ColorState[8][8], ChessPiece pi
 
         if (piece.type == B_PAWN) {
                 for (int i = 0; i < 4; ++i) {
-                        if ( file + rangeX[i] >= 0 && rank + B_rangeY[i] >= 0 
-                            && file + rangeX[i] <= 7 && rank + B_rangeY[i] <= 7 ) {
-                                ColorState[file + rangeX[i]][rank + B_rangeY[i]] = 3;
+                        tarX = file + rangeX[i];
+                        tarY = rank + B_rangeY[i];
+                        if ( tarX >= 0 && tarY >= 0 
+                          && tarX <= 7 && tarY <= 7 ) {
+                                ColorState[tarX][tarY] = 3;
                         }
                 }
 
         } else if (piece.type == W_PAWN) {
                 for (int i = 0; i < 4; ++i) {
-                        if ( file + rangeX[i] >= 0 && rank + W_rangeY[i] >= 0 
-                            && file + rangeX[i] <= 7 && rank + W_rangeY[i] <= 7 ) {
-                                ColorState[file + rangeX[i]][rank + W_rangeY[i]] = 3;
+                        tarX = file + rangeX[i];
+                        tarY = rank + W_rangeY[i];
+                        if ( tarX >= 0 && tarY >= 0 
+                          && tarX <= 7 && tarY <= 7 ) {
+                                ColorState[tarX][tarY] = 3;
                         }
                 }
 
@@ -67,77 +72,100 @@ void show_moves_pawn(ChessBoard board[8][8], int ColorState[8][8], ChessPiece pi
         
 }
 
-#if 0
-void moves_rook(ChessPiece *board[8][8], int type, int x, int y, Point moves[14])
+void show_moves_rook(ChessBoard board[8][8], int ColorState[8][8], ChessPiece piece)
 {
-        int offset = 0;
-        int up    = 7 - y;
-        int down  = y;
-        int left  = x;
-        int right = 7 - x;
-        int total_moves = up + down + left + right;
-
-        // Direction: UP
-        for (int i = 0; i < up; ++i) {
-                moves[i + offset].x = x;
-                moves[i + offset].y = i + y + 1;
+        int tarX, tarY;
+        int file = piece.file;
+        int rank = piece.rank;
+        int dirX[4] = { -1, 0, 1, 0 };
+        int dirY[4] = { 0, 1, 0, -1 };
+         // TODO: This wont work as of now. Fix next time.
+        for (int i = 0; i < 14; ++i) {
+                tarX = file + range[i];
+                if (tarX >= 0  && tarX <= 7) {
+                        ColorState[tarX][rank] = 3;
+                }
         }
-        offset += up;
-        
-        // Direction: DOWN
-        for (int i = 0; i < down; ++i) {
-                moves[i + offset].x = x;
-                moves[i + offset].y = y - i - 1;
-        }
-        offset += down;
 
-        // Direction LEFT
-        for (int i = 0; i < left; ++i) {
-                moves[i + offset].x = x - i -1;
-                moves[i + offset].y = y;
-        }
-        offset += left;
-
-        // Direction RIGHT
-        for (int i = 0; i < right; ++i) {
-                moves[i + offset].x = x + i + 1;
-                moves[i + offset].y = y;
-        }
-}
-#endif
-void moves_knight(ChessPiece board[8][8], ChessPiece piece)
-{
-        int targetX, targetY;
-        int posX = piece.file;
-        int posY = piece.rank;
-        int rangeX[8] = { 2, 1, -1, -2, -2, -1, 1, 2 };
-        int rangeY[8] = { 1, 2, 2, 1, -1, -2, -2, -1 };
-        int count = 0;
-
-        for (int i = 0; i < 8; ++i) {
-                targetX = posX + rangeX[i];
-                targetY = posY + rangeY[i];
-                if (is_move_legal(board, posX, posY, targetX, targetY)) {
-                        count++;
+        for (int i = 0; i < 14; ++i) {
+                tarY = rank + range[i];
+                if (tarY >= 0  && tarY <= 7) {
+                        ColorState[file][tarY] = 3;
                 }
         }
 }
 
-/*
-void moves_bishop(int type, int x, int y, Point moves)
+void show_moves_knight(ChessBoard board[8][8], int ColorState[8][8], ChessPiece piece)
 {
+        int tarX, tarY;
+        int file = piece.file;
+        int rank = piece.rank;
+        int rangeX[8] = { -2, -1, 1, 2, 2, 1, -1, -2 };
+        int rangeY[8] = { 1, 2, 2, 1, -1, -2, -2, -1 };
 
+        for (int i = 0; i < 8; ++i) {
+                tarX = file + rangeX[i];
+                tarY = rank + rangeY[i];
+                if (tarX >= 0 && tarY >= 0
+                 && tarX <= 7 && tarY <= 7) {
+                        ColorState[tarX][tarY] = 3;
+                }
+        }
 }
 
+void show_moves_bishop(ChessBoard board[8][8], int ColorState[8][8], ChessPiece piece)
+{
+        int tarX, tarY;
+        int file = piece.file;
+        int rank = piece.rank;
+        int dirX[4] = { -1, 1, 1, -1 };
+        int dirY[4] = { 1, 1, -1, -1 };
+
+        for (int i = 0; i < 4; ++i) {
+                tarX = file;
+                tarY = rank;
+                while (1) {
+                        tarX += dirX[i];
+                        tarY += dirY[i];
+
+                        if (tarX < 0 || tarY < 0 || tarX > 7 || tarY > 7)
+                                break;
+                        // TODO: Fix this segfault 
+                        if (board[tarX][tarY].piece->type == EMPTY) {
+                                ColorState[tarX][tarY] = 3;
+                        
+                        } else {
+                                if (board[tarX][tarY].piece->type * piece.type < 0)
+                                        ColorState[tarX][tarY] = 3;
+                                break;
+                        }
+                }
+        }        
+}
+
+#if 0
 void moves_queen(int type, int x, int y, Point moves)
 {
 
 }
-
-void moves_king(int type, int x, int y, Point moves)
+#endif
+void show_moves_king(ChessBoard board[8][8], int ColorState[8][8], ChessPiece piece)
 {
+        int tarX, tarY;
+        int file = piece.file;
+        int rank = piece.rank;
+        int rangeX[8] = { -1, 0, 1, 1, 1, 0, -1, -1 };
+        int rangeY[8] = { 1, 1, 1, 0, -1, -1, -1, 0 };
 
-}*/
+        for (int i = 0; i < 8; ++i) {
+                tarX = file + rangeX[i];
+                tarY = rank + rangeY[i];
+                if (tarX >= 0 && tarY >= 0
+                 && tarX <= 7 && tarY <= 7) {
+                        ColorState[tarX][tarY] = 3;
+                }
+        }
+}
 
 int is_move_legal(ChessPiece board[8][8], int posX, int posY, int targetX, int targetY)
 {

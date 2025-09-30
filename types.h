@@ -6,7 +6,6 @@ typedef struct {
         int type, file, rank, special_move, holding;
         Texture2D texture;
         Vector2 pos;
-//        Rectangle grabArea;
 } ChessPiece;
 
 typedef struct {
