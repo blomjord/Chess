@@ -3,7 +3,11 @@
 #include "gui.h"
 #include "types.h"
 
-void DrawFrame(void);
+void RenderFrame(void);
+void initialize_pieces(ChessPiece pieces[64], Texture2D IconTextures[13]);
+void initialize_board(ChessBoard board[8][8], ChessPiece pieces[64]);
+void InitGame();
+Point get_index_by_coords(float x, float y);
 
 ChessPiece pieces[64];
 ChessBoard board[8][8];
@@ -21,11 +25,77 @@ int game_over = 0;
         
         int ColorState[8][8];
 
-Point get_index_by_coords(Vector2 mousePoint)
+int main(void)
+{
+        InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Chess");
+        InitGame();
+
+        
+        while (!WindowShouldClose()) {
+                // Events
+                mousePoint = GetMousePosition();
+                touchArea.x = mousePoint.x;
+                touchArea.y = mousePoint.y;
+
+                // void DetectActionMouseHover
+                DetectActionMouseHover(mousePoint, Background, ColorState);
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)
+                                        && heldPieceIndex == -1) {
+                        mousePoint = GetMousePosition();
+                        for (int i = 0; i < 64; ++i) {
+                                pieceArea.x = pieces[i].pos.x - 50;
+                                pieceArea.y = pieces[i].pos.y - 50;
+                                touchArea.x = mousePoint.x;
+                                touchArea.y = mousePoint.y;
+                                
+                                if (pieces[i].type != EMPTY
+                                       && CheckCollisionRecs(touchArea, pieceArea)) {
+                                        heldPieceIndex = i;
+                                        pieces[i].holding = 1;
+                                        break;
+                                }         
+                        }
+                }
+                if (heldPieceIndex != -1) {
+                        mousePoint = GetMousePosition();
+                        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+                                pieces[heldPieceIndex].pos.x = mousePoint.x;
+                                pieces[heldPieceIndex].pos.y = mousePoint.y;
+                                show_moves(board, ColorState, pieces[heldPieceIndex]);
+                        }
+
+                        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+                                mousePoint = GetMousePosition();
+                                Point source = get_index_by_coords(pieces[heldPieceIndex].pos.x, pieces[heldPieceIndex].pos.x);
+                                Point target = get_index_by_coords(mousePoint.x, mousePoint.y);
+                                // Swap allowed: swapping!
+                                if (swap_allowed(board, pieces[heldPieceIndex], target.x, target.y)) {
+                                        // TODO: Segfault inside swap_pointers
+                                        swap_pointers(board[source.x][source.y].piece, board[target.x][target.y].piece);
+                                        // Take heldPieceIndex piece, swap with swap.x, swap.y.
+                                        printf("Should swap!\n");
+                                } else { 
+                                        pieces[heldPieceIndex].pos.x = (pieces[heldPieceIndex].file * SQUARE_SIZE) + PIXEL_OFFSET;
+                                        pieces[heldPieceIndex].pos.y = (pieces[heldPieceIndex].rank * SQUARE_SIZE) + PIXEL_OFFSET;
+                                        pieces[heldPieceIndex].holding = 0;
+                                        heldPieceIndex = -1;
+                                        printf("No swap!\n");
+                                }
+                        }
+                }
+                
+//                UpdateFrame();
+                RenderFrame();
+        }
+        CloseWindow();
+        return 0;
+}
+
+Point get_index_by_coords(float x, float y)
 {
         Point point;
-        point.x = (int) mousePoint.x;
-        point.y = (int) mousePoint.y;
+        point.x = (int) x;
+        point.y = (int) y;
         point.x /= 100;
         point.y /= 100;
         return point;
@@ -39,6 +109,17 @@ Vector2 square_coords(int file, int rank)
         return pos;
 }
 
+void InitGame()
+{
+        SetTargetFPS(60);
+        SetExitKey(KEY_Q);
+        LoadIcons(Icons);
+        LoadIconsAsTextures(Icons, IconTextures);
+        UnloadIcons(Icons);
+        initialize_pieces(pieces, IconTextures);
+        initialize_board(board, pieces);
+        InitChessboard(Background);
+}
 /*
  * Purpose: God-awful init func..
  * Notes:
@@ -118,76 +199,4 @@ void RenderFrame(void)
         }
 
 }
-int main(void)
-{
-        InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Chess");
-        SetTargetFPS(60);
-        SetExitKey(KEY_Q);
-        
-        LoadIcons(Icons);
-        LoadIconsAsTextures(Icons, IconTextures);
-        UnloadIcons(Icons);
 
-        initialize_pieces(pieces, IconTextures);
-        initialize_board(board, pieces);
-        
-        InitChessboard(Background);
-        
-        while (!WindowShouldClose()) {
-                // Events
-                mousePoint = GetMousePosition();
-                touchArea.x = mousePoint.x;
-                touchArea.y = mousePoint.y;
-
-                // void DetectActionMouseHover
-                DetectActionMouseHover(mousePoint, Background, ColorState);
-                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)
-                                        && heldPieceIndex == -1) {
-                        mousePoint = GetMousePosition();
-                        for (int i = 0; i < 64; ++i) {
-                                pieceArea.x = pieces[i].pos.x - 50;
-                                pieceArea.y = pieces[i].pos.y - 50;
-                                touchArea.x = mousePoint.x;
-                                touchArea.y = mousePoint.y;
-                                
-                                if (pieces[i].type != EMPTY
-                                       && CheckCollisionRecs(touchArea, pieceArea)) {
-                                        heldPieceIndex = i;
-                                        pieces[i].holding = 1;
-                                        break;
-                                }         
-                        }
-                }
-                if (heldPieceIndex != -1) {
-                        mousePoint = GetMousePosition();
-                        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-                                pieces[heldPieceIndex].pos.x = mousePoint.x;
-                                pieces[heldPieceIndex].pos.y = mousePoint.y;
-                                show_moves(board, ColorState, pieces[heldPieceIndex]);
-                        }
-
-                        if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-                                mousePoint = GetMousePosition();
-                                Point target = get_index_by_coords(mousePoint);
-                                // Swap allowed: swapping!
-                                if (swap_allowed(board, pieces[heldPieceIndex], target.x, target.y)) {
-                                        // TODO: Segfault inside swap_pointers
-                                        swap_pointers(pieces[heldPieceIndex], board[target.x][target.y].piece);
-                                        // Take heldPieceIndex piece, swap with swap.x, swap.y.
-                                        printf("Should swap!\n");
-                                } else { 
-                                        pieces[heldPieceIndex].pos.x = (pieces[heldPieceIndex].file * SQUARE_SIZE) + PIXEL_OFFSET;
-                                        pieces[heldPieceIndex].pos.y = (pieces[heldPieceIndex].rank * SQUARE_SIZE) + PIXEL_OFFSET;
-                                        pieces[heldPieceIndex].holding = 0;
-                                        heldPieceIndex = -1;
-                                        printf("No swap!\n");
-                                }
-                        }
-                }
-                
-//                UpdateFrame();
-                RenderFrame();
-        }
-        CloseWindow();
-        return 0;
-}
