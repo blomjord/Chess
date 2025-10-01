@@ -2,22 +2,6 @@
 #include "moves.h"
 #include "gui.h"
 
-void swap_pointers(ChessPiece *p1, ChessPiece *p2)
-{       // TODO: Segfault
-        ChessPiece tmp = *p1;
-        *p1 = *p2;
-        *p2 = tmp;
-}
-
-/*
- * Purpose:
- * Notes:
- * */
-void move(ChessBoard board[8][8])
-{
-        
-}
-
 /*
  * Purpose:
  * Notes:
@@ -28,7 +12,7 @@ int swap_allowed(ChessBoard board[8][8], ChessPiece piece, int tarX, int tarY)
         int rank = piece.rank;
         int type = piece.type;
 
-        if (board[tarX][tarY].piece->type == EMPTY) {
+        if (board[tarX][tarY].piece == NULL) {
                 return 1;
         } else {
                 if (board[tarX][tarY].piece->type * type < 0)
@@ -129,7 +113,7 @@ void show_moves_rook(ChessBoard board[8][8], int ColorState[8][8], ChessPiece pi
                         if (tarX < 0 || tarY < 0 || tarX > 7 || tarY > 7)
                                 break;
 
-                        if (board[tarX][tarY].piece->type == EMPTY) {
+                        if (board[tarX][tarY].piece == NULL) {
                                 ColorState[tarX][tarY] = 3;
 
                         } else {
@@ -156,7 +140,7 @@ void show_moves_knight(ChessBoard board[8][8], int ColorState[8][8], ChessPiece 
               
                 if (tarX >= 0 && tarY >= 0
                  && tarX <= 7 && tarY <= 7) {
-                        if (board[tarX][tarY].piece->type == EMPTY) {
+                        if (board[tarX][tarY].piece == NULL) {
                                 ColorState[tarX][tarY] = 3;
 
                         } else if (board[tarX][tarY].piece->type * type < 0) {
@@ -186,7 +170,7 @@ void show_moves_bishop(ChessBoard board[8][8], int ColorState[8][8], ChessPiece 
                         if (tarX < 0 || tarY < 0 || tarX > 7 || tarY > 7)
                                 break;
 
-                        if (board[tarX][tarY].piece->type == EMPTY) {
+                        if (board[tarX][tarY].piece == NULL) {
                                 ColorState[tarX][tarY] = 3;
                         
                         } else {
@@ -218,7 +202,7 @@ void show_moves_queen(ChessBoard board[8][8], int ColorState[8][8], ChessPiece p
                         if (tarX < 0 || tarY < 0 || tarX > 7 || tarY > 7)
                                 break;
 
-                        if (board[tarX][tarY].piece->type == EMPTY) {
+                        if (board[tarX][tarY].piece == NULL) {
                                 ColorState[tarX][tarY] = 3;
                         } else {
 
@@ -245,7 +229,7 @@ void show_moves_king(ChessBoard board[8][8], int ColorState[8][8], ChessPiece pi
                 if (tarX >= 0 && tarY >= 0
                  && tarX <= 7 && tarY <= 7) {
                 
-                        if (board[tarX][tarY].piece->type == EMPTY) {
+                        if (board[tarX][tarY].piece == NULL) {
                                 ColorState[tarX][tarY] = 3;
                 
                         } else if (board[tarX][tarY].piece->type * type < 0) {

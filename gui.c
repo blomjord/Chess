@@ -58,9 +58,11 @@ void DrawMouseHoverAction(Rectangle ChessBoard[8][8], int ColorState[8][8])
 void DrawChesspieces(ChessPiece pieces[64], Vector2 mousePoint)
 {
         int textureX, textureY;
-        for (int i = 0; i < 64; ++i) {
+        for (int i = 63; i > -1; --i) {
+//        for (int i = 0; i < 64; ++i) {
                 if (pieces[i].type == EMPTY)
                         continue;
+
                 if (!pieces[i].holding) {
                         textureX = (pieces[i].file * SQUARE_SIZE) + PIXEL_OFFSET;
                         textureY = (pieces[i].rank * SQUARE_SIZE) + PIXEL_OFFSET;
@@ -101,7 +103,7 @@ void DrawChesspieceLegalMoves(int ColorState[8][8])
                         if (ColorState[file][rank] == 3) {
                                 DrawCircle((file * SQUARE_SIZE) + 50,
                                            (rank * SQUARE_SIZE) + 50,
-                                            15.0f, BLUE);
+                                            20.0f, BLUE);
                         }
                 }
         }

@@ -6,6 +6,7 @@
 void RenderFrame(void);
 void initialize_pieces(ChessPiece pieces[64], Texture2D IconTextures[13]);
 void initialize_board(ChessBoard board[8][8], ChessPiece pieces[64]);
+int get_array_index_by_coords(ChessPiece pieces[64], int x, int y);
 void InitGame();
 Point get_index_by_coords(float x, float y);
 
@@ -23,7 +24,7 @@ Rectangle pieceArea = { 0.0f, 0.0f, 100.0f, 100.0f };
 
 int game_over = 0;
         
-        int ColorState[8][8];
+int ColorState[8][8];
 int debugCtr = 0;
 int main(void)
 {
@@ -57,9 +58,11 @@ int main(void)
                                 }         
                         }
                 }
+
+                // If a piece is being held
                 if (heldPieceIndex != -1) {
                         mousePoint = GetMousePosition();
-                        Point source = get_index_by_coords(pieces[heldPieceIndex].pos.x, pieces[heldPieceIndex].pos.y);
+                        
                         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
                                 pieces[heldPieceIndex].pos.x = mousePoint.x;
                                 pieces[heldPieceIndex].pos.y = mousePoint.y;
@@ -70,22 +73,29 @@ int main(void)
                                 mousePoint = GetMousePosition();
                                 Point target = get_index_by_coords(mousePoint.x, mousePoint.y);
                                 if (swap_allowed(board, pieces[heldPieceIndex], target.x, target.y)) {
-                                        //TODO: finish swapping functionality.
-                                        // Empty/enemy cell needs to be occupied with source piece.
-                                        // After release, source piece is no longer targetable.
-#if 0
-                                        pieces[heldPieceIndex].pos.x = target.x;
-                                        pieces[heldPieceIndex].pos.y = target.y;
-                                        printf("Target.xy: (%d,%d)\n", target.x, target.y);
+                                        // Chess piece moves from source to target 
+                                        Point source;
+                                        source.x = pieces[heldPieceIndex].file;
+                                        source.y = pieces[heldPieceIndex].rank;
+
+                                        ChessPiece *moving = board[source.x][source.y].piece;
+                                        ChessPiece *capture = board[target.x][target.y].piece;
+
+                                        if (capture != NULL && capture->type != EMPTY) {
+                                                capture->type = EMPTY;
+                                                board[target.x][target.y].piece = NULL;
+                                        }
+
+                                        board[source.x][source.y].piece = NULL;
+                                        board[target.x][target.y].piece = moving;
+                                        
+                                        moving->file = target.x;
+                                        moving->rank = target.y;
+                                        moving->pos.x = (target.x * SQUARE_SIZE) + PIXEL_OFFSET;
+                                        moving->pos.y = (target.y * SQUARE_SIZE) + PIXEL_OFFSET;
+                                        
                                         pieces[heldPieceIndex].holding = 0;
                                         heldPieceIndex = -1;
-                                        swap_pointers(board[source.x][source.y].piece, board[target.x][target.y].piece);
-#endif
-                                        pieces[heldPieceIndex].pos.x = (pieces[heldPieceIndex].file * SQUARE_SIZE);
-                                        pieces[heldPieceIndex].pos.y = (pieces[heldPieceIndex].rank * SQUARE_SIZE);
-                                        pieces[heldPieceIndex].holding = 0;
-                                        heldPieceIndex = -1;
-                                        printf("Swap!\n");
                                 } else { 
                                         pieces[heldPieceIndex].pos.x = (pieces[heldPieceIndex].file * SQUARE_SIZE) + PIXEL_OFFSET;
                                         pieces[heldPieceIndex].pos.y = (pieces[heldPieceIndex].rank * SQUARE_SIZE) + PIXEL_OFFSET;
@@ -95,8 +105,6 @@ int main(void)
                                 }
                         }
                 }
-                
-//                UpdateFrame();
                 RenderFrame();
         }
         CloseWindow();
@@ -158,9 +166,9 @@ void initialize_pieces(ChessPiece pieces[64], Texture2D IconTextures[13])
         // Init of pawns and empty cells
         int index = 16;
         for (int file = 0; file < 8; ++file)
-                pieces[index++] = (ChessPiece) { EMPTY, file, 1, 0, 0, IconTextures[5], square_coords(file, 1) };
+                pieces[index++] = (ChessPiece) { B_PAWN, file, 1, 0, 0, IconTextures[5], square_coords(file, 1) };
         for (int file = 0; file < 8; ++file)
-                pieces[index++] = (ChessPiece) { EMPTY, file, 6, 0, 0, IconTextures[11], square_coords(file, 6) };
+                pieces[index++] = (ChessPiece) { W_PAWN, file, 6, 0, 0, IconTextures[11], square_coords(file, 6) };
         for (int file = 0; file < 8; ++file) {
                 for (int rank = 2; rank < 6; ++rank)
                         pieces[index++] = (ChessPiece) { EMPTY, file, rank, 0, 0, IconTextures[12], square_coords(file, rank) };
@@ -173,11 +181,20 @@ void initialize_pieces(ChessPiece pieces[64], Texture2D IconTextures[13])
 ChessPiece *get_piece_by_coords(ChessPiece pieces[64], int x, int y)
 {
         for (int i = 0; i < 64; ++i)
-                if (pieces[i].file == x && pieces[i].rank == y)
+                if (pieces[i].file == x && pieces[i].rank == y && pieces[i].type != EMPTY)
                         return &pieces[i];
-        fprintf(stderr, "ERROR: No piece found at (%d, %d)\n", x, y);
+        return NULL;
+}
+
+int get_array_index_by_coords(ChessPiece pieces[64], int x, int y)
+{
+        for (int i = 0; i < 64; ++i)
+                if (pieces[i].file == x && pieces[i].rank == y)
+                        return i;
+        fprintf(stderr, "No chess piece found. Exiting.");
         exit(1);
 }
+
 
 /*
  * Purpose:
@@ -193,6 +210,10 @@ void initialize_board(ChessBoard board[8][8], ChessPiece pieces[64])
                                 board[file][rank].file = file;
                                 board[file][rank].rank = rank;
                                 board[file][rank].piece = piece;
+                        } else {
+                                board[file][rank].file = file;
+                                board[file][rank].rank = rank;
+                                board[file][rank].piece = NULL;
                         }
                 } 
         }
@@ -201,14 +222,11 @@ void initialize_board(ChessBoard board[8][8], ChessPiece pieces[64])
 void RenderFrame(void)
 {
         BeginDrawing();
-
-        if (!game_over) {
-                DrawChessboard(Background, LIGHTBEIGE, LIGHTBROWN);
-                DrawChesspieceLegalMoves(ColorState);
-                DrawMouseHoverAction(Background, ColorState);
-                DrawChesspieces(pieces, mousePoint);
-                EndDrawing();
-        }
+        DrawChessboard(Background, LIGHTBEIGE, LIGHTBROWN);
+        DrawChesspieceLegalMoves(ColorState);
+        DrawMouseHoverAction(Background, ColorState);
+        DrawChesspieces(pieces, mousePoint);
+        EndDrawing();
 
 }
 
