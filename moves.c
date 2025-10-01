@@ -2,11 +2,11 @@
 #include "moves.h"
 #include "gui.h"
 
-void swap_pointers(ChessPiece *piece1, ChessPiece *piece2)
+void swap_pointers(ChessPiece *p1, ChessPiece *p2)
 {       // TODO: Segfault
-        ChessPiece tmp = *piece1;
-        *piece1 = *piece2;
-        *piece2 = tmp;
+        ChessPiece tmp = *p1;
+        *p1 = *p2;
+        *p2 = tmp;
 }
 
 /*
