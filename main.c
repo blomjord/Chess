@@ -37,9 +37,6 @@ int main(void)
                 mousePoint = GetMousePosition();
                 touchArea.x = mousePoint.x;
                 touchArea.y = mousePoint.y;
-                Point mouz = get_index_by_coords(mousePoint.x, mousePoint.y);
-                if (debugCtr % 20 == 0)
-                        printf("mouz (%d,%d)\n", mouz.x, mouz.y);
 
                 // void DetectActionMouseHover
                 DetectActionMouseHover(mousePoint, Background, ColorState);
@@ -47,13 +44,13 @@ int main(void)
                                         && heldPieceIndex == -1) {
                         mousePoint = GetMousePosition();
                         for (int i = 0; i < 64; ++i) {
-                                pieceArea.x = pieces[i].pos.x - 50;
-                                pieceArea.y = pieces[i].pos.y - 50;
+                                pieceArea.x = (float) pieces[i].file * SQUARE_SIZE;
+                                pieceArea.y = (float) pieces[i].rank * SQUARE_SIZE;
                                 touchArea.x = mousePoint.x;
                                 touchArea.y = mousePoint.y;
                                 
                                 if (pieces[i].type != EMPTY
-                                       && CheckCollisionRecs(touchArea, pieceArea)) {
+                                       && CheckCollisionPointRec(mousePoint, pieceArea)) {
                                         heldPieceIndex = i;
                                         pieces[i].holding = 1;
                                         break;
@@ -64,8 +61,6 @@ int main(void)
                         mousePoint = GetMousePosition();
                         Point source = get_index_by_coords(pieces[heldPieceIndex].pos.x, pieces[heldPieceIndex].pos.y);
                         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-                                printf("held: %d\n", heldPieceIndex);
-                                printf("Type: %d\n", pieces[heldPieceIndex].type);
                                 pieces[heldPieceIndex].pos.x = mousePoint.x;
                                 pieces[heldPieceIndex].pos.y = mousePoint.y;
                                 show_moves(board, ColorState, pieces[heldPieceIndex]);
@@ -74,17 +69,23 @@ int main(void)
                         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                                 mousePoint = GetMousePosition();
                                 Point target = get_index_by_coords(mousePoint.x, mousePoint.y);
-                                
                                 if (swap_allowed(board, pieces[heldPieceIndex], target.x, target.y)) {
                                         //TODO: finish swapping functionality.
                                         // Empty/enemy cell needs to be occupied with source piece.
                                         // After release, source piece is no longer targetable.
+#if 0
                                         pieces[heldPieceIndex].pos.x = target.x;
                                         pieces[heldPieceIndex].pos.y = target.y;
                                         printf("Target.xy: (%d,%d)\n", target.x, target.y);
                                         pieces[heldPieceIndex].holding = 0;
-                                        swap_pointers(board[source.x][source.y].piece, board[target.x][target.y].piece);
                                         heldPieceIndex = -1;
+                                        swap_pointers(board[source.x][source.y].piece, board[target.x][target.y].piece);
+#endif
+                                        pieces[heldPieceIndex].pos.x = (pieces[heldPieceIndex].file * SQUARE_SIZE);
+                                        pieces[heldPieceIndex].pos.y = (pieces[heldPieceIndex].rank * SQUARE_SIZE);
+                                        pieces[heldPieceIndex].holding = 0;
+                                        heldPieceIndex = -1;
+                                        printf("Swap!\n");
                                 } else { 
                                         pieces[heldPieceIndex].pos.x = (pieces[heldPieceIndex].file * SQUARE_SIZE) + PIXEL_OFFSET;
                                         pieces[heldPieceIndex].pos.y = (pieces[heldPieceIndex].rank * SQUARE_SIZE) + PIXEL_OFFSET;
@@ -122,7 +123,7 @@ Vector2 square_coords(int file, int rank)
 
 void InitGame()
 {
-        SetTargetFPS(20);
+        SetTargetFPS(10);
         SetExitKey(KEY_Q);
         LoadIcons(Icons);
         LoadIconsAsTextures(Icons, IconTextures);
