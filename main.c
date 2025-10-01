@@ -8,6 +8,7 @@ void initialize_pieces(ChessPiece pieces[64], Texture2D IconTextures[13]);
 void initialize_board(ChessBoard board[8][8], ChessPiece pieces[64]);
 int get_array_index_by_coords(ChessPiece pieces[64], int x, int y);
 void InitGame();
+void zero_capture_matrix();
 Point get_index_by_coords(float x, float y);
 
 ChessPiece pieces[64];
@@ -15,6 +16,7 @@ ChessBoard board[8][8];
 Rectangle Background[8][8];
 Image Icons[13];
 Texture2D IconTextures[13];
+int capture_matrix[8][8];
 
 int heldPieceIndex  = -1;
 Vector2 mousePoint  = { 0.0f, 0.0f };
@@ -66,13 +68,13 @@ int main(void)
                         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
                                 pieces[heldPieceIndex].pos.x = mousePoint.x;
                                 pieces[heldPieceIndex].pos.y = mousePoint.y;
-                                show_moves(board, ColorState, pieces[heldPieceIndex]);
+                                show_moves(board, ColorState, capture_matrix, pieces[heldPieceIndex]);
                         }
 
                         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                                 mousePoint = GetMousePosition();
                                 Point target = get_index_by_coords(mousePoint.x, mousePoint.y);
-                                if (swap_allowed(board, pieces[heldPieceIndex], target.x, target.y)) {
+                                if (swap_allowed(board, capture_matrix, pieces[heldPieceIndex], target.x, target.y)) {
                                         // Chess piece moves from source to target 
                                         Point source;
                                         source.x = pieces[heldPieceIndex].file;
@@ -96,12 +98,13 @@ int main(void)
                                         
                                         pieces[heldPieceIndex].holding = 0;
                                         heldPieceIndex = -1;
+                                        zero_capture_matrix();
                                 } else { 
                                         pieces[heldPieceIndex].pos.x = (pieces[heldPieceIndex].file * SQUARE_SIZE) + PIXEL_OFFSET;
                                         pieces[heldPieceIndex].pos.y = (pieces[heldPieceIndex].rank * SQUARE_SIZE) + PIXEL_OFFSET;
                                         pieces[heldPieceIndex].holding = 0;
                                         heldPieceIndex = -1;
-                                        printf("No swap!\n");
+                                        zero_capture_matrix();
                                 }
                         }
                 }
@@ -131,13 +134,14 @@ Vector2 square_coords(int file, int rank)
 
 void InitGame()
 {
-        SetTargetFPS(10);
+        SetTargetFPS(60);
         SetExitKey(KEY_Q);
         LoadIcons(Icons);
         LoadIconsAsTextures(Icons, IconTextures);
         UnloadIcons(Icons);
         initialize_pieces(pieces, IconTextures);
         initialize_board(board, pieces);
+        zero_capture_matrix();
         InitChessboard(Background);
 }
 /*
@@ -216,6 +220,18 @@ void initialize_board(ChessBoard board[8][8], ChessPiece pieces[64])
                                 board[file][rank].piece = NULL;
                         }
                 } 
+        }
+}
+
+/*
+ * Purpose: Initializes capture matrix
+ * Notes:
+ * */
+void zero_capture_matrix()
+{
+        for (int i = 0; i < 8; ++i) {
+                for (int j = 0; j < 8; ++j)
+                        capture_matrix[i][j] = 0;
         }
 }
 
