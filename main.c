@@ -10,6 +10,7 @@ int get_array_index_by_coords(ChessPiece pieces[64], int x, int y);
 void InitGame();
 void zero_capture_matrix();
 Point get_index_by_coords(float x, float y);
+void detect_winner(ChessPiece *p);
 
 ChessPiece pieces[64];
 ChessBoard board[8][8];
@@ -24,6 +25,9 @@ Vector2 touchPoint  = { 0.0f, 0.0f };
 Rectangle touchArea = { 0.0f, 0.0f, 5.0f, 5.0f };
 Rectangle pieceArea = { 0.0f, 0.0f, 100.0f, 100.0f };
 Rectangle captured_pieces = { 800.0f, 0.0f, 200.0f, 800.0f };
+Rectangle winner_display  = { 115.0f, 240.0f, 570.0f, 200.0f };
+Rectangle button_exit     = { 220.0f, 360.0f, 160.f, 50.f };
+Rectangle button_restart  = { 420.0f, 360.0f, 160.f, 50.f };
 
 int b_winner = 0;
 int w_winner = 0;
@@ -85,11 +89,12 @@ int main(void)
                                         ChessPiece *capture = board[target.x][target.y].piece;
 
                                         if (capture != NULL && capture->type != EMPTY) {
+                                                detect_winner(capture);
                                                 capture->type = EMPTY;
                                                 board[target.x][target.y].piece = NULL;
                                         }
                                         
-                                        detect_winner(capture);
+                                        printf("W: %d\nB: %d\n", w_winner, b_winner);
 
                                         board[source.x][source.y].piece = NULL;
                                         board[target.x][target.y].piece = moving;
@@ -232,7 +237,9 @@ void initialize_board(ChessBoard board[8][8], ChessPiece pieces[64])
 }
 
 /*
- * Purpose: Initializes capture matrix
+ * Purpose: Zeroes capture matrix.
+ * Used in show_moves to determine legal moves
+ *
  * Notes:
  * */
 void zero_capture_matrix()
@@ -245,24 +252,26 @@ void zero_capture_matrix()
 
 void RenderFrame(void)
 {
-        if (!b_winner && !w_winner) {
-                BeginDrawing();
-                ClearBackground(LIGHTBEIGE);
-                DrawChessboard(Background, LIGHTBEIGE, LIGHTBROWN);
-                DrawChesspieceLegalMoves(ColorState);
-                DrawMouseHoverAction(Background, ColorState);
-                DrawChesspieces(pieces, mousePoint);
-                DrawCapturedChesspieces(captured_pieces);
-                if (b_winner || w_winner)
-                        DrawWinner(b_winner, w_winner);
-                EndDrawing();
-        }
+        BeginDrawing();
+        ClearBackground(LIGHTBEIGE);
+        DrawChessboard(Background, LIGHTBEIGE, LIGHTBROWN);
+        DrawChesspieceLegalMoves(ColorState);
+        DrawMouseHoverAction(Background, ColorState);
+        DrawChesspieces(pieces, mousePoint);
+        DrawCapturedChesspieces(captured_pieces);
+        if (b_winner || w_winner)
+                DrawWinner(winner_display, button_restart, button_exit, b_winner, w_winner);
+        EndDrawing();
 }
 
+/*
+ * Purpose: Cheks if captured piece is king
+ * Notes:
+ * */
 void detect_winner(ChessPiece *p)
 {
-        if (p->type == W_KING)
+        if (p && p->type == W_KING)
                 b_winner = 1;
-        if (p->type == B_KING)
+        if (p && p->type == B_KING)
                 w_winner = 1;
 }

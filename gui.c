@@ -118,16 +118,24 @@ void DrawCapturedChesspieces(Rectangle rect)
         DrawRectangleLinesEx(rect, 5.0f, GOLD);
 }
 
-void DrawWinner(int b, int w)
+void DrawWinner(Rectangle Rect, Rectangle btn1, Rectangle btn2, int b, int w)
 {
         if (b) {
-                DrawRectangle(200.0f, 200.0f, 400.0f, 200.0f, LIGHTBEIGE);
-                DrawText("Black has won!", 210.0f, 210.0f, 12.0f, BLACK);
+                DrawRectangleRec(Rect, LIGHTBEIGE);
+                DrawRectangleLinesEx(Rect, 12.0f, GOLD);
+                DrawText("Black has won!", 170.0f, 285.0f, 64.0f, BLACK);
         }
         if (w) {
-                DrawRectangle(200.0f, 200.0f, 400.0f, 200.0f, LIGHTBEIGE);
-                DrawText("White has won!", 210.0f, 210.0f, 12.0f, BLACK);
+                DrawRectangleRec(Rect, LIGHTBEIGE);
+                DrawRectangleLinesEx(Rect, 12.0f, GOLD);
+                DrawText("White has won!", 170.0f, 285.0f, 64.0f, BLACK);
         }
+        DrawRectangleRec(btn1, LIGHTBEIGE);
+        DrawRectangleRec(btn2, LIGHTBEIGE);
+        DrawRectangleLinesEx(btn1, 4.0f, GOLD);
+        DrawRectangleLinesEx(btn2, 4.0f, GOLD);
+        DrawText("Restart", 230.0f, 370.f, 36.0f, BLACK);
+        DrawText("Quit", 470.0f, 370.f, 36.0f, BLACK);
 }
 /*
  * Purpose: Loads all icons into RAM
