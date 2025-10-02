@@ -23,8 +23,10 @@ Vector2 mousePoint  = { 0.0f, 0.0f };
 Vector2 touchPoint  = { 0.0f, 0.0f };
 Rectangle touchArea = { 0.0f, 0.0f, 5.0f, 5.0f };
 Rectangle pieceArea = { 0.0f, 0.0f, 100.0f, 100.0f };
+Rectangle captured_pieces = { 800.0f, 0.0f, 200.0f, 800.0f };
 
-int game_over = 0;
+int b_winner = 0;
+int w_winner = 0;
         
 int ColorState[8][8];
 int debugCtr = 0;
@@ -75,7 +77,6 @@ int main(void)
                                 mousePoint = GetMousePosition();
                                 Point target = get_index_by_coords(mousePoint.x, mousePoint.y);
                                 if (swap_allowed(board, capture_matrix, pieces[heldPieceIndex], target.x, target.y)) {
-                                        // Chess piece moves from source to target 
                                         Point source;
                                         source.x = pieces[heldPieceIndex].file;
                                         source.y = pieces[heldPieceIndex].rank;
@@ -87,6 +88,8 @@ int main(void)
                                                 capture->type = EMPTY;
                                                 board[target.x][target.y].piece = NULL;
                                         }
+                                        
+                                        detect_winner(capture);
 
                                         board[source.x][source.y].piece = NULL;
                                         board[target.x][target.y].piece = moving;
@@ -95,7 +98,11 @@ int main(void)
                                         moving->rank = target.y;
                                         moving->pos.x = (target.x * SQUARE_SIZE) + PIXEL_OFFSET;
                                         moving->pos.y = (target.y * SQUARE_SIZE) + PIXEL_OFFSET;
-                                        
+
+                                        if (pieces[heldPieceIndex].type == W_PAWN
+                                         || pieces[heldPieceIndex].type == B_PAWN)
+                                                pieces[heldPieceIndex].special_move = 0;
+
                                         pieces[heldPieceIndex].holding = 0;
                                         heldPieceIndex = -1;
                                         zero_capture_matrix();
@@ -150,29 +157,30 @@ void InitGame()
  * */
 void initialize_pieces(ChessPiece pieces[64], Texture2D IconTextures[13]) 
 {
-        pieces[0]  = (ChessPiece) { B_ROOK,   0, 0, 0, 0, IconTextures[2],  square_coords(0, 0) };
-        pieces[1]  = (ChessPiece) { B_ROOK,   7, 0, 0, 0, IconTextures[2],  square_coords(7, 0) };
+        // Order of struct members: type, file, rank, special_move, holding, texture, pos
+        pieces[0]  = (ChessPiece) { B_ROOK,   0, 0, 1, 0, IconTextures[2],  square_coords(0, 0) };
+        pieces[1]  = (ChessPiece) { B_ROOK,   7, 0, 1, 0, IconTextures[2],  square_coords(7, 0) };
         pieces[2]  = (ChessPiece) { B_KNIGHT, 1, 0, 0, 0, IconTextures[4],  square_coords(1, 0) };
         pieces[3]  = (ChessPiece) { B_KNIGHT, 6, 0, 0, 0, IconTextures[4],  square_coords(6, 0) };
         pieces[4]  = (ChessPiece) { B_BISHOP, 2, 0, 0, 0, IconTextures[3],  square_coords(2, 0) };
         pieces[5]  = (ChessPiece) { B_BISHOP, 5, 0, 0, 0, IconTextures[3],  square_coords(5, 0) };
         pieces[6]  = (ChessPiece) { B_QUEEN,  3, 0, 0, 0, IconTextures[1],  square_coords(3, 0) };
-        pieces[7]  = (ChessPiece) { B_KING,   4, 0, 0, 0, IconTextures[0],  square_coords(4, 0) };
-        pieces[8]  = (ChessPiece) { W_ROOK,   0, 7, 0, 0, IconTextures[8],  square_coords(0, 7) },
-        pieces[9]  = (ChessPiece) { W_ROOK,   7, 7, 0, 0, IconTextures[8],  square_coords(7, 7) },
+        pieces[7]  = (ChessPiece) { B_KING,   4, 0, 1, 0, IconTextures[0],  square_coords(4, 0) };
+        pieces[8]  = (ChessPiece) { W_ROOK,   0, 7, 1, 0, IconTextures[8],  square_coords(0, 7) },
+        pieces[9]  = (ChessPiece) { W_ROOK,   7, 7, 1, 0, IconTextures[8],  square_coords(7, 7) },
         pieces[10] = (ChessPiece) { W_KNIGHT, 1, 7, 0, 0, IconTextures[10], square_coords(1, 7) },
         pieces[11] = (ChessPiece) { W_KNIGHT, 6, 7, 0, 0, IconTextures[10], square_coords(6, 7) },
         pieces[12] = (ChessPiece) { W_BISHOP, 2, 7, 0, 0, IconTextures[9],  square_coords(2, 7) },
         pieces[13] = (ChessPiece) { W_BISHOP, 5, 7, 0, 0, IconTextures[9],  square_coords(5, 7) },
         pieces[14] = (ChessPiece) { W_QUEEN,  3, 7, 0, 0, IconTextures[7],  square_coords(3, 7) },
-        pieces[15] = (ChessPiece) { W_KING,   4, 7, 0, 0, IconTextures[6],  square_coords(4, 7) };
+        pieces[15] = (ChessPiece) { W_KING,   4, 7, 1, 0, IconTextures[6],  square_coords(4, 7) };
 
         // Init of pawns and empty cells
         int index = 16;
         for (int file = 0; file < 8; ++file)
-                pieces[index++] = (ChessPiece) { B_PAWN, file, 1, 0, 0, IconTextures[5], square_coords(file, 1) };
+                pieces[index++] = (ChessPiece) { B_PAWN, file, 1, 1, 0, IconTextures[5], square_coords(file, 1) };
         for (int file = 0; file < 8; ++file)
-                pieces[index++] = (ChessPiece) { W_PAWN, file, 6, 0, 0, IconTextures[11], square_coords(file, 6) };
+                pieces[index++] = (ChessPiece) { W_PAWN, file, 6, 1, 0, IconTextures[11], square_coords(file, 6) };
         for (int file = 0; file < 8; ++file) {
                 for (int rank = 2; rank < 6; ++rank)
                         pieces[index++] = (ChessPiece) { EMPTY, file, rank, 0, 0, IconTextures[12], square_coords(file, rank) };
@@ -237,12 +245,24 @@ void zero_capture_matrix()
 
 void RenderFrame(void)
 {
-        BeginDrawing();
-        DrawChessboard(Background, LIGHTBEIGE, LIGHTBROWN);
-        DrawChesspieceLegalMoves(ColorState);
-        DrawMouseHoverAction(Background, ColorState);
-        DrawChesspieces(pieces, mousePoint);
-        EndDrawing();
-
+        if (!b_winner && !w_winner) {
+                BeginDrawing();
+                ClearBackground(LIGHTBEIGE);
+                DrawChessboard(Background, LIGHTBEIGE, LIGHTBROWN);
+                DrawChesspieceLegalMoves(ColorState);
+                DrawMouseHoverAction(Background, ColorState);
+                DrawChesspieces(pieces, mousePoint);
+                DrawCapturedChesspieces(captured_pieces);
+                if (b_winner || w_winner)
+                        DrawWinner(b_winner, w_winner);
+                EndDrawing();
+        }
 }
 
+void detect_winner(ChessPiece *p)
+{
+        if (p->type == W_KING)
+                b_winner = 1;
+        if (p->type == B_KING)
+                w_winner = 1;
+}

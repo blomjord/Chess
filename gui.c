@@ -110,6 +110,26 @@ void DrawChesspieceLegalMoves(int ColorState[8][8])
 }
 
 /*
+ * Purpose
+ * Notes:
+ * */
+void DrawCapturedChesspieces(Rectangle rect)
+{
+        DrawRectangleLinesEx(rect, 5.0f, GOLD);
+}
+
+void DrawWinner(int b, int w)
+{
+        if (b) {
+                DrawRectangle(200.0f, 200.0f, 400.0f, 200.0f, LIGHTBEIGE);
+                DrawText("Black has won!", 210.0f, 210.0f, 12.0f, BLACK);
+        }
+        if (w) {
+                DrawRectangle(200.0f, 200.0f, 400.0f, 200.0f, LIGHTBEIGE);
+                DrawText("White has won!", 210.0f, 210.0f, 12.0f, BLACK);
+        }
+}
+/*
  * Purpose: Loads all icons into RAM
  * Notes:
  * */
