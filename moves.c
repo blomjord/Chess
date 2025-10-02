@@ -76,61 +76,92 @@ void show_moves_pawn(ChessBoard board[8][8], int ColorState[8][8], int capture_m
         if (piece.type == B_PAWN) {
                 tarX = file;
                 tarY = rank + 1;
+                if (board[tarX][tarY].piece != NULL) {
+                        if (board[tarX][tarY].piece->type == EMPTY) {
+                                ColorState[tarX][tarY] = 3;
+                                capture_matrix[tarX][tarY] = 1;
+                        }
 
-                if ( tarX >= 0 && tarY >= 0 
-                  && tarX <= 7 && tarY <= 7 ) {
+                } else {
                         ColorState[tarX][tarY] = 3;
                         capture_matrix[tarX][tarY] = 1;
                 }
-                if (leap) {
-                        ColorState[file][rank + 2] = 3;
-                        capture_matrix[file][rank + 2] = 1;
-                }
-                if (board[tarX][tarY].piece != NULL && board[tarX][tarY].piece->type * type < 0) {
-                        ColorState[tarX][tarY] = 0;
-                        capture_matrix[tarX][tarY] = 0;
-                }
-                if (board[tarX + 1][tarY].piece != NULL && tarX + 1 < 8) {
-                        if (board[tarX + 1][tarY].piece->type * type < 0) {
+                if (board[tarX + 1][tarY].piece != NULL) {
+                        if (tarX + 1 < 8 && board[tarX + 1][tarY].piece->type * type < 0) {
                                 ColorState[tarX + 1][tarY] = 3;
                                 capture_matrix[tarX + 1][tarY] = 1;
                         }
                 }
-                if (board[tarX - 1][tarY].piece != NULL && tarX - 1 > -1) {
-                        if (board[tarX - 1][tarY].piece->type * type < 0) {
+                if (board[tarX - 1][tarY].piece != NULL) {
+                        if (tarX - 1 > -1 && board[tarX - 1][tarY].piece->type * type < 0) {
                                 ColorState[tarX - 1][tarY] = 3;
                                 capture_matrix[tarX - 1][tarY] = 1;
+                        }
+                }
+                if (leap) {
+                        if (board[file][rank + 1].piece != NULL) {
+                                if (board[file][rank + 1].piece->type * type < 0) {
+                                        ColorState[file][rank + 1] = 3;
+                                        capture_matrix[file][rank + 1] = 1;
+                                }
+                        } else {
+                                ColorState[file][rank + 1] = 3;
+                                capture_matrix[file][rank + 1] = 1;
+                                if (board[file][rank + 2].piece != NULL) {
+                                        if (board[file][rank + 2].piece->type * type < 0) {
+                                                ColorState[file][rank + 2] = 3;
+                                                capture_matrix[file][rank + 2] = 1;
+                                        }
+                                } else {
+                                        ColorState[file][rank + 2] = 3;
+                                        capture_matrix[file][rank + 2] = 1;
+                                }
                         }
                 }
         } else if (piece.type == W_PAWN) {
                 tarX = file;
-                tarY = rank -1;
+                tarY = rank - 1;
 
-                if ( tarX >= 0 && tarY >= 0 
-                  && tarX <= 7 && tarY <= 7 ) {
+                if (board[tarX][tarY].piece != NULL) {
+                        if (board[tarX][tarY].piece->type == EMPTY) {
+                                ColorState[tarX][tarY] = 3;
+                                capture_matrix[tarX][tarY] = 1;
+                        }
+
+                } else {
                         ColorState[tarX][tarY] = 3;
                         capture_matrix[tarX][tarY] = 1;
                 }
-                if (leap) {
-                        ColorState[tarX][tarY - 1] = 3;
-                        capture_matrix[tarX][tarY - 1] = 1;
-                }
-                if (board[tarX][tarY].piece != NULL) {
-                        if (board[tarX][tarY].piece->type * type < 0) {
-                                ColorState[tarX][tarY] = 0;
-                                capture_matrix[tarX][tarY] = 0;
-                        }
-                }
-                if (board[tarX + 1][tarY].piece != NULL && tarX + 1 < 8) {
-                        if (board[tarX + 1][tarY].piece->type * type < 0) {
+                if (board[tarX + 1][tarY].piece != NULL) {
+                        if (tarX + 1 < 8 && board[tarX + 1][tarY].piece->type * type < 0) {
                                 ColorState[tarX + 1][tarY] = 3;
                                 capture_matrix[tarX + 1][tarY] = 1;
                         }
                 }
-                if (board[tarX - 1][tarY].piece != NULL && tarX - 1 > -1) {
-                        if (board[tarX - 1][tarY].piece->type * type < 0) {
+                if (board[tarX - 1][tarY].piece != NULL) {
+                        if (tarX - 1 > -1 && board[tarX - 1][tarY].piece->type * type < 0) {
                                 ColorState[tarX - 1][tarY] = 3;
                                 capture_matrix[tarX - 1][tarY] = 1;
+                        }
+                }
+                if (leap) {
+                        if (board[file][rank - 1].piece != NULL) {
+                                if (board[file][rank - 1].piece->type * type < 0) {
+                                        ColorState[file][rank - 1] = 3;
+                                        capture_matrix[file][rank - 1] = 1;
+                                }
+                        } else {
+                                ColorState[file][rank - 1] = 3;
+                                capture_matrix[file][rank - 1] = 1;
+                                if (board[file][rank - 2].piece != NULL) {
+                                        if (board[file][rank - 2].piece->type * type < 0) {
+                                                ColorState[file][rank - 2] = 3;
+                                                capture_matrix[file][rank - 2] = 1;
+                                        }
+                                } else {
+                                        ColorState[file][rank - 2] = 3;
+                                        capture_matrix[file][rank - 2] = 1;
+                                }
                         }
                 }
         }
@@ -159,10 +190,12 @@ void show_moves_rook(ChessBoard board[8][8], int ColorState[8][8], int capture_m
 
                         if (board[tarX][tarY].piece == NULL) {
                                 ColorState[tarX][tarY] = 3;
+                                capture_matrix[tarX][tarY] = 1;
 
                         } else {
                                 if (board[tarX][tarY].piece->type * type < 0) {
                                         ColorState[tarX][tarY] = 3;
+                                        capture_matrix[tarX][tarY] = 1;
                                 }
                                 break;
                         }
