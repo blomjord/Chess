@@ -33,15 +33,13 @@ int b_winner = 0;
 int w_winner = 0;
         
 int ColorState[8][8];
-int debugCtr = 0;
+
 int main(void)
 {
         InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Chess");
         InitGame();
-
         
         while (!WindowShouldClose()) {
-                ++debugCtr;
                 // Events
                 mousePoint = GetMousePosition();
                 touchArea.x = mousePoint.x;
@@ -76,7 +74,6 @@ int main(void)
                                 pieces[heldPieceIndex].pos.y = mousePoint.y;
                                 show_moves(board, ColorState, capture_matrix, pieces[heldPieceIndex]);
                         }
-
                         if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                                 mousePoint = GetMousePosition();
                                 Point target = get_index_by_coords(mousePoint.x, mousePoint.y);
@@ -93,9 +90,6 @@ int main(void)
                                                 capture->type = EMPTY;
                                                 board[target.x][target.y].piece = NULL;
                                         }
-                                        
-                                        printf("W: %d\nB: %d\n", w_winner, b_winner);
-
                                         board[source.x][source.y].piece = NULL;
                                         board[target.x][target.y].piece = moving;
                                         

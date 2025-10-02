@@ -63,15 +63,6 @@ void show_moves(ChessBoard board[8][8], int ColorState[8][8], int capture_matrix
         default:        // Empty cell
                 break;
         }
-
-                printf("---------------\n");
-                for (int row=0;row<8;++row){
-                        for (int col=0;col<8;++col){
-                                printf("%d ",capture_matrix[col][row]);
-                        }
-                        printf("\n");
-                }
-                printf("---------------\n");
 }
 
 void show_moves_pawn(ChessBoard board[8][8], int ColorState[8][8], int capture_matrix[8][8], ChessPiece piece)
@@ -95,25 +86,25 @@ void show_moves_pawn(ChessBoard board[8][8], int ColorState[8][8], int capture_m
                         ColorState[file][rank + 2] = 3;
                         capture_matrix[file][rank + 2] = 1;
                 }
-
                 if (board[tarX][tarY].piece != NULL && board[tarX][tarY].piece->type * type < 0) {
                         ColorState[tarX][tarY] = 0;
                         capture_matrix[tarX][tarY] = 0;
                 }
-
-                if (board[tarX + 1][tarY].piece != NULL && board[tarX + 1][tarY].piece->type * type < 0) {
-                        ColorState[tarX + 1][tarY] = 3;
-                        capture_matrix[tarX + 1][tarY] = 1;
+                if (board[tarX + 1][tarY].piece != NULL && tarX + 1 < 8) {
+                        if (board[tarX + 1][tarY].piece->type * type < 0) {
+                                ColorState[tarX + 1][tarY] = 3;
+                                capture_matrix[tarX + 1][tarY] = 1;
+                        }
                 }
-
-                if (board[tarX - 1][tarY].piece != NULL && board[tarX - 1][tarY].piece->type * type < 0) {
-                        ColorState[tarX - 1][tarY] = 3;
-                        capture_matrix[tarX - 1][tarY] = 1;
+                if (board[tarX - 1][tarY].piece != NULL && tarX - 1 > -1) {
+                        if (board[tarX - 1][tarY].piece->type * type < 0) {
+                                ColorState[tarX - 1][tarY] = 3;
+                                capture_matrix[tarX - 1][tarY] = 1;
+                        }
                 }
-
         } else if (piece.type == W_PAWN) {
                 tarX = file;
-                tarY = rank + -1;
+                tarY = rank -1;
 
                 if ( tarX >= 0 && tarY >= 0 
                   && tarX <= 7 && tarY <= 7 ) {
@@ -124,19 +115,23 @@ void show_moves_pawn(ChessBoard board[8][8], int ColorState[8][8], int capture_m
                         ColorState[tarX][tarY - 1] = 3;
                         capture_matrix[tarX][tarY - 1] = 1;
                 }
-                if (board[tarX][tarY].piece != NULL && board[tarX][tarY].piece->type * type < 0) {
-                        ColorState[tarX][tarY] = 0;
-                        capture_matrix[tarX][tarY] = 0;
+                if (board[tarX][tarY].piece != NULL) {
+                        if (board[tarX][tarY].piece->type * type < 0) {
+                                ColorState[tarX][tarY] = 0;
+                                capture_matrix[tarX][tarY] = 0;
+                        }
                 }
-
-                if (board[tarX + 1][tarY].piece != NULL && board[tarX + 1][tarY].piece->type * type < 0) {
-                        ColorState[tarX + 1][tarY] = 3;
-                        capture_matrix[tarX + 1][tarY] = 1;
+                if (board[tarX + 1][tarY].piece != NULL && tarX + 1 < 8) {
+                        if (board[tarX + 1][tarY].piece->type * type < 0) {
+                                ColorState[tarX + 1][tarY] = 3;
+                                capture_matrix[tarX + 1][tarY] = 1;
+                        }
                 }
-
-                if (board[tarX - 1][tarY].piece != NULL && board[tarX - 1][tarY].piece->type * type < 0) {
-                        ColorState[tarX - 1][tarY] = 3;
-                        capture_matrix[tarX - 1][tarY] = 1;
+                if (board[tarX - 1][tarY].piece != NULL && tarX - 1 > -1) {
+                        if (board[tarX - 1][tarY].piece->type * type < 0) {
+                                ColorState[tarX - 1][tarY] = 3;
+                                capture_matrix[tarX - 1][tarY] = 1;
+                        }
                 }
         }
 }
@@ -295,7 +290,6 @@ void show_moves_king(ChessBoard board[8][8], int ColorState[8][8], int capture_m
                 
                 if (tarX >= 0 && tarY >= 0
                  && tarX <= 7 && tarY <= 7) {
-                
                         if (board[tarX][tarY].piece == NULL) {
                                 ColorState[tarX][tarY] = 3;
                                 capture_matrix[tarX][tarY] = 1;
