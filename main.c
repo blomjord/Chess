@@ -176,6 +176,10 @@ void zero_capture_matrix(void)
 
 void Tick(void)
 {
+        // TODO: Implement this
+        if (b_winner || w_winner)
+                goto end_game;
+
         mousePoint = GetMousePosition();
         touchArea.x = mousePoint.x;
         touchArea.y = mousePoint.y;
@@ -253,7 +257,6 @@ void Tick(void)
 void RenderFrame(void)
 {
         BeginDrawing();
-        
         if (!b_winner && !w_winner) {
                 ClearBackground(LIGHTBEIGE);
                 DrawChessboard(Background, LIGHTBEIGE, LIGHTBROWN);
@@ -278,3 +281,4 @@ void detect_winner(ChessPiece *p)
         if (p && p->type == B_KING)
                 w_winner = 1;
 }
+
