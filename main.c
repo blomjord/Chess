@@ -9,6 +9,7 @@ void RenderWinnerFrame(void);
 void initialize_pieces(ChessPiece pieces[64], Texture2D IconTextures[13]);
 void initialize_board(ChessBoard board[8][8], ChessPiece pieces[64]);
 void InitGame(void);
+void ExitGame(void);
 void zero_capture_matrix(void);
 void detect_winner(ChessPiece *p);
 int get_array_index_by_coords(ChessPiece pieces[64], int x, int y);
@@ -38,6 +39,8 @@ int b_winner = 0;
 int w_winner = 0;
 int heldPieceIndex  = -1;
 
+Sound fxMoving;
+
 int main(void)
 {
         InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Chess");
@@ -48,7 +51,7 @@ int main(void)
                 if (quit)
                         break;           
         }
-        UnloadTextures(IconTextures);
+        ExitGame();
         CloseWindow();
         return 0;
 }
@@ -84,6 +87,15 @@ void InitGame(void)
         InitChessboard(Background);
         b_winner = 0;
         w_winner = 0;
+        InitAudioDevice();
+        fxMoving = LoadSound("Sounds/moving.wav");
+}
+
+void ExitGame(void)
+{
+        UnloadTextures(IconTextures);
+        UnloadSound(fxMoving);
+        //UnloadSoundFiles();
 }
 
 /*
@@ -245,6 +257,7 @@ void UpdateState(void)
                                 pieces[heldPieceIndex].holding = 0;
                                 heldPieceIndex = -1;
                                 zero_capture_matrix();
+                                PlaySound(fxMoving);
                         } else { 
                                 pieces[heldPieceIndex].pos.x = (pieces[heldPieceIndex].file * SQUARE_SIZE) + PIXEL_OFFSET;
                                 pieces[heldPieceIndex].pos.y = (pieces[heldPieceIndex].rank * SQUARE_SIZE) + PIXEL_OFFSET;
