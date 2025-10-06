@@ -89,7 +89,6 @@ void InitGame(void)
         zero_capture_matrix();
         InitChessboard(Background);
         turn = 1;
-        quit = 0;
         b_winner = 0;
         w_winner = 0;
         fxGrab = LoadSound("Sounds/grab.wav");
