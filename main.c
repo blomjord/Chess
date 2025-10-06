@@ -34,16 +34,19 @@ Rectangle winner_display  = { 115.0f, 240.0f, 570.0f, 200.0f };
 Rectangle button_exit     = { 420.0f, 360.0f, 160.f, 50.f };
 Rectangle button_restart  = { 220.0f, 360.0f, 160.f, 50.f };
 
+int turn = 1;
 int quit = 0;
 int b_winner = 0;
 int w_winner = 0;
 int heldPieceIndex  = -1;
 
-Sound fxMoving;
+Sound fxGrab;
+Sound fxPlace;
 
 int main(void)
 {
         InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Chess");
+        InitAudioDevice();
         InitGame();
         while (!WindowShouldClose()) {
                 UpdateState();
@@ -85,16 +88,20 @@ void InitGame(void)
         initialize_board(board, pieces);
         zero_capture_matrix();
         InitChessboard(Background);
+        turn = 1;
+        quit = 0;
         b_winner = 0;
         w_winner = 0;
-        InitAudioDevice();
-        fxMoving = LoadSound("Sounds/moving.wav");
+        fxGrab = LoadSound("Sounds/grab.wav");
+        fxPlace = LoadSound("Sounds/place.wav");
 }
 
 void ExitGame(void)
 {
         UnloadTextures(IconTextures);
-        UnloadSound(fxMoving);
+        UnloadSound(fxGrab);
+        UnloadSound(fxPlace);
+        CloseAudioDevice();
         //UnloadSoundFiles();
 }
 
@@ -201,6 +208,7 @@ void UpdateState(void)
         DetectActionMouseHover(mousePoint, Background, ColorState);
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)
                                 && heldPieceIndex == -1) {
+                PlaySound(fxGrab);
                 mousePoint = GetMousePosition();
                 for (int i = 0; i < 64; ++i) {
                         pieceArea.x = (float) pieces[i].file * SQUARE_SIZE;
@@ -257,7 +265,8 @@ void UpdateState(void)
                                 pieces[heldPieceIndex].holding = 0;
                                 heldPieceIndex = -1;
                                 zero_capture_matrix();
-                                PlaySound(fxMoving);
+                                PlaySound(fxPlace);
+                                turn = turn ^ 1; // Change turns
                         } else { 
                                 pieces[heldPieceIndex].pos.x = (pieces[heldPieceIndex].file * SQUARE_SIZE) + PIXEL_OFFSET;
                                 pieces[heldPieceIndex].pos.y = (pieces[heldPieceIndex].rank * SQUARE_SIZE) + PIXEL_OFFSET;
