@@ -11,10 +11,13 @@ void DrawChesspieces(ChessPiece pieces[64], Vector2 mousePoint);
 void DrawChesspieceLegalMoves(int ColorState[8][8]);
 void DrawCapturedChesspieces(Rectangle rect);
 void DetectActionMouseHover(Vector2 mousePoint, Rectangle Background[8][8], int ColorState[8][8]);
-void DrawWinner(Rectangle Rect, Rectangle btn1, Rectangle btn2, int b, int w);
+void DrawWinner(Rectangle Rect, int b, int w);
 void LoadIcons(Image Icons[13]);
 void LoadIconsAsTextures(Image Icons[13], Texture2D IconTextures[13]);
 void UnloadIcons(Image Icons[13]);
+void UnloadTextures(Texture2D tex[13]);
 void InitChessboard(Rectangle ChessBoard[8][8]);
 
+int RestartButtonClicked(Rectangle btn);
+int QuitButtonClicked(Rectangle btn);
 #endif

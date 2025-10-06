@@ -118,7 +118,7 @@ void DrawCapturedChesspieces(Rectangle rect)
         DrawRectangleLinesEx(rect, 5.0f, GOLD);
 }
 
-void DrawWinner(Rectangle Rect, Rectangle btn1, Rectangle btn2, int b, int w)
+void DrawWinner(Rectangle Rect, int b, int w)
 {
         if (b) {
                 DrawRectangleRec(Rect, LIGHTBEIGE);
@@ -130,13 +130,30 @@ void DrawWinner(Rectangle Rect, Rectangle btn1, Rectangle btn2, int b, int w)
                 DrawRectangleLinesEx(Rect, 12.0f, GOLD);
                 DrawText("White has won!", 170.0f, 285.0f, 64.0f, BLACK);
         }
-        DrawRectangleRec(btn1, LIGHTBEIGE);
-        DrawRectangleRec(btn2, LIGHTBEIGE);
-        DrawRectangleLinesEx(btn1, 4.0f, GOLD);
-        DrawRectangleLinesEx(btn2, 4.0f, GOLD);
-        DrawText("Restart", 230.0f, 370.f, 36.0f, BLACK);
-        DrawText("Quit", 470.0f, 370.f, 36.0f, BLACK);
 }
+
+int RestartButtonClicked(Rectangle btn)
+{
+        DrawRectangleRec(btn, LIGHTBEIGE);
+        DrawRectangleLinesEx(btn, 4.0f, GOLD);
+        DrawText("Restart", 230.0f, 370.f, 36.0f, BLACK);
+        Vector2 mousePoint = GetMousePosition();
+        if (CheckCollisionPointRec(mousePoint, btn) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                return 1;
+        return 0;
+}
+
+int QuitButtonClicked(Rectangle btn)
+{
+        DrawRectangleRec(btn, LIGHTBEIGE);
+        DrawRectangleLinesEx(btn, 4.0f, GOLD);
+        DrawText("Quit", 470.0f, 370.f, 36.0f, BLACK);
+        Vector2 mousePoint = GetMousePosition();
+        if (CheckCollisionPointRec(mousePoint, btn) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                return 1;
+        return 0;
+}
+
 /*
  * Purpose: Loads all icons into RAM
  * Notes:
@@ -181,4 +198,10 @@ void UnloadIcons(Image Icons[13])
 {
         for (int i = 0; i < 13; ++i)
                 UnloadImage(Icons[i]);
+}
+
+void UnloadTextures(Texture2D tex[13])
+{
+        for (int i = 0; i < 13; ++i)
+                UnloadTexture(tex[i]);
 }

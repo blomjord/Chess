@@ -3,8 +3,9 @@
 #include "gui.h"
 #include "types.h"
 
-void Tick(void);
+void UpdateState(void);
 void RenderFrame(void);
+void RenderWinnerFrame(void);
 void initialize_pieces(ChessPiece pieces[64], Texture2D IconTextures[13]);
 void initialize_board(ChessBoard board[8][8], ChessPiece pieces[64]);
 void InitGame(void);
@@ -29,23 +30,25 @@ Rectangle touchArea       = { 0.0f, 0.0f, 5.0f, 5.0f };
 Rectangle pieceArea       = { 0.0f, 0.0f, 100.0f, 100.0f };
 Rectangle captured_pieces = { 800.0f, 0.0f, 200.0f, 800.0f };
 Rectangle winner_display  = { 115.0f, 240.0f, 570.0f, 200.0f };
-Rectangle button_exit     = { 220.0f, 360.0f, 160.f, 50.f };
-Rectangle button_restart  = { 420.0f, 360.0f, 160.f, 50.f };
+Rectangle button_exit     = { 420.0f, 360.0f, 160.f, 50.f };
+Rectangle button_restart  = { 220.0f, 360.0f, 160.f, 50.f };
 
+int quit = 0;
 int b_winner = 0;
 int w_winner = 0;
 int heldPieceIndex  = -1;
-        
 
 int main(void)
 {
         InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Chess");
         InitGame();
-        
         while (!WindowShouldClose()) {
-                Tick();
+                UpdateState();
                 RenderFrame();
+                if (quit)
+                        break;           
         }
+        UnloadTextures(IconTextures);
         CloseWindow();
         return 0;
 }
@@ -79,7 +82,10 @@ void InitGame(void)
         initialize_board(board, pieces);
         zero_capture_matrix();
         InitChessboard(Background);
+        b_winner = 0;
+        w_winner = 0;
 }
+
 /*
  * Purpose: God-awful init func..
  * Notes:
@@ -174,12 +180,8 @@ void zero_capture_matrix(void)
         }
 }
 
-void Tick(void)
+void UpdateState(void)
 {
-        // TODO: Implement this
-        if (b_winner || w_winner)
-                goto end_game;
-
         mousePoint = GetMousePosition();
         touchArea.x = mousePoint.x;
         touchArea.y = mousePoint.y;
@@ -257,16 +259,21 @@ void Tick(void)
 void RenderFrame(void)
 {
         BeginDrawing();
-        if (!b_winner && !w_winner) {
-                ClearBackground(LIGHTBEIGE);
-                DrawChessboard(Background, LIGHTBEIGE, LIGHTBROWN);
-                DrawChesspieceLegalMoves(ColorState);
-                DrawMouseHoverAction(Background, ColorState);
-                DrawChesspieces(pieces, mousePoint);
-                DrawCapturedChesspieces(captured_pieces);
-        } else {
-                DrawWinner(winner_display, button_restart, button_exit, b_winner, w_winner);
+        
+        ClearBackground(LIGHTBEIGE);
+        DrawChessboard(Background, LIGHTBEIGE, LIGHTBROWN);
+        DrawChesspieceLegalMoves(ColorState);
+        DrawMouseHoverAction(Background, ColorState);
+        DrawChesspieces(pieces, mousePoint);
+        DrawCapturedChesspieces(captured_pieces);
+        if (b_winner || w_winner) {
+                DrawWinner(winner_display, b_winner, w_winner);
+                if (RestartButtonClicked(button_restart))
+                        InitGame();
+                if (QuitButtonClicked(button_exit))
+                        quit = 1;
         }
+        
         EndDrawing();
 }
 
@@ -281,4 +288,3 @@ void detect_winner(ChessPiece *p)
         if (p && p->type == B_KING)
                 w_winner = 1;
 }
-
