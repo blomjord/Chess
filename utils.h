@@ -7,7 +7,7 @@
 #include <string.h>
 #include <assert.h>
 
-#define SCREEN_WIDTH    1000
+#define SCREEN_WIDTH     910
 #define SCREEN_HEIGHT    800
 #define SQUARE_SIZE      100
 

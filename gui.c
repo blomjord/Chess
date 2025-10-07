@@ -113,9 +113,36 @@ void DrawChesspieceLegalMoves(int ColorState[8][8])
  * Purpose
  * Notes:
  * */
-void DrawCapturedChesspieces(Rectangle rect)
+void DrawCapturedChesspieces(Rectangle rect, ChessPiece captured[30])
 {
+        int B_textureX = 810;
+        int B_textureY = 410;
+        
+        int W_textureY =  10;
+        int W_textureX = 810;
+        
         DrawRectangleLinesEx(rect, 5.0f, GOLD);
+        for (int i = 0; i < 30; ++i) {
+                if (captured[i].type == EMPTY)
+                        break;
+
+                if (captured[i].color == 0) { // BLACK
+                        if (B_textureY > 750) {
+                                B_textureX +=  45;
+                                B_textureY  = 410;
+                        }
+                        DrawTexture(captured[i].texture, B_textureX, B_textureY, WHITE); 
+                        B_textureY += 45;
+                }
+                if (captured[i].color == 1) { // WHITE
+                        if (W_textureY > 360) {
+                                W_textureX += 45;
+                                W_textureY =  10;
+                        }
+                        DrawTexture(captured[i].texture, W_textureX, W_textureY, WHITE); 
+                        W_textureY += 45;
+                }
+        }
 }
 
 void DrawWinner(Rectangle Rect, int b, int w)

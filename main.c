@@ -12,15 +12,19 @@ void zero_capture_matrix(void);
 void detect_winner(ChessPiece *p);
 void initialize_board(ChessBoard board[8][8], ChessPiece pieces[64]);
 void initialize_pieces(ChessPiece pieces[64], Texture2D IconTextures[13]);
+void initialize_captured_pieces(ChessPiece captured[14]);
 
 int get_array_index_by_coords(ChessPiece pieces[64], int x, int y);
 
 Vector2_Int get_index_by_coords(float x, float y);
 
-Image Icons[13];
 ChessPiece pieces[64];
+ChessPiece captured_pieces[30];
+
 ChessBoard board[8][8];
 Rectangle Background[8][8];
+
+Image Icons[13];
 Texture2D IconTextures[13];
 
 int ColorState[8][8];
@@ -31,7 +35,7 @@ Vector2 touchPoint  = { 0.0f, 0.0f };
 
 Rectangle touchArea       = { 0.0f, 0.0f, 5.0f, 5.0f };
 Rectangle pieceArea       = { 0.0f, 0.0f, 100.0f, 100.0f };
-Rectangle captured_pieces = { 800.0f, 0.0f, 200.0f, 800.0f };
+Rectangle CapturedPieces  = { 800.0f, 0.0f, 110.0f, 800.0f };
 Rectangle winner_display  = { 115.0f, 240.0f, 570.0f, 200.0f };
 Rectangle button_exit     = { 420.0f, 360.0f, 160.f, 50.f };
 Rectangle button_restart  = { 220.0f, 360.0f, 160.f, 50.f };
@@ -41,6 +45,7 @@ int quit            =  0;
 int b_winner        =  0;
 int w_winner        =  0;
 int heldPieceIndex  = -1;
+int captured_index  =  0;
 
 Sound fxGrab;
 Sound fxPlace;
@@ -58,29 +63,6 @@ int main(void)
         }
         ExitGame();
         CloseWindow();
-        binprint(-1);
-        printf("\n");
-        binprint(-2);
-        printf("\n");
-        binprint(-3);
-        printf("\n");
-        binprint(-4);
-        printf("\n");
-        binprint(-5);
-        printf("\n");
-        binprint(-6);
-        printf("\n");
-        binprint(1);
-        printf("\n");
-        binprint(2);
-        printf("\n");
-        binprint(3);
-        printf("\n");
-        binprint(4);
-        printf("\n");
-        binprint(5);
-        printf("\n");
-        binprint(6);
         return 0;
 }
 
@@ -111,6 +93,7 @@ void InitGame(void)
         UnloadIcons(Icons);
         initialize_pieces(pieces, IconTextures);
         initialize_board(board, pieces);
+        initialize_captured_pieces(captured_pieces);
         zero_capture_matrix();
         InitChessboard(Background);
         turn = 1;
@@ -136,32 +119,32 @@ void ExitGame(void)
 void initialize_pieces(ChessPiece pieces[64], Texture2D IconTextures[13]) 
 {
         // Order of struct members: type, file, rank, special_move, holding, texture, pos
-        pieces[0]  = (ChessPiece) { B_ROOK,   0, 0, 1, 0, IconTextures[2],  square_coords(0, 0) };
-        pieces[1]  = (ChessPiece) { B_ROOK,   7, 0, 1, 0, IconTextures[2],  square_coords(7, 0) };
-        pieces[2]  = (ChessPiece) { B_KNIGHT, 1, 0, 0, 0, IconTextures[4],  square_coords(1, 0) };
-        pieces[3]  = (ChessPiece) { B_KNIGHT, 6, 0, 0, 0, IconTextures[4],  square_coords(6, 0) };
-        pieces[4]  = (ChessPiece) { B_BISHOP, 2, 0, 0, 0, IconTextures[3],  square_coords(2, 0) };
-        pieces[5]  = (ChessPiece) { B_BISHOP, 5, 0, 0, 0, IconTextures[3],  square_coords(5, 0) };
-        pieces[6]  = (ChessPiece) { B_QUEEN,  3, 0, 0, 0, IconTextures[1],  square_coords(3, 0) };
-        pieces[7]  = (ChessPiece) { B_KING,   4, 0, 1, 0, IconTextures[0],  square_coords(4, 0) };
-        pieces[8]  = (ChessPiece) { W_ROOK,   0, 7, 1, 0, IconTextures[8],  square_coords(0, 7) },
-        pieces[9]  = (ChessPiece) { W_ROOK,   7, 7, 1, 0, IconTextures[8],  square_coords(7, 7) },
-        pieces[10] = (ChessPiece) { W_KNIGHT, 1, 7, 0, 0, IconTextures[10], square_coords(1, 7) },
-        pieces[11] = (ChessPiece) { W_KNIGHT, 6, 7, 0, 0, IconTextures[10], square_coords(6, 7) },
-        pieces[12] = (ChessPiece) { W_BISHOP, 2, 7, 0, 0, IconTextures[9],  square_coords(2, 7) },
-        pieces[13] = (ChessPiece) { W_BISHOP, 5, 7, 0, 0, IconTextures[9],  square_coords(5, 7) },
-        pieces[14] = (ChessPiece) { W_QUEEN,  3, 7, 0, 0, IconTextures[7],  square_coords(3, 7) },
-        pieces[15] = (ChessPiece) { W_KING,   4, 7, 1, 0, IconTextures[6],  square_coords(4, 7) };
+        pieces[0]  = (ChessPiece) { 0, B_ROOK,   0, 0, 1, 0, IconTextures[2],  square_coords(0, 0) };
+        pieces[1]  = (ChessPiece) { 0, B_ROOK,   7, 0, 1, 0, IconTextures[2],  square_coords(7, 0) };
+        pieces[2]  = (ChessPiece) { 0, B_KNIGHT, 1, 0, 0, 0, IconTextures[4],  square_coords(1, 0) };
+        pieces[3]  = (ChessPiece) { 0, B_KNIGHT, 6, 0, 0, 0, IconTextures[4],  square_coords(6, 0) };
+        pieces[4]  = (ChessPiece) { 0, B_BISHOP, 2, 0, 0, 0, IconTextures[3],  square_coords(2, 0) };
+        pieces[5]  = (ChessPiece) { 0, B_BISHOP, 5, 0, 0, 0, IconTextures[3],  square_coords(5, 0) };
+        pieces[6]  = (ChessPiece) { 0, B_QUEEN,  3, 0, 0, 0, IconTextures[1],  square_coords(3, 0) };
+        pieces[7]  = (ChessPiece) { 0, B_KING,   4, 0, 1, 0, IconTextures[0],  square_coords(4, 0) };
+        pieces[8]  = (ChessPiece) { 1, W_ROOK,   0, 7, 1, 0, IconTextures[8],  square_coords(0, 7) },
+        pieces[9]  = (ChessPiece) { 1, W_ROOK,   7, 7, 1, 0, IconTextures[8],  square_coords(7, 7) },
+        pieces[10] = (ChessPiece) { 1, W_KNIGHT, 1, 7, 0, 0, IconTextures[10], square_coords(1, 7) },
+        pieces[11] = (ChessPiece) { 1, W_KNIGHT, 6, 7, 0, 0, IconTextures[10], square_coords(6, 7) },
+        pieces[12] = (ChessPiece) { 1, W_BISHOP, 2, 7, 0, 0, IconTextures[9],  square_coords(2, 7) },
+        pieces[13] = (ChessPiece) { 1, W_BISHOP, 5, 7, 0, 0, IconTextures[9],  square_coords(5, 7) },
+        pieces[14] = (ChessPiece) { 1, W_QUEEN,  3, 7, 0, 0, IconTextures[7],  square_coords(3, 7) },
+        pieces[15] = (ChessPiece) { 1, W_KING,   4, 7, 1, 0, IconTextures[6],  square_coords(4, 7) };
 
         // Init of pawns and empty cells
         int index = 16;
         for (int file = 0; file < 8; ++file)
-                pieces[index++] = (ChessPiece) { B_PAWN, file, 1, 1, 0, IconTextures[5], square_coords(file, 1) };
+                pieces[index++] = (ChessPiece) { 0, B_PAWN, file, 1, 1, 0, IconTextures[5], square_coords(file, 1) };
         for (int file = 0; file < 8; ++file)
-                pieces[index++] = (ChessPiece) { W_PAWN, file, 6, 1, 0, IconTextures[11], square_coords(file, 6) };
+                pieces[index++] = (ChessPiece) { 1, W_PAWN, file, 6, 1, 0, IconTextures[11], square_coords(file, 6) };
         for (int file = 0; file < 8; ++file) {
                 for (int rank = 2; rank < 6; ++rank)
-                        pieces[index++] = (ChessPiece) { EMPTY, file, rank, 0, 0, IconTextures[12], square_coords(file, rank) };
+                        pieces[index++] = (ChessPiece) { -1, EMPTY, file, rank, 0, 0, IconTextures[12], square_coords(file, rank) };
         }
 }
 
@@ -209,6 +192,12 @@ void initialize_board(ChessBoard board[8][8], ChessPiece pieces[64])
         }
 }
 
+void initialize_captured_pieces(ChessPiece captured[30])
+{
+        for (int i = 0; i < 30; ++i)
+                captured[i].type = EMPTY;
+}
+
 /*
  * Purpose: Zeroes capture matrix.
  * Used in show_moves to determine legal moves
@@ -221,16 +210,6 @@ void zero_capture_matrix(void)
                 for (int j = 0; j < 8; ++j)
                         capture_matrix[i][j] = 0;
         }
-}
-
-void binprint(int n)
-{
-        unsigned int mask = 1 << sizeof(int) * CHAR_BIT - 1;
-        while (mask) {
-                printf("%d", (n & mask ? 1 : 0));
-                mask >>= 1;
-        }
-
 }
 
 void UpdateState(void)
@@ -250,7 +229,8 @@ void UpdateState(void)
                         touchArea.y = mousePoint.y;
                         //TODO: Continue here
                         if (pieces[i].type != EMPTY
-                               && CheckCollisionPointRec(mousePoint, pieceArea)) {
+                               && CheckCollisionPointRec(mousePoint, pieceArea)
+                               && turn == pieces[i].color) {
                                 heldPieceIndex = i;
                                 pieces[i].holding = 1;
                                 PlaySound(fxGrab);
@@ -277,11 +257,12 @@ void UpdateState(void)
                                 source.y = pieces[heldPieceIndex].rank;
 
                                 ChessPiece *moving = board[source.x][source.y].piece;
-                                ChessPiece *capture = board[target.x][target.y].piece;
+                                ChessPiece *capturing = board[target.x][target.y].piece;
 
-                                if (capture != NULL && capture->type != EMPTY) {
-                                        detect_winner(capture);
-                                        capture->type = EMPTY;
+                                if (capturing != NULL && capturing->type != EMPTY) {
+                                        detect_winner(capturing);
+                                        captured_pieces[captured_index++] = *capturing;
+                                        capturing->type = EMPTY;
                                         board[target.x][target.y].piece = NULL;
                                 }
                                 board[source.x][source.y].piece = NULL;
@@ -321,7 +302,7 @@ void RenderFrame(void)
         DrawChesspieceLegalMoves(ColorState);
         DrawMouseHoverAction(Background, ColorState);
         DrawChesspieces(pieces, mousePoint);
-        DrawCapturedChesspieces(captured_pieces);
+        DrawCapturedChesspieces(CapturedPieces, captured_pieces);
         if (b_winner || w_winner) {
                 DrawWinner(winner_display, b_winner, w_winner);
                 if (RestartButtonClicked(button_restart))
