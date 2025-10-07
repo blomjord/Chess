@@ -19,5 +19,6 @@ typedef struct {
  * */
 typedef struct {
         int x, y;
-} Point;
+} Vector2_Int;
 #endif
+

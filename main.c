@@ -2,18 +2,20 @@
 #include "moves.h"
 #include "gui.h"
 #include "types.h"
-
+#include <limits.h> 
+void InitGame(void);
+void ExitGame(void);
 void UpdateState(void);
 void RenderFrame(void);
 void RenderWinnerFrame(void);
-void initialize_pieces(ChessPiece pieces[64], Texture2D IconTextures[13]);
-void initialize_board(ChessBoard board[8][8], ChessPiece pieces[64]);
-void InitGame(void);
-void ExitGame(void);
 void zero_capture_matrix(void);
 void detect_winner(ChessPiece *p);
+void initialize_board(ChessBoard board[8][8], ChessPiece pieces[64]);
+void initialize_pieces(ChessPiece pieces[64], Texture2D IconTextures[13]);
+
 int get_array_index_by_coords(ChessPiece pieces[64], int x, int y);
-Point get_index_by_coords(float x, float y);
+
+Vector2_Int get_index_by_coords(float x, float y);
 
 Image Icons[13];
 ChessPiece pieces[64];
@@ -34,10 +36,10 @@ Rectangle winner_display  = { 115.0f, 240.0f, 570.0f, 200.0f };
 Rectangle button_exit     = { 420.0f, 360.0f, 160.f, 50.f };
 Rectangle button_restart  = { 220.0f, 360.0f, 160.f, 50.f };
 
-int turn = 1;
-int quit = 0;
-int b_winner = 0;
-int w_winner = 0;
+int turn            =  1;
+int quit            =  0;
+int b_winner        =  0;
+int w_winner        =  0;
 int heldPieceIndex  = -1;
 
 Sound fxGrab;
@@ -56,12 +58,35 @@ int main(void)
         }
         ExitGame();
         CloseWindow();
+        binprint(-1);
+        printf("\n");
+        binprint(-2);
+        printf("\n");
+        binprint(-3);
+        printf("\n");
+        binprint(-4);
+        printf("\n");
+        binprint(-5);
+        printf("\n");
+        binprint(-6);
+        printf("\n");
+        binprint(1);
+        printf("\n");
+        binprint(2);
+        printf("\n");
+        binprint(3);
+        printf("\n");
+        binprint(4);
+        printf("\n");
+        binprint(5);
+        printf("\n");
+        binprint(6);
         return 0;
 }
 
-Point get_index_by_coords(float x, float y)
+Vector2_Int get_index_by_coords(float x, float y)
 {
-        Point point;
+        Vector2_Int point;
         point.x = (int) x;
         point.y = (int) y;
         point.x /= 100;
@@ -198,6 +223,16 @@ void zero_capture_matrix(void)
         }
 }
 
+void binprint(int n)
+{
+        unsigned int mask = 1 << sizeof(int) * CHAR_BIT - 1;
+        while (mask) {
+                printf("%d", (n & mask ? 1 : 0));
+                mask >>= 1;
+        }
+
+}
+
 void UpdateState(void)
 {
         mousePoint = GetMousePosition();
@@ -207,18 +242,18 @@ void UpdateState(void)
         DetectActionMouseHover(mousePoint, Background, ColorState);
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)
                                 && heldPieceIndex == -1) {
-                PlaySound(fxGrab);
                 mousePoint = GetMousePosition();
                 for (int i = 0; i < 64; ++i) {
                         pieceArea.x = (float) pieces[i].file * SQUARE_SIZE;
                         pieceArea.y = (float) pieces[i].rank * SQUARE_SIZE;
                         touchArea.x = mousePoint.x;
                         touchArea.y = mousePoint.y;
-                        
+                        //TODO: Continue here
                         if (pieces[i].type != EMPTY
                                && CheckCollisionPointRec(mousePoint, pieceArea)) {
                                 heldPieceIndex = i;
                                 pieces[i].holding = 1;
+                                PlaySound(fxGrab);
                                 break;
                         }         
                 }
@@ -235,9 +270,9 @@ void UpdateState(void)
                 }
                 if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                         mousePoint = GetMousePosition();
-                        Point target = get_index_by_coords(mousePoint.x, mousePoint.y);
+                        Vector2_Int target = get_index_by_coords(mousePoint.x, mousePoint.y);
                         if (swap_allowed(board, capture_matrix, pieces[heldPieceIndex], target.x, target.y)) {
-                                Point source;
+                                Vector2_Int source;
                                 source.x = pieces[heldPieceIndex].file;
                                 source.y = pieces[heldPieceIndex].rank;
 
