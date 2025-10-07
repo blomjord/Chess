@@ -1,8 +1,21 @@
+/* ****************************************************************************
+ *
+ * Graphical rendering functions.
+ *
+ * All functions beginning with "Draw" renders in the GUI.
+ *
+ * Includes mouse event detection, winning menu, 
+ * buttons fo exiting or restarting.
+ *
+ * ***************************************************************************/
+
 #include "gui.h"
 
 /*
- * Purpose:
+ * Purpose: Renders the checkered patter for the chess board.
+ *
  * Notes:
+ *
  * */
 void DrawChessboard(Rectangle board[8][8], Color color1, Color color2)
 {
@@ -20,8 +33,10 @@ void DrawChessboard(Rectangle board[8][8], Color color1, Color color2)
 }
 
 /*
- * Purpose:
+ * Purpose: Inits the Rectangle shapes used in DrawChessboard
+ *
  * Notes:
+ *
  * */
 void InitChessboard(Rectangle ChessBoard[8][8])
 {
@@ -36,8 +51,10 @@ void InitChessboard(Rectangle ChessBoard[8][8])
 }
 
 /*
- * Purpose:
+ * Purpose: Draws the blue effects on the chessboard cells.
+ *
  * Notes:
+ *
  * */
 void DrawMouseHoverAction(Rectangle ChessBoard[8][8], int ColorState[8][8])
 {
@@ -52,8 +69,10 @@ void DrawMouseHoverAction(Rectangle ChessBoard[8][8], int ColorState[8][8])
 }
 
 /*
- * Purpose:
+ * Purpose: Draws each chesspiece on the board.
+ *
  * Notes:
+ *
  * */
 void DrawChesspieces(ChessPiece pieces[64], Vector2 mousePoint)
 {
@@ -77,8 +96,10 @@ void DrawChesspieces(ChessPiece pieces[64], Vector2 mousePoint)
 }
 
 /*
- * Purpose:
+ * Purpose: Detects if a mouse is hovering, used in DrawActionMouseHover
+ *
  * Notes:
+ *
  * */
 void DetectActionMouseHover(Vector2 mousePoint, Rectangle Background[8][8], int ColorState[8][8])
 {
@@ -96,6 +117,12 @@ void DetectActionMouseHover(Vector2 mousePoint, Rectangle Background[8][8], int 
         }
 }
 
+/*
+ * Purpose: Draws each legal move of currently held chesspiece.
+ *
+ * Notes:
+ *
+ * */
 void DrawChesspieceLegalMoves(int ColorState[8][8])
 {
         for (int file = 0; file < 8; ++file) {
@@ -110,8 +137,10 @@ void DrawChesspieceLegalMoves(int ColorState[8][8])
 }
 
 /*
- * Purpose
+ * Purpose: Draws every captured piece to the side of the chessboard.
+ *
  * Notes:
+ *
  * */
 void DrawCapturedChesspieces(Rectangle rect, ChessPiece captured[30])
 {
@@ -145,6 +174,13 @@ void DrawCapturedChesspieces(Rectangle rect, ChessPiece captured[30])
         }
 }
 
+/*
+ * Purpose: Draws menu when game is won.
+ * Includes buttons for exiting or restarting the game.
+ *
+ * Notes:
+ *
+ * */
 void DrawWinner(Rectangle Rect, int b, int w)
 {
         if (b) {
@@ -159,7 +195,13 @@ void DrawWinner(Rectangle Rect, int b, int w)
         }
 }
 
-int RestartButtonClicked(Rectangle btn)
+/*
+ * Purpose: Detects if button "Restart" is clicked.
+ *
+ * Notes:
+ *
+ * */
+int DetectRestartButtonClicked(Rectangle btn)
 {
         DrawRectangleRec(btn, LIGHTBEIGE);
         DrawRectangleLinesEx(btn, 4.0f, GOLD);
@@ -170,7 +212,13 @@ int RestartButtonClicked(Rectangle btn)
         return 0;
 }
 
-int QuitButtonClicked(Rectangle btn)
+/*
+ * Purpose: Detects if button "Exit" is clicked.
+ *
+ * Notes:
+ *
+ * */
+int DetectQuitButtonClicked(Rectangle btn)
 {
         DrawRectangleRec(btn, LIGHTBEIGE);
         DrawRectangleLinesEx(btn, 4.0f, GOLD);
@@ -183,7 +231,9 @@ int QuitButtonClicked(Rectangle btn)
 
 /*
  * Purpose: Loads all icons into RAM
- * Notes:
+ *
+ * Notes: Later unloaded when they are converted into Texture2D.
+ *
  * */
 void LoadIcons(Image Icons[13])
 {
@@ -204,8 +254,10 @@ void LoadIcons(Image Icons[13])
 }
 
 /*
- * Purpose: Loads the images into texture to be drawn
+ * Purpose: Converts the images into texture to be drawn
+ *
  * Notes:
+ *
  * */
 void LoadIconsAsTextures(Image Icons[13], Texture2D IconTextures[13])
 {
@@ -218,8 +270,9 @@ void LoadIconsAsTextures(Image Icons[13], Texture2D IconTextures[13])
 /*
  * Purpose: Unload icons from RAM, 
  * 
- * Notes: Useonly after they have
+ * Notes: Use only after they have
  * been converted into type Texture2D.
+ *
  */
 void UnloadIcons(Image Icons[13])
 {
@@ -227,6 +280,12 @@ void UnloadIcons(Image Icons[13])
                 UnloadImage(Icons[i]);
 }
 
+/*
+ * Purpose: Unloads textures.
+ *
+ * Notes: Used for clean exit.
+ *
+ * */
 void UnloadTextures(Texture2D tex[13])
 {
         for (int i = 0; i < 13; ++i)

@@ -18,6 +18,6 @@ void UnloadIcons(Image Icons[13]);
 void UnloadTextures(Texture2D tex[13]);
 void InitChessboard(Rectangle ChessBoard[8][8]);
 
-int RestartButtonClicked(Rectangle btn);
-int QuitButtonClicked(Rectangle btn);
+int DetectRestartButtonClicked(Rectangle btn);
+int DetectQuitButtonClicked(Rectangle btn);
 #endif

@@ -1,20 +1,31 @@
+/*
+ * Graphical chess game built with Raylib Framework
+ * 
+ * Made by: André Norberg
+ *
+ * */
+
 #include "utils.h"
 #include "moves.h"
 #include "gui.h"
 #include "types.h"
 #include <limits.h> 
-void InitGame(void);
-void ExitGame(void);
-void UpdateState(void);
-void RenderFrame(void);
-void RenderWinnerFrame(void);
-void zero_capture_matrix(void);
-void detect_winner(ChessPiece *p);
-void initialize_board(ChessBoard board[8][8], ChessPiece pieces[64]);
-void initialize_pieces(ChessPiece pieces[64], Texture2D IconTextures[13]);
-void initialize_captured_pieces(ChessPiece captured[14]);
 
+// ----------------------------------------------------------------------------
+// Local function declarations 
+// ----------------------------------------------------------------------------
+void InitGame(void);                                                            // Initializes game state
+void ExitGame(void);                                                            // Context clean up for exiting
+void UpdateState(void);                                                         // Update game state
+void RenderFrame(void);                                                         // Draw every frame
+void RenderWinnerFrame(void);                                                   // Draw menu when game is won
+void initialize_board(ChessBoard board[8][8], ChessPiece pieces[64]);           // Initialize chess board context
+void initialize_pieces(ChessPiece pieces[64], Texture2D IconTextures[13]);      // Initialize chess pieces
+void initialize_captured_pieces(ChessPiece captured[30]);                       // Initialize captured pieces array
+
+void detect_winner(ChessPiece *p);                                              
 int get_array_index_by_coords(ChessPiece pieces[64], int x, int y);
+void zero_capture_matrix(void);
 
 Vector2_Int get_index_by_coords(float x, float y);
 
@@ -30,6 +41,9 @@ Texture2D IconTextures[13];
 int ColorState[8][8];
 int capture_matrix[8][8];
 
+// ----------------------------------------------------------------------------
+// GUI shapes (including for mouse interaction)
+// ----------------------------------------------------------------------------
 Vector2 mousePoint  = { 0.0f, 0.0f };
 Vector2 touchPoint  = { 0.0f, 0.0f };
 
@@ -47,9 +61,15 @@ int w_winner        =  0;
 int heldPieceIndex  = -1;
 int captured_index  =  0;
 
+// ----------------------------------------------------------------------------
+// Sound effects
+// ----------------------------------------------------------------------------
 Sound fxGrab;
 Sound fxPlace;
 
+// ----------------------------------------------------------------------------
+// Program main entry point
+// ----------------------------------------------------------------------------
 int main(void)
 {
         InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Chess");
@@ -66,6 +86,16 @@ int main(void)
         return 0;
 }
 
+// ----------------------------------------------------------------------------
+// Local function delcarations 
+// ----------------------------------------------------------------------------
+
+/*
+ * Purpose: Gives chess board file and rank according to pixel coordinates.
+ *
+ * Notes
+ *
+ * */
 Vector2_Int get_index_by_coords(float x, float y)
 {
         Vector2_Int point;
@@ -76,6 +106,12 @@ Vector2_Int get_index_by_coords(float x, float y)
         return point;
 }
 
+/*
+ * Purpose: Gives pixel coordinates for chosen chess board cell.
+ *
+ * Notes: Offset needed because origin is in top-left corner.
+ *
+ * */
 Vector2 square_coords(int file, int rank)
 {
         Vector2 pos;
@@ -84,6 +120,12 @@ Vector2 square_coords(int file, int rank)
         return pos;
 }
 
+/*
+ * Purpose: Initializes the game state.
+ *
+ * Notes: This is also called when "Restart" is chosen.
+ *
+ * */
 void InitGame(void)
 {
         SetTargetFPS(60);
@@ -103,6 +145,12 @@ void InitGame(void)
         fxPlace = LoadSound("Sounds/place.wav");
 }
 
+/*
+ * Purpose: Context clean up for successful exit.
+ *
+ * Notes:
+ *
+ * */
 void ExitGame(void)
 {
         UnloadTextures(IconTextures);
@@ -113,8 +161,11 @@ void ExitGame(void)
 }
 
 /*
- * Purpose: God-awful init func..
+ * Purpose: Initializes each chess piece on the board,
+ * as well as empty cells.
+ * 
  * Notes:
+ *
  * */
 void initialize_pieces(ChessPiece pieces[64], Texture2D IconTextures[13]) 
 {
@@ -149,7 +200,10 @@ void initialize_pieces(ChessPiece pieces[64], Texture2D IconTextures[13])
 }
 
 /*
- *  Returns a pointer to chosen chess piece, or NULL
+ *  Purpose: Returns a pointer to chosen chess piece, or NULL
+ *
+ *  Notes:
+ *
  * */
 ChessPiece *get_piece_by_coords(ChessPiece pieces[64], int x, int y)
 {
@@ -170,8 +224,9 @@ int get_array_index_by_coords(ChessPiece pieces[64], int x, int y)
 
 
 /*
- * Purpose:
- * Notes:
+ * Purpose: Inits chess board with all the pieces.
+ *
+ * Notes: Empty cells are also inited but as "EMPTY"
  * */
 void initialize_board(ChessBoard board[8][8], ChessPiece pieces[64])
 {
@@ -192,6 +247,13 @@ void initialize_board(ChessBoard board[8][8], ChessPiece pieces[64])
         }
 }
 
+/*
+ * Purpose: Inits array captured pieces for use when
+ * drawing the GUI.
+ *
+ * Notes:
+ *
+ * */
 void initialize_captured_pieces(ChessPiece captured[30])
 {
         for (int i = 0; i < 30; ++i)
@@ -203,6 +265,7 @@ void initialize_captured_pieces(ChessPiece captured[30])
  * Used in show_moves to determine legal moves
  *
  * Notes:
+ *
  * */
 void zero_capture_matrix(void)
 {
@@ -212,13 +275,19 @@ void zero_capture_matrix(void)
         }
 }
 
+/*
+ * Updates game state. Includes moving pieces,
+ * capturing, detecting potential winner
+ *
+ * Notes:
+ * */
 void UpdateState(void)
 {
         mousePoint = GetMousePosition();
         touchArea.x = mousePoint.x;
         touchArea.y = mousePoint.y;
 
-        DetectActionMouseHover(mousePoint, Background, ColorState);
+        DetectActionMouseHover(mousePoint, Background, ColorState); // Blue effect when mouse is over cell
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)
                                 && heldPieceIndex == -1) {
                 mousePoint = GetMousePosition();
@@ -239,7 +308,7 @@ void UpdateState(void)
                 }
         }
 
-        // If a piece is being held
+        // If a piece is being grabbed and held
         if (heldPieceIndex != -1) {
                 mousePoint = GetMousePosition();
                 
@@ -251,6 +320,8 @@ void UpdateState(void)
                 if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                         mousePoint = GetMousePosition();
                         Vector2_Int target = get_index_by_coords(mousePoint.x, mousePoint.y);
+
+                        // Check if swapped piece is actually on other team
                         if (swap_allowed(board, capture_matrix, pieces[heldPieceIndex], target.x, target.y)) {
                                 Vector2_Int source;
                                 source.x = pieces[heldPieceIndex].file;
@@ -273,6 +344,7 @@ void UpdateState(void)
                                 moving->pos.x = (target.x * SQUARE_SIZE) + PIXEL_OFFSET;
                                 moving->pos.y = (target.y * SQUARE_SIZE) + PIXEL_OFFSET;
 
+                                // Pawn initial potential double move
                                 if (pieces[heldPieceIndex].type == W_PAWN
                                  || pieces[heldPieceIndex].type == B_PAWN)
                                         pieces[heldPieceIndex].special_move = 0;
@@ -281,7 +353,7 @@ void UpdateState(void)
                                 heldPieceIndex = -1;
                                 zero_capture_matrix();
                                 PlaySound(fxPlace);
-                                turn = turn ^ 1; // Change turns
+                                turn = turn ^ 1; // XOR, Change turns between each move
                         } else { 
                                 pieces[heldPieceIndex].pos.x = (pieces[heldPieceIndex].file * SQUARE_SIZE) + PIXEL_OFFSET;
                                 pieces[heldPieceIndex].pos.y = (pieces[heldPieceIndex].rank * SQUARE_SIZE) + PIXEL_OFFSET;
@@ -293,6 +365,12 @@ void UpdateState(void)
         }
 }
 
+/*
+ * Purpose: Renders each frame according to current game state.
+ *
+ * Notes:
+ *
+ * */
 void RenderFrame(void)
 {
         BeginDrawing();
@@ -305,9 +383,9 @@ void RenderFrame(void)
         DrawCapturedChesspieces(CapturedPieces, captured_pieces);
         if (b_winner || w_winner) {
                 DrawWinner(winner_display, b_winner, w_winner);
-                if (RestartButtonClicked(button_restart))
+                if (DetectRestartButtonClicked(button_restart))
                         InitGame();
-                if (QuitButtonClicked(button_exit))
+                if (DetectQuitButtonClicked(button_exit))
                         quit = 1;
         }
         
@@ -316,7 +394,9 @@ void RenderFrame(void)
 
 /*
  * Purpose: Cheks if captured piece is king
+ *
  * Notes:
+ *
  * */
 void detect_winner(ChessPiece *p)
 {
