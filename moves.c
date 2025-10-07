@@ -1,3 +1,9 @@
+/* ****************************************************************************
+ *
+ * Moving and capturing logic functions
+ *
+ * ***************************************************************************/
+
 #include "utils.h"
 #include "moves.h"
 #include "gui.h"
@@ -13,7 +19,9 @@ void castle()
 
 /*
  * Purpose:
+ *
  * Notes:
+ *
  * */
 int swap_allowed(ChessBoard board[8][8], int capture_matrix[8][8], ChessPiece piece, int tarX, int tarY)
 {
@@ -30,8 +38,10 @@ int swap_allowed(ChessBoard board[8][8], int capture_matrix[8][8], ChessPiece pi
 }
 
 /*
- * Purpose:
+ * Purpose: Selects correct chesspiece and shows legal moves
+ *
  * Notes:
+ *
  * */
 void show_moves(ChessBoard board[8][8], int ColorState[8][8], int capture_matrix[8][8], ChessPiece piece)
 {
@@ -65,6 +75,7 @@ void show_moves(ChessBoard board[8][8], int ColorState[8][8], int capture_matrix
         }
 }
 
+// Pawn moves
 void show_moves_pawn(ChessBoard board[8][8], int ColorState[8][8], int capture_matrix[8][8], ChessPiece piece)
 {
         int tarX, tarY;
@@ -167,6 +178,7 @@ void show_moves_pawn(ChessBoard board[8][8], int ColorState[8][8], int capture_m
         }
 }
 
+// Rook moves
 void show_moves_rook(ChessBoard board[8][8], int ColorState[8][8], int capture_matrix[8][8], ChessPiece piece)
 {
         int tarX, tarY;
@@ -212,6 +224,7 @@ void show_moves_rook(ChessBoard board[8][8], int ColorState[8][8], int capture_m
         }
 }
 
+// Knight moves
 void show_moves_knight(ChessBoard board[8][8], int ColorState[8][8], int capture_matrix[8][8], ChessPiece piece)
 {
         int tarX, tarY;
@@ -240,6 +253,7 @@ void show_moves_knight(ChessBoard board[8][8], int ColorState[8][8], int capture
         }
 }
 
+// Bishop moves
 void show_moves_bishop(ChessBoard board[8][8], int ColorState[8][8], int capture_matrix[8][8], ChessPiece piece)
 {
         int tarX, tarY;
@@ -274,6 +288,7 @@ void show_moves_bishop(ChessBoard board[8][8], int ColorState[8][8], int capture
         }        
 }
 
+// Queen moves
 void show_moves_queen(ChessBoard board[8][8], int ColorState[8][8], int capture_matrix[8][8], ChessPiece piece)
 {
         int tarX, tarY;
@@ -308,6 +323,8 @@ void show_moves_queen(ChessBoard board[8][8], int ColorState[8][8], int capture_
                 }
         }
 }
+
+// King moves
 void show_moves_king(ChessBoard board[8][8], int ColorState[8][8], int capture_matrix[8][8], ChessPiece piece)
 {
         int tarX, tarY;

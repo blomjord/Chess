@@ -9,19 +9,18 @@
 #include "moves.h"
 #include "gui.h"
 #include "types.h"
-#include <limits.h> 
 
 // ----------------------------------------------------------------------------
 // Local function declarations 
 // ----------------------------------------------------------------------------
-void InitGame(void);                                                            // Initializes game state
-void ExitGame(void);                                                            // Context clean up for exiting
-void UpdateState(void);                                                         // Update game state
-void RenderFrame(void);                                                         // Draw every frame
-void RenderWinnerFrame(void);                                                   // Draw menu when game is won
-void initialize_board(ChessBoard board[8][8], ChessPiece pieces[64]);           // Initialize chess board context
-void initialize_pieces(ChessPiece pieces[64], Texture2D IconTextures[13]);      // Initialize chess pieces
-void initialize_captured_pieces(ChessPiece captured[30]);                       // Initialize captured pieces array
+void InitGame(void);                                                   // Initializes game state
+void ExitGame(void);                                                   // Context clean up for exiting
+void UpdateState(void);                                                // Update game state
+void RenderFrame(void);                                                // Draw every frame
+void RenderWinnerFrame(void);                                          // Draw menu when game is won
+void initialize_board(ChessBoard board[8][8], ChessPiece pieces[64]);  // Initialize chess board context
+void initialize_pieces(ChessPiece pieces[64], Texture2D Textures[13]); // Initialize chess pieces
+void initialize_captured_pieces(ChessPiece captured[30]);              // Initialize captured pieces array
 
 void detect_winner(ChessPiece *p);                                              
 int get_array_index_by_coords(ChessPiece pieces[64], int x, int y);
@@ -36,7 +35,7 @@ ChessBoard board[8][8];
 Rectangle Background[8][8];
 
 Image Icons[13];
-Texture2D IconTextures[13];
+Texture2D Textures[13];
 
 int ColorState[8][8];
 int capture_matrix[8][8];
@@ -131,9 +130,9 @@ void InitGame(void)
         SetTargetFPS(60);
         SetExitKey(KEY_Q);
         LoadIcons(Icons);
-        LoadIconsAsTextures(Icons, IconTextures);
+        LoadIconsAsTextures(Icons, Textures);
         UnloadIcons(Icons);
-        initialize_pieces(pieces, IconTextures);
+        initialize_pieces(pieces, Textures);
         initialize_board(board, pieces);
         initialize_captured_pieces(captured_pieces);
         zero_capture_matrix();
@@ -153,7 +152,7 @@ void InitGame(void)
  * */
 void ExitGame(void)
 {
-        UnloadTextures(IconTextures);
+        UnloadTextures(Textures);
         UnloadSound(fxGrab);
         UnloadSound(fxPlace);
         CloseAudioDevice();
@@ -167,35 +166,35 @@ void ExitGame(void)
  * Notes:
  *
  * */
-void initialize_pieces(ChessPiece pieces[64], Texture2D IconTextures[13]) 
+void initialize_pieces(ChessPiece pieces[64], Texture2D Textures[13]) 
 {
         // Order of struct members: type, file, rank, special_move, holding, texture, pos
-        pieces[0]  = (ChessPiece) { 0, B_ROOK,   0, 0, 1, 0, IconTextures[2],  square_coords(0, 0) };
-        pieces[1]  = (ChessPiece) { 0, B_ROOK,   7, 0, 1, 0, IconTextures[2],  square_coords(7, 0) };
-        pieces[2]  = (ChessPiece) { 0, B_KNIGHT, 1, 0, 0, 0, IconTextures[4],  square_coords(1, 0) };
-        pieces[3]  = (ChessPiece) { 0, B_KNIGHT, 6, 0, 0, 0, IconTextures[4],  square_coords(6, 0) };
-        pieces[4]  = (ChessPiece) { 0, B_BISHOP, 2, 0, 0, 0, IconTextures[3],  square_coords(2, 0) };
-        pieces[5]  = (ChessPiece) { 0, B_BISHOP, 5, 0, 0, 0, IconTextures[3],  square_coords(5, 0) };
-        pieces[6]  = (ChessPiece) { 0, B_QUEEN,  3, 0, 0, 0, IconTextures[1],  square_coords(3, 0) };
-        pieces[7]  = (ChessPiece) { 0, B_KING,   4, 0, 1, 0, IconTextures[0],  square_coords(4, 0) };
-        pieces[8]  = (ChessPiece) { 1, W_ROOK,   0, 7, 1, 0, IconTextures[8],  square_coords(0, 7) },
-        pieces[9]  = (ChessPiece) { 1, W_ROOK,   7, 7, 1, 0, IconTextures[8],  square_coords(7, 7) },
-        pieces[10] = (ChessPiece) { 1, W_KNIGHT, 1, 7, 0, 0, IconTextures[10], square_coords(1, 7) },
-        pieces[11] = (ChessPiece) { 1, W_KNIGHT, 6, 7, 0, 0, IconTextures[10], square_coords(6, 7) },
-        pieces[12] = (ChessPiece) { 1, W_BISHOP, 2, 7, 0, 0, IconTextures[9],  square_coords(2, 7) },
-        pieces[13] = (ChessPiece) { 1, W_BISHOP, 5, 7, 0, 0, IconTextures[9],  square_coords(5, 7) },
-        pieces[14] = (ChessPiece) { 1, W_QUEEN,  3, 7, 0, 0, IconTextures[7],  square_coords(3, 7) },
-        pieces[15] = (ChessPiece) { 1, W_KING,   4, 7, 1, 0, IconTextures[6],  square_coords(4, 7) };
+        pieces[0]  = (ChessPiece) { 0, B_ROOK,   0, 0, 1, 0, Textures[2],  square_coords(0, 0) };
+        pieces[1]  = (ChessPiece) { 0, B_ROOK,   7, 0, 1, 0, Textures[2],  square_coords(7, 0) };
+        pieces[2]  = (ChessPiece) { 0, B_KNIGHT, 1, 0, 0, 0, Textures[4],  square_coords(1, 0) };
+        pieces[3]  = (ChessPiece) { 0, B_KNIGHT, 6, 0, 0, 0, Textures[4],  square_coords(6, 0) };
+        pieces[4]  = (ChessPiece) { 0, B_BISHOP, 2, 0, 0, 0, Textures[3],  square_coords(2, 0) };
+        pieces[5]  = (ChessPiece) { 0, B_BISHOP, 5, 0, 0, 0, Textures[3],  square_coords(5, 0) };
+        pieces[6]  = (ChessPiece) { 0, B_QUEEN,  3, 0, 0, 0, Textures[1],  square_coords(3, 0) };
+        pieces[7]  = (ChessPiece) { 0, B_KING,   4, 0, 1, 0, Textures[0],  square_coords(4, 0) };
+        pieces[8]  = (ChessPiece) { 1, W_ROOK,   0, 7, 1, 0, Textures[8],  square_coords(0, 7) },
+        pieces[9]  = (ChessPiece) { 1, W_ROOK,   7, 7, 1, 0, Textures[8],  square_coords(7, 7) },
+        pieces[10] = (ChessPiece) { 1, W_KNIGHT, 1, 7, 0, 0, Textures[10], square_coords(1, 7) },
+        pieces[11] = (ChessPiece) { 1, W_KNIGHT, 6, 7, 0, 0, Textures[10], square_coords(6, 7) },
+        pieces[12] = (ChessPiece) { 1, W_BISHOP, 2, 7, 0, 0, Textures[9],  square_coords(2, 7) },
+        pieces[13] = (ChessPiece) { 1, W_BISHOP, 5, 7, 0, 0, Textures[9],  square_coords(5, 7) },
+        pieces[14] = (ChessPiece) { 1, W_QUEEN,  3, 7, 0, 0, Textures[7],  square_coords(3, 7) },
+        pieces[15] = (ChessPiece) { 1, W_KING,   4, 7, 1, 0, Textures[6],  square_coords(4, 7) };
 
         // Init of pawns and empty cells
         int index = 16;
         for (int file = 0; file < 8; ++file)
-                pieces[index++] = (ChessPiece) { 0, B_PAWN, file, 1, 1, 0, IconTextures[5], square_coords(file, 1) };
+                pieces[index++] = (ChessPiece) { 0, B_PAWN, file, 1, 1, 0, Textures[5], square_coords(file, 1) };
         for (int file = 0; file < 8; ++file)
-                pieces[index++] = (ChessPiece) { 1, W_PAWN, file, 6, 1, 0, IconTextures[11], square_coords(file, 6) };
+                pieces[index++] = (ChessPiece) { 1, W_PAWN, file, 6, 1, 0, Textures[11], square_coords(file, 6) };
         for (int file = 0; file < 8; ++file) {
                 for (int rank = 2; rank < 6; ++rank)
-                        pieces[index++] = (ChessPiece) { -1, EMPTY, file, rank, 0, 0, IconTextures[12], square_coords(file, rank) };
+                        pieces[index++] = (ChessPiece) { -1, EMPTY, file, rank, 0, 0, Textures[12], square_coords(file, rank) };
         }
 }
 
