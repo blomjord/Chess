@@ -333,10 +333,12 @@ void UpdateState(void)
                                 if (capturing != NULL && capturing->type != EMPTY) {
                                         if (moving->type == W_KING && capturing->type == W_ROOK) {
                                                 castle(moving, capturing, board);
+                                                moving->special_move = 0;
                                                 goto castled;
                                         }
                                         if (moving->type == B_KING && capturing->type == B_ROOK) {
                                                 castle(moving, capturing, board);
+                                                moving->special_move = 0;
                                                 goto castled;
                                         }
 

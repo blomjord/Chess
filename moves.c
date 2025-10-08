@@ -20,14 +20,29 @@ void castle(ChessPiece *king, ChessPiece *rook, ChessBoard board[8][8])
         int k_rank = king->rank;
         int r_file = rook->file;
         int r_rank = rook->rank;
-        if (r_file == 0) { // Queen side
-                board[r_file + 2][r_rank].piece = *king;
-                board[k_file - 1][k_rank].piece = *rook;
+        if (r_file == 0) { // Queenside
+                king->file = r_file + 2;
+                king->pos.x = ((r_file + 2) * SQUARE_SIZE) + PIXEL_OFFSET;
+                king->pos.y = ((r_rank + 2) * SQUARE_SIZE) + PIXEL_OFFSET;
+                rook->file = k_file - 1;
+                rook->pos.x = ((k_file - 1) * SQUARE_SIZE) + PIXEL_OFFSET;
+                rook->pos.y = ((k_rank - 1) * SQUARE_SIZE) + PIXEL_OFFSET;
+                board[r_file + 2][r_rank].piece = king;
+                board[k_file - 1][k_rank].piece = rook;
+                board[r_file][r_rank].piece = NULL;
+                board[k_file][k_rank].piece = NULL;
         }
-
-        if (r_file ==  7) { // King side
-                board[r_file - 1][r_rank].piece = *king;
-                board[k_file + 1][k_rank].piece = *rook;
+        if (r_file ==  7) { // Kingside
+                king->file = r_file - 1;
+                king->pos.x = ((r_file - 1) * SQUARE_SIZE) + PIXEL_OFFSET;
+                king->pos.y = ((r_rank - 1) * SQUARE_SIZE) + PIXEL_OFFSET;
+                rook->file = k_file + 1;
+                rook->pos.x = ((k_file + 1) * SQUARE_SIZE) + PIXEL_OFFSET;
+                rook->pos.y = ((k_rank + 1) * SQUARE_SIZE) + PIXEL_OFFSET;
+                board[r_file - 1][r_rank].piece = king;
+                board[k_file + 1][k_rank].piece = rook;
+                board[r_file][r_rank].piece = NULL;
+                board[k_file][k_rank].piece = NULL;
         }
 }
 
@@ -44,7 +59,9 @@ int swap_allowed(ChessBoard board[8][8], int capture_matrix[8][8], ChessPiece pi
                 if (board[tarX][tarY].piece == NULL) {
                         return 1;
                 } else {
-                        if (board[tarX][tarY].piece->type * type < 0)
+                        if (board[tarX][tarY].piece->type * type < 0
+                            || type == W_KING   // Castle
+                            || type == B_KING)  // Castle
                                 return 1;
                 }
         }
@@ -199,7 +216,6 @@ void show_moves_rook(ChessBoard board[8][8], int ColorState[8][8], int capture_m
         int file = piece.file;
         int rank = piece.rank;
         int type = piece.type;
-        int castle = piece.special_move;
         int dirX[4] = { -1, 0, 1, 0 };
         int dirY[4] = { 0, 1, 0, -1 };
         

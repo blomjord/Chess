@@ -4,6 +4,7 @@
 #include "utils.h"
 #include "types.h"
 
+void castle(ChessPiece *king, ChessPiece *rook, ChessBoard board[8][8]);
 int swap_allowed(ChessBoard board[8][8], int capture_matrix[8][8], ChessPiece piece, int tarX, int tarY);
 
 void show_moves       (ChessBoard board[8][8], int ColorState[8][8], int capture_matrix[8][8],ChessPiece piece);
