@@ -10,11 +10,25 @@
 
 /*
  * Purpose: Special move, castle king with rook.
+ *
  * Notes: Only usable once
+ *
  * */
-void castle()
+void castle(ChessPiece *king, ChessPiece *rook, ChessBoard board[8][8])
 {
+        int k_file = king->file;
+        int k_rank = king->rank;
+        int r_file = rook->file;
+        int r_rank = rook->rank;
+        if (r_file == 0) { // Queen side
+                board[r_file + 2][r_rank].piece = *king;
+                board[k_file - 1][k_rank].piece = *rook;
+        }
 
+        if (r_file ==  7) { // King side
+                board[r_file - 1][r_rank].piece = *king;
+                board[k_file + 1][k_rank].piece = *rook;
+        }
 }
 
 /*
