@@ -9,6 +9,17 @@
 #include "gui.h"
 
 /*
+ * Purpose:
+ *
+ * Notes:
+ *
+ * */
+void scan_threats()
+{
+
+}
+
+/*
  * Purpose: Special move, castle king with rook.
  *
  * Notes: Only usable once
@@ -373,6 +384,7 @@ void show_moves_king(ChessBoard board[8][8], int ColorState[8][8], int capture_m
                 }
         }
         if (castle) {
+                // Queenside castling
                 if (board[file - 4][rank].piece != NULL
                  && board[file - 4][rank].piece->special_move
                  && board[file - 3][rank].piece == NULL
@@ -381,6 +393,7 @@ void show_moves_king(ChessBoard board[8][8], int ColorState[8][8], int capture_m
                         ColorState[file - 4][rank] = 3;
                         capture_matrix[file - 4][rank] = 1;
                 }
+                // Kingside castling
                 if (board[file + 3][rank].piece != NULL
                  && board[file + 3][rank].piece->special_move
                  && board[file + 2][rank].piece == NULL

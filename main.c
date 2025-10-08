@@ -329,16 +329,13 @@ void UpdateState(void)
                                 ChessPiece *moving = board[source.x][source.y].piece;
                                 ChessPiece *capturing = board[target.x][target.y].piece;
                                 
-                                // TODO: Finish castle move
                                 if (capturing != NULL && capturing->type != EMPTY) {
-                                        if (moving->type == W_KING && capturing->type == W_ROOK) {
+                                        if (moving->type == W_KING && capturing->type == W_ROOK) { // Check white castle
                                                 castle(moving, capturing, board);
-                                                moving->special_move = 0;
                                                 goto castled;
                                         }
-                                        if (moving->type == B_KING && capturing->type == B_ROOK) {
+                                        if (moving->type == B_KING && capturing->type == B_ROOK) { // Check black castle
                                                 castle(moving, capturing, board);
-                                                moving->special_move = 0;
                                                 goto castled;
                                         }
 
