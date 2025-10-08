@@ -213,15 +213,6 @@ void show_moves_rook(ChessBoard board[8][8], int ColorState[8][8], int capture_m
                         }
                 }
         }
-        if (castle) {
-                if (type == B_ROOK ) {
-                        ColorState[4][0] = 3;
-                        capture_matrix[4][4] = 1;
-                } else if (type == W_ROOK) {
-                        ColorState[4][7] = 3;
-                        capture_matrix[4][7] = 1;
-                }
-        }
 }
 
 // Knight moves
@@ -331,6 +322,7 @@ void show_moves_king(ChessBoard board[8][8], int ColorState[8][8], int capture_m
         int file = piece.file;
         int rank = piece.rank;
         int type = piece.type;
+        int castle = piece.special_move;
         int rangeX[8] = { -1, 0, 1, 1, 1, 0, -1, -1 };
         int rangeY[8] = { 1, 1, 1, 0, -1, -1, -1, 0 };
 
@@ -348,6 +340,23 @@ void show_moves_king(ChessBoard board[8][8], int ColorState[8][8], int capture_m
                                 ColorState[tarX][tarY] = 3;
                                 capture_matrix[tarX][tarY] = 1;
                         }
+                }
+        }
+        if (castle) {
+                if (board[file - 4][rank].piece != NULL
+                 && board[file - 4][rank].piece->special_move
+                 && board[file - 3][rank].piece == NULL
+                 && board[file - 2][rank].piece == NULL
+                 && board[file - 1][rank].piece == NULL) {
+                        ColorState[file - 4][rank] = 3;
+                        capture_matrix[file - 4][rank] = 1;
+                }
+                if (board[file + 3][rank].piece != NULL
+                 && board[file + 3][rank].piece->special_move
+                 && board[file + 2][rank].piece == NULL
+                 && board[file + 1][rank].piece == NULL) {
+                        ColorState[file + 3][rank]  = 3;
+                        capture_matrix[file + 3][rank] = 1;
                 }
         }
 }

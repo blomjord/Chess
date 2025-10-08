@@ -328,8 +328,18 @@ void UpdateState(void)
 
                                 ChessPiece *moving = board[source.x][source.y].piece;
                                 ChessPiece *capturing = board[target.x][target.y].piece;
-
+                                
+                                // TODO: Finish castle move
                                 if (capturing != NULL && capturing->type != EMPTY) {
+                                        if (moving->type == W_KING && capturing->type == W_ROOK) {
+                                                castle(moving, capturing, board);
+                                                goto castled;
+                                        }
+                                        if (moving->type == B_KING && capturing->type == B_ROOK) {
+                                                castle(moving, capturing, board);
+                                                goto castled;
+                                        }
+
                                         detect_winner(capturing);
                                         captured_pieces[captured_index++] = *capturing;
                                         capturing->type = EMPTY;
@@ -344,10 +354,10 @@ void UpdateState(void)
                                 moving->pos.y = (target.y * SQUARE_SIZE) + PIXEL_OFFSET;
 
                                 // Pawn initial potential double move
-                                if (pieces[heldPieceIndex].type == W_PAWN
-                                 || pieces[heldPieceIndex].type == B_PAWN)
-                                        pieces[heldPieceIndex].special_move = 0;
-
+                                //if (pieces[heldPieceIndex].type == W_PAWN
+                                 //|| pieces[heldPieceIndex].type == B_PAWN)
+castled:
+                                pieces[heldPieceIndex].special_move = 0;
                                 pieces[heldPieceIndex].holding = 0;
                                 heldPieceIndex = -1;
                                 zero_capture_matrix();
