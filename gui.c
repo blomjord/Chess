@@ -105,6 +105,9 @@ void DetectActionMouseHover(Vector2 mousePoint, Rectangle Background[8][8], int 
 {
         for (int file = 0; file < 8; ++file) {
                 for (int rank = 0; rank < 8; ++rank) {
+                        if (ColorState[file][rank] == 4)
+                                continue;
+
                         if (CheckCollisionPointRec(mousePoint, Background[file][rank])
                         && IsMouseButtonDown(MOUSE_BUTTON_LEFT) ) {
                                 ColorState[file][rank] = 2;
@@ -131,6 +134,17 @@ void DrawChesspieceLegalMoves(int ColorState[8][8])
                                 DrawCircle((file * SQUARE_SIZE) + 50,
                                            (rank * SQUARE_SIZE) + 50,
                                             20.0f, BLUE);
+                        }
+                }
+        }
+}
+
+void DrawKingInCheck(Rectangle Background[8][8], int ColorState[8][8])
+{
+        for (int file = 0; file < 8; ++file) {
+                for (int rank = 0; rank < 8; ++rank) {
+                        if (ColorState[file][rank] == 4) {
+                                DrawRectangleRec(Background[file][rank], THREAT_RED);
                         }
                 }
         }

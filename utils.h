@@ -13,6 +13,7 @@
 
 #define LIGHTBEIGE (Color) { 230, 215, 215, 255 }
 #define LIGHTBROWN (Color) { 196, 133, 94,  255 }
+#define THREAT_RED (Color) { 255,   0,  0,  255 }
 
 #define PIXEL_OFFSET 55 / 2
 

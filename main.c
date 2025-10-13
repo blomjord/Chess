@@ -24,6 +24,7 @@ void initialize_captured_pieces(ChessPiece captured[30]);              // Initia
 
 void detect_winner(ChessPiece *p);                                              
 int get_array_index_by_coords(ChessPiece pieces[64], int x, int y);
+void scan_capture_matrix(ChessBoard board[8][8], int ColorState[8][8], int capture_matrix[8][8], ChessPiece pieces[64]);
 void zero_capture_matrix(void);
 
 Vector2_Int get_index_by_coords(float x, float y);
@@ -260,6 +261,33 @@ void initialize_captured_pieces(ChessPiece captured[30])
 }
 
 /*
+ * Purpose:
+ *
+ * Notes:
+ *
+ * */
+void scan_capture_matrix(ChessBoard board[8][8], int ColorState[8][8], int capture_matrix[8][8], ChessPiece pieces[64])
+{
+        for (int i = 0; i < 32; ++i) { // Only 32 pieces are non-empty
+                show_moves(board, ColorState, capture_matrix, pieces[i]);
+                for (int file = 0; file < 8; ++file) {
+                        for (int rank = 0; rank < 8; ++rank) {
+                                if (board[file][rank].piece != NULL) {
+                                        if (capture_matrix[file][rank] && board[file][rank].piece->type == W_KING) {
+                                                ColorState[file][rank] = 4;
+
+                                        }
+                                        if (capture_matrix[file][rank] && board[file][rank].piece->type == B_KING) {
+                                                ColorState[file][rank] = 4;
+                                        }
+                                }
+                        }
+                }
+                zero_capture_matrix();
+        }
+}
+
+/*
  * Purpose: Zeroes capture matrix.
  * Used in show_moves to determine legal moves
  *
@@ -282,6 +310,8 @@ void zero_capture_matrix(void)
  * */
 void UpdateState(void)
 {
+        // CHECK IF KING IS CHECK/CHECKMATE
+        scan_capture_matrix(board, ColorState, capture_matrix, pieces);
         mousePoint = GetMousePosition();
         touchArea.x = mousePoint.x;
         touchArea.y = mousePoint.y;
@@ -319,6 +349,7 @@ void UpdateState(void)
                 if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                         mousePoint = GetMousePosition();
                         Vector2_Int target = get_index_by_coords(mousePoint.x, mousePoint.y);
+                        show_moves(board, ColorState, capture_matrix, pieces[heldPieceIndex]);
 
                         // Check if swapped piece is actually on other team
                         if (swap_allowed(board, capture_matrix, pieces[heldPieceIndex], target.x, target.y)) {
@@ -332,11 +363,11 @@ void UpdateState(void)
                                 if (capturing != NULL && capturing->type != EMPTY) {
                                         if (moving->type == W_KING && capturing->type == W_ROOK) { // Check white castle
                                                 castle(moving, capturing, board);
-                                                goto castled;
+                                                goto out_castled;
                                         }
                                         if (moving->type == B_KING && capturing->type == B_ROOK) { // Check black castle
                                                 castle(moving, capturing, board);
-                                                goto castled;
+                                                goto out_castled;
                                         }
 
                                         detect_winner(capturing);
@@ -355,7 +386,7 @@ void UpdateState(void)
                                 // Pawn initial potential double move
                                 //if (pieces[heldPieceIndex].type == W_PAWN
                                  //|| pieces[heldPieceIndex].type == B_PAWN)
-castled:
+out_castled:
                                 pieces[heldPieceIndex].special_move = 0;
                                 pieces[heldPieceIndex].holding = 0;
                                 heldPieceIndex = -1;
@@ -387,6 +418,7 @@ void RenderFrame(void)
         DrawChessboard(Background, LIGHTBEIGE, LIGHTBROWN);
         DrawChesspieceLegalMoves(ColorState);
         DrawMouseHoverAction(Background, ColorState);
+        DrawKingInCheck(Background, ColorState);
         DrawChesspieces(pieces, mousePoint);
         DrawCapturedChesspieces(CapturedPieces, captured_pieces);
         if (b_winner || w_winner) {

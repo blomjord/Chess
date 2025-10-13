@@ -14,10 +14,6 @@
  * Notes:
  *
  * */
-void scan_threats()
-{
-
-}
 
 /*
  * Purpose: Special move, castle king with rook.

@@ -11,6 +11,7 @@ void DrawChesspieces(ChessPiece pieces[64], Vector2 mousePoint);
 void DrawChesspieceLegalMoves(int ColorState[8][8]);
 void DrawCapturedChesspieces(Rectangle rect, ChessPiece captured[30]);
 void DetectActionMouseHover(Vector2 mousePoint, Rectangle Background[8][8], int ColorState[8][8]);
+void DrawKingInCheck(Rectangle Background[8][8], int ColorState[8][8]);
 void DrawWinner(Rectangle Rect, int b, int w);
 void LoadIcons(Image Icons[13]);
 void LoadIconsAsTextures(Image Icons[13], Texture2D IconTextures[13]);
