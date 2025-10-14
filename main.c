@@ -59,7 +59,9 @@ int quit            =  0;
 int b_winner        =  0;
 int w_winner        =  0;
 int heldPieceIndex  = -1;
-int captured_index  =  0;
+int captured_index  =  0; 
+int b_check         =  0; // Black king in check
+int w_check         =  0; // White king in check
 
 // ----------------------------------------------------------------------------
 // Sound effects
@@ -274,11 +276,13 @@ void scan_capture_matrix(ChessBoard board[8][8], int ColorState[8][8], int captu
                         for (int rank = 0; rank < 8; ++rank) {
                                 if (board[file][rank].piece != NULL) {
                                         if (capture_matrix[file][rank] && board[file][rank].piece->type == W_KING) {
+                                                w_check = 1;
                                                 ColorState[file][rank] = 4;
 
                                         }
                                         if (capture_matrix[file][rank] && board[file][rank].piece->type == B_KING) {
                                                 ColorState[file][rank] = 4;
+                                                b_check = 1;
                                         }
                                 }
                         }
@@ -315,6 +319,15 @@ void UpdateState(void)
         mousePoint = GetMousePosition();
         touchArea.x = mousePoint.x;
         touchArea.y = mousePoint.y;
+
+        // If king in check, resolve it immediately
+        if (b_check) {
+                b_check = 0;
+        }
+
+        if (w_check) {
+                w_check = 0;
+        }
 
         DetectActionMouseHover(mousePoint, Background, ColorState); // Blue effect when mouse is over cell
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)
